@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="512" height="512" aria-hidden="true" role="img">
+  <!-- Transparent background by default -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- Quesadilla slice -->
+    <path d="M18 104 L104 104 L68 22 Z" fill="#FFD45A" stroke="#202225" stroke-width="6"/>
+    <!-- Inner lighter cheese -->
+    <path d="M28 98 L94 98 L68 34 Z" fill="#FFE79B" stroke="none"/>
+    <!-- Wavy cheese line -->
+    <path d="M28 88 C 40 94, 54 80, 68 88 S 96 96, 100 86" fill="none" stroke="#202225" stroke-width="6"/>
+    <!-- Cheese holes -->
+    <circle cx="54" cy="66" r="3.5" fill="#E7A030" stroke="none"/>
+    <circle cx="44" cy="74" r="2.8" fill="#E7A030" stroke="none"/>
+    <circle cx="64" cy="74" r="2.8" fill="#E7A030" stroke="none"/>
+    <!-- Question mark stem (leading into bulb) -->
+    <path d="M88 22c10-6 26 1 26 12 0 9-7 14-13 17" fill="none" stroke="#202225" stroke-width="8"/>
+    <!-- Bulb (dot of the question mark) -->
+    <circle cx="101" cy="58" r="17" fill="#FFD45A" stroke="#202225" stroke-width="8"/>
+    <!-- Bulb base -->
+    <rect x="92" y="70" width="18" height="12" rx="3" ry="3" fill="#52525b" stroke="#202225" stroke-width="4"/>
+    <!-- Small base grooves -->
+    <path d="M96 74h6 M96 78h10" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

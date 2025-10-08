@@ -11,18 +11,18 @@
 </head>
 <body>
 <header>
-  <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
+  <nav class="navbar navbar-light custom-navbar border-bottom box-shadow mb-3">
     <div class="container-fluid d-flex align-items-center justify-content-between">
 
     <!-- LEFT-LOGO-AND-NAME -->
       <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-        <img src="~/img/ChatGPT-Logo.png" alt="logo" width="35" class="me-2">
+        <img src="~/img/ChatGPT-Logo.svg" alt="logo" width="35" class="me-2">
         <span class="fw-bold">Quizadilla</span>
       </a>
 
     <!-- MIDDLE-NAV-LINKS -->
       <div class="flex-grow-1 d-flex justify-content-center">
-        <ul class="navbar-nav flex-row nav-mid">
+        <ul class="navbar-nav flex-row nav-mid" style="font-size: 1.2rem; font-weight: 400;">
           <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
           <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
           <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Test">Test</a></li>
@@ -30,7 +30,7 @@
       </div>
 
     <!-- RIGHT NAVBAR - SEARCH, ACC, CHEESEBURGER -->
-      <div class="d-flex align-items-center">
+      <div class="right-content d-flex align-items-center">
         <form class="d-flex search-form me-2">
           <input class="form-control" type="search" placeholder="Search" aria-label="Search">
         </form>
@@ -41,16 +41,24 @@
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
-    </div>
   </nav>
 </header>
 
-  <!-- RIGHT-NAVBAR-POPUP -->
-  <div id="sidebar" class="sidebar">
+  <!-- RIGHT-SIDEBAR-POPUP -->
+  <div id="sidebar" class="sidebar custom-navbar">
     <div class="sidebar-header">
-      <h5 class="mb-0">Menu</h5>
+      <h5 class="mb-0 text-dark">Menudilla <img src="~/img/ChatGPT-Logo.svg" alt="logo" width="35" class="me-2"></h5>
       <button class="btn-close" id="closeSidebar"></button>
     </div>
+    <div class="sidebar-user d-none">
+      <form class="d-flex mb-3">
+        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+      </form>
+      <a href="#" class="text-dark fs-4 mb-3 d-block">
+        <i class="bi bi-person me-2"></i> My Account
+      </a>
+      <hr>
+  </div>
     <!-- SMALL-ONLY=SMALL SCREENS ONLY -->
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

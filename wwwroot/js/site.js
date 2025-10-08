@@ -3,14 +3,24 @@
 
 // Write your JavaScript code.
     
-// Sidebar toggle logic
-    const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menuToggle");
-    const closeSidebar = document.getElementById("closeSidebar");
+//NAVBAR SCRIPT 
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+const closeSidebar = document.getElementById("closeSidebar");
+const body = document.body;
 
-    menuToggle.addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-    });
-    closeSidebar.addEventListener("click", () => {
-      sidebar.classList.remove("active");
-    });
+menuToggle?.addEventListener("click", () => {
+  const isActive = sidebar.classList.toggle("active");
+  body.classList.toggle("sidebar-open", isActive);
+
+  // 🔹 Skjul hamburger når sidebaren er aktiv
+  menuToggle.style.visibility = isActive ? "hidden" : "visible";
+});
+
+closeSidebar?.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  body.classList.remove("sidebar-open");
+  menuToggle.style.visibility = "visible"; // vis igjen
+});
+
+

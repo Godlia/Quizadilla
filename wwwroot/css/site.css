@@ -68,3 +68,27 @@ body {
         display: none !important;
       }
     }
+    /* standard-posisjon */
+.right-content {
+  transition: transform 0.3s ease;
+}
+
+/* når sidebar er åpen, skyv alt i right-content mot venstre */
+.sidebar-open .right-content {
+  transform: translateX(-250px); /* juster tallet etter hvor bred sidebaren er */
+}
+.right-content {
+  gap: 0.3rem;          /* litt mindre mellomrom mellom ikon og felt */
+  margin-right: 0.1rem; /* flytt litt mot høyre */
+}
+
+.search-form input {
+  width: 200px;         /* gjør feltet passe bredt */
+}
+
+
+
+.custom-navbar {
+  background-color: #ffcc66; /* gulaktig */
+  color: white;
+}
