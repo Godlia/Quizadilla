@@ -20,7 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
-  /* Nav-right popup navbar*/
+  /* Navbar-right popup nav*/
     .sidebar {
       position: fixed;
       top: 0;
@@ -68,27 +68,25 @@ body {
         display: none !important;
       }
     }
-    /* standard-posisjon */
+    /* standard-pos */
 .right-content {
   transition: transform 0.3s ease;
 }
 
-/* når sidebar er åpen, skyv alt i right-content mot venstre */
+/* Swipe all content to the left in nav when open sidebar*/
 .sidebar-open .right-content {
-  transform: translateX(-250px); /* juster tallet etter hvor bred sidebaren er */
+  transform: translateX(-250px); /* Width */
 }
 .right-content {
-  gap: 0.3rem;          /* litt mindre mellomrom mellom ikon og felt */
-  margin-right: 0.1rem; /* flytt litt mot høyre */
+  gap: 0.3rem;          
+  margin-right: 0.1rem;
 }
 
 .search-form input {
-  width: 200px;         /* gjør feltet passe bredt */
+  width: 200px;         
 }
 
-
-
 .custom-navbar {
-  background-color: #ffcc66; /* gulaktig */
+  background-color: #ffcc66; 
   color: white;
 }
