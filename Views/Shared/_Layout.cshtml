@@ -11,7 +11,7 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-light custom-navbar border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-light custom-navbar-footer border-bottom box-shadow mb-3">
         <div class="container-fluid d-flex align-items-center justify-content-between">
 
             <!-- LEFT-LOGO-AND-NAME -->
@@ -41,7 +41,7 @@
                     <a href="#" class="text-dark fs-4 person-icon dropdown-toggle" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end custom-navbar" aria-labelledby="accountDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end custom-navbar-footer" aria-labelledby="accountDropdown">
                         <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="MyAccount">My Account</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="MyAccountSettings">Settings</a></li>
@@ -58,7 +58,7 @@
 </header>
 
   <!-- RIGHT-SIDEBAR-POPUP -->
-  <div id="sidebar" class="sidebar custom-navbar">
+  <div id="sidebar" class="sidebar custom-navbar-footer">
     <div class="sidebar-header">
       <h5 class="mb-0 text-dark">Menudilla <img src="~/img/ChatGPT-Logo.svg" alt="logo" width="35" class="me-2"></h5>
       <button class="btn-close" id="closeSidebar"></button>
@@ -98,13 +98,13 @@
     <a asp-area="" asp-controller="Home" asp-action="Support">Support</a>
   </div>
 
-  <div class="container">
+  <div class="container custom-background-color">
     <main role="main" class="pb-3">
       @RenderBody()
     </main>
   </div>
 
-  <footer class="border-top footer text-muted text-center py-3">
+  <footer class="border-top footer text-muted text-center py-3 custom-navbar-footer">
     &copy; 2025 - Quizadilla
   </footer>
 
