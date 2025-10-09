@@ -12,7 +12,7 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-
+    /* REDIRECT TO CSHTML SITE CONTROLLERS*/
     public IActionResult Index()
     {
         return View();
@@ -36,6 +36,7 @@ public class HomeController : Controller
     {
         return View();
     }
+    /* END REDIRECT TO CSHTML SITE CONTROLLERS*/
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
