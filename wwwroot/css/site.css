@@ -147,6 +147,14 @@ body {
   transition: transform 0.2s ease;
 }
 
+.sidebar a, .sidebar-link { font-size:1.1rem; color:#222; text-decoration:none; }
+.sidebar-link { background:transparent; border:0; padding:0; cursor:pointer; }
+#quizSubmenu a { font-size:1rem; color:#333; }
+.sidebar-dropdown .bi-chevron-down { transition: transform .2s ease; }
+.sidebar-dropdown .collapse.show + .bi-chevron-down,
+.sidebar-dropdown .sidebar-link[aria-expanded="true"] .bi-chevron-down { transform: rotate(180deg); }
+
+
 
 
 .custom-navbar {
