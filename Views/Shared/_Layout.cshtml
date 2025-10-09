@@ -11,36 +11,49 @@
 </head>
 <body>
 <header>
-  <nav class="navbar navbar-light custom-navbar border-bottom box-shadow mb-3">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
+    <nav class="navbar navbar-light custom-navbar border-bottom box-shadow mb-3">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
 
-    <!-- LEFT-LOGO-AND-NAME -->
-      <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-        <img src="~/img/ChatGPT-Logo.svg" alt="logo" width="35" class="me-2">
-        <span class="fw-bold">Quizadilla</span>
-      </a>
+            <!-- LEFT-LOGO-AND-NAME -->
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/ChatGPT-Logo.svg" alt="logo" width="35" class="me-2">
+                    <span class="fw-bold">Quizadilla</span>
+                </a>
 
-    <!-- MIDDLE-NAV-LINKS -->
-      <div class="flex-grow-1 d-flex justify-content-center">
-        <ul class="navbar-nav flex-row nav-mid" style="font-size: 1.2rem; font-weight: 400;">
-          <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-          <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-          <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Test">Test</a></li>
-        </ul>
-      </div>
+            <!-- MIDDLE-NAV-LINKS -->
+            <div class="flex-grow-1 d-flex justify-content-center">
+                <ul class="navbar-nav flex-row nav-mid" style="font-size: 1.2rem; font-weight: 400;">
+                    <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Test">Test</a></li>
+                </ul>
+            </div>
 
-    <!-- RIGHT NAVBAR - SEARCH, ACC, CHEESEBURGER -->
-      <div class="right-content d-flex align-items-center">
-        <form class="d-flex search-form me-2">
-          <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-        </form>
-        <a href="#" class="text-dark fs-4 me-3 person-icon">
-          <i class="bi bi-person"></i>
-        </a>
-        <button id="menuToggle" class="navbar-toggler" type="button">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
+            <!-- RIGHT NAVBAR - SEARCH, ACC, CHEESEBURGER -->
+                <div class="right-content d-flex align-items-center">
+            <!-- Searchbar -->
+                <form class="d-flex search-form me-2">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                </form>
+
+            <!-- Person Dropdown -->
+                <div class="dropdown me-3">
+                    <a href="#" class="text-dark fs-4 person-icon dropdown-toggle" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end custom-navbar" aria-labelledby="accountDropdown">
+                        <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="MyAccount">My Account</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="MyAccountSettings">Settings</a></li>
+                        <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="LOGIN-LOGOUT">Logout/Login(EIRIK DO MAGIC)</a></li>
+                    </ul>
+                </div>
+
+            <!-- Hamburger -->
+                <button id="menuToggle" class="navbar-toggler" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        </div>
   </nav>
 </header>
 
@@ -65,7 +78,17 @@
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Test">Test</a>
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="MyAccount">My account</a>
     <hr>
-    <a asp-area="" asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+    <!-- QUIZZES DROPDOWN -->
+    <div class="sidebar-dropdown">
+            <button class="sidebar-link" id="quizDropdownBtn">
+                Quizzes
+                <i class="bi bi-chevron-down ms-1"></i>
+            </button>
+        <div class="sidebar-submenu d-none">
+            <a asp-controller="Home" asp-action="Quiz1">• Quiz 1</a>
+            <a asp-controller="Home" asp-action="Quiz2">• Quiz 2</a>
+        </div>
+    </div>
     <a asp-area="" asp-controller="Home" asp-action="Settings">Settings</a>
     <a asp-area="" asp-controller="Home" asp-action="Support">Support</a>
   </div>

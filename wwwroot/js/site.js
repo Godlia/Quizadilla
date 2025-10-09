@@ -13,7 +13,7 @@ menuToggle?.addEventListener("click", () => {
   const isActive = sidebar.classList.toggle("active");
   body.classList.toggle("sidebar-open", isActive);
 
-  // 🔹 Skjul hamburger når sidebaren er aktiv
+  // HIDE CHEESEBURGER WHEN SIDEBAR IS OPEN
   menuToggle.style.visibility = isActive ? "hidden" : "visible";
 });
 
@@ -21,6 +21,15 @@ closeSidebar?.addEventListener("click", () => {
   sidebar.classList.remove("active");
   body.classList.remove("sidebar-open");
   menuToggle.style.visibility = "visible"; // vis igjen
+});
+// DROPDOWN SUBMENU FOR QUIZZES SIDEBAR
+const quizDropdownBtn = document.getElementById("quizDropdownBtn");
+const quizDropdown = document.querySelector(".sidebar-dropdown");
+const quizSubmenu = document.querySelector(".sidebar-submenu");
+
+quizDropdownBtn?.addEventListener("click", () => {
+  quizSubmenu.classList.toggle("d-none");
+  quizDropdown.classList.toggle("open");
 });
 
 
