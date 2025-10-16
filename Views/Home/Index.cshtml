@@ -1,9 +1,79 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "HOME";
 }
 
-<div class="text-center">
-    <h1 class="display-1">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="py-5">
+  <div class="container">
+    <h1 class="display-5 fw-bold text-center mb-2">Trending</h1>
+    <p class="lead text-center text-muted mb-4">The most popular quizzes at the moment!</p>
 
+    <div class="position-relative">
+      <button class="scroll-btn scroll-btn-left"  type="button" data-target="#ingr-belt" aria-label="Scroll left">‹</button>
+      <button class="scroll-btn scroll-btn-right" type="button" data-target="#ingr-belt" aria-label="Scroll right">›</button>
+
+<!-- MIDLERIDIGE UI-QUIZZER!!!!!!!!!!!!!!!!!!! SKAL ENDRES NÅR VI FÅR INN NOEN EKTE QUIZZZER !!!!!!!!!!!!!!! -->
+      <div id="ingr-belt" class="ingredient-scroller">
+        <div class="card ingredient-card theme-cheese">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Cheesy Capitals</h3>
+            <p class="ingredient-meta mb-3">Geografi · 12 spørsmål</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Forhåndsvis</a>
+              <a class="btn btn-primary btn-sm" href="#">Spill</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-tomato">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Tomato Tech Trivia</h3>
+            <p class="ingredient-meta mb-3">IT · 10 spørsmål</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Forhåndsvis</a>
+              <a class="btn btn-primary btn-sm" href="#">Spill</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-guac">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Layers of History</h3>
+            <p class="ingredient-meta mb-3">Historie · 15 spørsmål</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Forhåndsvis</a>
+              <a class="btn btn-primary btn-sm" href="#">Spill</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-chicken">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Chicken Code Challenge</h3>
+            <p class="ingredient-meta mb-3">C# · 8 spørsmål</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Forhåndsvis</a>
+              <a class="btn btn-primary btn-sm" href="#">Spill</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-salsa">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Salsa Speed Round</h3>
+            <p class="ingredient-meta mb-3">Blandet · 20 spørsmål</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Forhåndsvis</a>
+              <a class="btn btn-primary btn-sm" href="#">Spill</a>
+            </div>
+          </div>
+        </div>
+    <!-- FERDIG MIDLERTIDIGE UI-QUIZZER !!!!!!!!!!!!!!!  -->
+      </div>
+    </div>
+  </div>
+</section>
