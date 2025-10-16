@@ -14,7 +14,7 @@ html {
 
 :root {
   --background-color: #fff3e0;
-  --text-color: #333333;   
+  --text-color: black;   
 }
 
 html {
@@ -175,4 +175,12 @@ body {
 }
 .navbar-toggler{
   padding: 0.25rem 0rem;
+}
+
+/*Searchbar*/
+.clear-btn {
+  border: 1px solid #ccc;      
+  border-left: none;           
+  border-radius: 0;            
+  background-color: white;   
 }
