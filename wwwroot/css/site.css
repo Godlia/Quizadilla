@@ -8,6 +8,7 @@ html {
   }
 }
 
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -23,8 +24,14 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin-bottom: 60px;
   background-color: var(--background-color);
+}
+main{
+  flex: 1;
 }
   /* Navbar-right popup nav*/
     .sidebar {
@@ -184,3 +191,31 @@ body {
   border-radius: 0;            
   background-color: white;   
 }
+footer {
+  position: static;
+  width: 100%;
+}
+
+/* === DEBUG RESET === */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important;
+}
+
+footer {
+  position: static !important;
+  bottom: auto !important;
+  background-color: #ffcc66 !important;
+  color: black !important;
+}
+
+main, .container, .custom-background-color {
+  height: auto !important;
+  overflow: visible !important;
+}
+
