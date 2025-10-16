@@ -14,8 +14,10 @@ html {
 }
 
 :root {
+  --navbar-color: #ffcc66;
   --background-color: #fff3e0;
   --text-color: black;   
+  --btn-color: #ffcc66;
 }
 
 html {
@@ -192,13 +194,6 @@ main{
   background-color: white;   
 }
 
-
-
-
-
-
-
-
 /*Index.cshtml*/
 
 /*Base of the card*/
@@ -285,9 +280,16 @@ main{
 .scroll-btn{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border:0; border-radius:50%; background:rgba(255,255,255,.9); box-shadow:0 6px 16px rgba(0,0,0,.15); display:grid; place-items:center; }
 .scroll-btn-left{ left:0; translate:-40% 0; } .scroll-btn-right{ right:0; translate:40% 0; }
 .scroll-btn:disabled{ opacity:.4; cursor:not-allowed; }
-footer {
-  position: static;
-  width: 100%;
+
+
+.scroll-btn {
+  z-index: 5;
+}
+
+/*Text-index*/
+.text-index{
+  font-size: 1.2rem;
+  color: #333;
 }
 
 /* === Footer fix === */
@@ -301,15 +303,18 @@ html, body {
   overflow-y: auto !important;
 }
 
-footer {
-  position: static !important;
-  bottom: auto !important;
-  background-color: #ffcc66 !important;
-  color: black !important;
-}
-
 main, .container, .custom-background-color {
   height: auto !important;
   overflow: visible !important;
+  flex-grow: 1 !important;
 }
-
+.todays-quiz{
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 16px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+  background: var(--navbar-color);
+}
+.text-index-quiz{
+  padding-top: 0.7rem;
+}

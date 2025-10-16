@@ -1,11 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "HOME";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-left mt-1 ms-1">
-    <h1 class="display-2">Welcome to Quizadilla</h1>
-    <p class="lead ms-5 display-5">Your home for quizzes</p>
+<div class="d-flex flex-wrap align-items-center justify-content-center gap-4 mt-3 px-4">
+  <!-- Venstre del -->
+  <div class="welcome-text">
+    <h1 class="mb-2 fw-bold">Welcome to Quizadilla</h1>
+    <p class="text-index fw-semibold">Your home for quizzes</p>
+  </div>
+
+  <!-- Høyre del -->
+  <div class="todays-quiz">
+    <h4 class="mb-3 text-center fw-semibold text-index-quiz">Today’s random quiz</h4>
+    <div class="card ingredient-card theme-tomato">
+      <div class="card-body">
+        <h3 class="ingredient-title">How many bird breeds do you know?</h3>
+        <p class="ingredient-meta mb-3">Nature · 17 questions</p>
+        <div class="ingredient-actions d-flex gap-2">
+          <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+          <a class="btn btn-primary btn-sm" href="#">Play</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 <section class="py-5">
   <div class="container">
@@ -90,8 +109,9 @@
     <p class="mb-0">Browse through our extensive library of quizzes or create your own!</p>
   </div>
 </div>
-<div class="d-flex align-items-center justify-content-center mt-3 gap-4">
+<div class="d-flex align-items-center justify-content-center mt-3 gap-5">
     <button class="btn btn-primary">Browse through quizzes!</button>
     <button class="btn btn-primary">Create your own Quiz!</button>
-<div>
 </div>
+<br>
+<br>
