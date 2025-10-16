@@ -1,7 +1,82 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "HOME";
 }
 
+<section class="py-5">
+  <div class="container">
+    <h1 class="display-5 fw-bold text-center mb-2">Trending</h1>
+    <p class="lead text-center text-muted mb-4">The most popular quizzes at the moment!</p>
+
+    <div class="position-relative">
+      <button class="scroll-btn scroll-btn-left"  type="button" data-target="#ingr-belt" aria-label="Scroll left">‹</button>
+      <button class="scroll-btn scroll-btn-right" type="button" data-target="#ingr-belt" aria-label="Scroll right">›</button>
+
+<!-- MIDLERIDIGE UI-QUIZZER!!!!!!!!!!!!!!!!!!! SKAL ENDRES NÅR VI FÅR INN NOEN EKTE QUIZZZER !!!!!!!!!!!!!!! -->
+      <div id="ingr-belt" class="ingredient-scroller">
+        <div class="card ingredient-card theme-cheese">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Cheesy Capitals</h3>
+            <p class="ingredient-meta mb-3">Geography · 12 questions</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+              <a class="btn btn-primary btn-sm" href="#">Play</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-tomato">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Tomato Tech Trivia</h3>
+            <p class="ingredient-meta mb-3">IT · 10 questions</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+              <a class="btn btn-primary btn-sm" href="#">Play</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-guac">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Layers of History</h3>
+            <p class="ingredient-meta mb-3">History · 15 questions</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+              <a class="btn btn-primary btn-sm" href="#">Play</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-chicken">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Chicken Code Challenge</h3>
+            <p class="ingredient-meta mb-3">C# · 8 questions</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+              <a class="btn btn-primary btn-sm" href="#">Play</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ingredient-card theme-salsa">
+          <div class="ingredient-top"></div>
+          <div class="card-body">
+            <h3 class="ingredient-title">Salsa Speed Round</h3>
+            <p class="ingredient-meta mb-3">Mixed · 20 questions</p>
+            <div class="ingredient-actions d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
+              <a class="btn btn-primary btn-sm" href="#">Play</a>
+            </div>
+          </div>
+        </div>
+    <!-- FERDIG MIDLERTIDIGE UI-QUIZZER !!!!!!!!!!!!!!!  -->
+      </div>
+    </div>
+  </div>
+</section>
 <div class="text-left mt-1 ms-1">
     <h1 class="display-2">Welcome to Quizadilla</h1>
     <p class="lead ms-5 display-5">Your home for quizzes</p>
