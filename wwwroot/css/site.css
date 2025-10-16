@@ -79,19 +79,19 @@ body {
   transition: transform 0.3s ease;
 }
 
-/* Swipe all content to the left in nav when open sidebar*/
+/* NAVBAR RESIZE WHEN OPEN SIDEBAR*/
 .sidebar-open .right-content {
   transform: translateX(-250px); /* Width */
 }
 .right-content {
-  gap: 0.3rem;          
+  gap: 0.2rem;          
   margin-right: 0.1rem;
 }
 
 .search-form input {
   width: 200px;         
 }
-/*ACCOUNT VISUAL FIX NO UNDERLINE NO DROPDOWN ARROW*/
+/*ACCOUNT NO UNDERLINE N DROPDOWN ARROW*/
 .person-icon.dropdown-toggle {
   text-decoration: none !important;  
   border: none !important;           
@@ -168,4 +168,11 @@ body {
 }
 .dropdown-divider{
   color: black;
+}
+.input-group-text{
+  background-color: white;
+  border-right: 0;
+}
+.navbar-toggler{
+  padding: 0.25rem 0rem;
 }

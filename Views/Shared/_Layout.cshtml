@@ -33,7 +33,10 @@
                 <div class="right-content d-flex align-items-center">
             <!-- Searchbar -->
                 <form class="d-flex search-form me-2">
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-search"></i></span>
+                      <input type="search" class="form-control" placeholder="Search" aria-label="Search">
+                    </div>
                 </form>
 
             <!-- Person Dropdown -->
@@ -72,13 +75,13 @@
       </a>
       <hr>
   </div>
-    <!-- SMALL-ONLY=SMALL SCREENS ONLY -->
+    <!-- ONLY=SMALL SCREENS -->
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Test">Test</a>
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="MyAccount">My account</a>
     <hr>
-    <!-- QUIZZES DROPDOWN -->
+    <!-- QUIZZES DROPDOWN BAR -->
     <div class="sidebar-dropdown">
         <button class="sidebar-link d-flex w-100 align-items-center justify-content-between"
         data-bs-toggle="collapse" data-bs-target="#quizSubmenu" aria-expanded="false" aria-controls="quizSubmenu">
@@ -104,6 +107,7 @@
     </main>
   </div>
 
+<!-- FOOTER -->
   <footer class="border-top footer text-muted text-center py-3 custom-navbar-footer">
     &copy; 2025 - Quizadilla
   </footer>
