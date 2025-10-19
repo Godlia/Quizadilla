@@ -482,3 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+QuizDatabase.db-wal
+QuizDatabase.db-shm
