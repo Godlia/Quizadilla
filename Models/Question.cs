@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace project.Models
+namespace Quizadilla.Models
 {
     public class Question
     {
-        [Required]
+        [Key]
         public int Id { get; set; }
+
         [Required]
-        public int QuizId { get; set; } //points to which quiz this question belongs to (foreign key)
-        [Required]
-        public int UserID { get; set; } //points to which user created this question (foreign key)
         public string QuestionText { get; set; } = string.Empty;
-        public string[] Options { get; set; } = Array.Empty<string>();
-        public int CorrectOptionIndex { get; set; }
+
+        public ICollection<string> options { get; set; } = new List<string>();
+
+        public int correctAnswerIndex { get; set; }
+
 
     }
 }

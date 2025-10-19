@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace project.Models
+namespace Quizadilla.Models
 {
     public class QuizDbContext : DbContext
     {

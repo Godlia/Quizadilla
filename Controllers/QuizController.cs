@@ -1,10 +1,10 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using project.Models;
 using Quizadilla.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Quizadilla.Controllers;
 public class QuizController : Controller
@@ -16,30 +16,72 @@ public class QuizController : Controller
         db = context;
     }
 
+    public IActionResult Quiz(int id = 0)
+    {
+        Quiz quiz = db.Quizzes.Include(q => q.Questions).FirstOrDefault(q => q.QuizId == id);
+        return View(quiz);
+    }
+    public IActionResult Index()
+    {
+        return View();
+    }
+
     public IActionResult Discover()
     {
         var NewQuiz = new Quiz
         {
-            Title = "Sample Quiz",
+            Title = "peepee",
             Description = "This is a sample quiz description.",
-            Questions = new Question[]
+            Questions = new List<Question>
             {
                 new Question
                 {
-                    QuestionText = "What is the capital of France?",
-                    Options = new string[] { "Berlin", "Madrid", "Paris", "Rome" },
-                    CorrectOptionIndex = 2
+                    QuestionText = "JAAAAA?"
                 },
                 new Question
                 {
-                    QuestionText = "What is 2 + 2?",
-                    Options = new string[] { "3", "4", "5", "6" },
-                    CorrectOptionIndex = 1
+                    QuestionText = "What is 2 + 2?"
                 }
             }
         };
+
+        var peepee = new Quiz();
+        peepee.Title = "Test Quiz";
+        peepee.Description = "Just a test quiz.";
+
+
+        db.Quizzes.Add(NewQuiz);
+        db.Quizzes.Add(peepee);
         db.SaveChanges();
 
+        Console.WriteLine("Quizzes added to the database.");
+
+        var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
+        foreach (var quiz in quizzes)
+        {
+            Console.WriteLine($"Quiz ID: {quiz.QuizId}, Title: {quiz.Title}, Description: {quiz.Description}");
+            foreach (var question in quiz.Questions)
+            {
+                Console.WriteLine($"\tQuestion ID: {question.Id}, Text: {question.QuestionText}");
+            }
+        }
+        
+        /*
+        var conn = db.Database.GetDbConnection();
+        string dbPath;
+        try
+        {
+            var builder = new SqliteConnectionStringBuilder(conn.ConnectionString);
+            dbPath = Path.GetFullPath(builder.DataSource ?? "QuizDatabase.db");
+        }
+        catch
+        {
+            dbPath = Path.GetFullPath("QuizDatabase.db");
+        }
+
+        System.Diagnostics.Debug.WriteLine($"SQLite file path: {dbPath}");
+        Console.WriteLine($"SQLite file path: {dbPath}");
+        */
         return View();
     }
 }
