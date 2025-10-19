@@ -317,4 +317,22 @@ main, .container, .custom-background-color {
 }
 .text-index-quiz{
   padding-top: 0.7rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.ingredient-title-top{
+  margin-left:1rem;
+  margin-right:1rem; 
+  font-size:1.05rem; 
+  font-weight:700;
+}
+.ingredient-meta-top{
+  margin-left:1rem;
+  margin-right:1rem; 
+  font-size:.9rem; 
+  color:#555; 
+}
+.ingredient-actions-top{
+  margin-left:1rem;
+  margin-right:1rem; 
 }
