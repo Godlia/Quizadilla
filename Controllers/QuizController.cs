@@ -28,60 +28,38 @@ public class QuizController : Controller
 
     public IActionResult Discover()
     {
-        var NewQuiz = new Quiz
-        {
-            Title = "peepee",
-            Description = "This is a sample quiz description.",
-            Questions = new List<Question>
-            {
-                new Question
-                {
-                    QuestionText = "JAAAAA?"
-                },
-                new Question
-                {
-                    QuestionText = "What is 2 + 2?"
-                }
-            }
-        };
-
+        
         var peepee = new Quiz();
         peepee.Title = "Test Quiz";
         peepee.Description = "Just a test quiz.";
+        peepee.Questions = new List<Question>
+        {
+            new Question { QuestionText = "What is the capital of France?",
+                           options = new List<Option>
+                           {
+                               new Option { OptionText = "Berlin" },
+                               new Option { OptionText = "Madrid" },
+                               new Option { OptionText = "Paris" },
+                               new Option { OptionText = "Rome" }
+                           },
+                           correctString = "Paris"
+            },
+          };
 
 
-        db.Quizzes.Add(NewQuiz);
         db.Quizzes.Add(peepee);
         db.SaveChanges();
 
         Console.WriteLine("Quizzes added to the database.");
 
         var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
+
+        //print out all quizzes, questions, and options using it's toString method
         foreach (var quiz in quizzes)
         {
-            Console.WriteLine($"Quiz ID: {quiz.QuizId}, Title: {quiz.Title}, Description: {quiz.Description}");
-            foreach (var question in quiz.Questions)
-            {
-                Console.WriteLine($"\tQuestion ID: {question.Id}, Text: {question.QuestionText}");
-            }
-        }
-        
-        /*
-        var conn = db.Database.GetDbConnection();
-        string dbPath;
-        try
-        {
-            var builder = new SqliteConnectionStringBuilder(conn.ConnectionString);
-            dbPath = Path.GetFullPath(builder.DataSource ?? "QuizDatabase.db");
-        }
-        catch
-        {
-            dbPath = Path.GetFullPath("QuizDatabase.db");
+            Console.WriteLine(quiz.toString());
         }
 
-        System.Diagnostics.Debug.WriteLine($"SQLite file path: {dbPath}");
-        Console.WriteLine($"SQLite file path: {dbPath}");
-        */
         return View();
     }
 }
