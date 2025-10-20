@@ -1,17 +1,90 @@
 ﻿@model Quizadilla.Models.Quiz
-@*
-    This is the view for taking the quiz.   
 
-For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-    
-*@
 @{
-    
-    ViewData["Title"] = "Take the Quiz";
+    ViewData["Title"] = Model.Title;
 }
 
-<h1 class="display-1">Take the Quiz!</h1>
+<h2 class="mb-4">@Model.Title</h2>
+<p class="text-muted">@Model.Description</p>
 
-<h2>@Model.Title</h2>
+@if (Model.Questions == null || !Model.Questions.Any())
+{
+    <div class="alert alert-info">
+        This quiz has no questions yet.
+    </div>
+}
+else
+{
+    <form id="quizForm" onsubmit="return gradeQuiz(event)">
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            var question = Model.Questions.ElementAt(i);
 
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Question @(i + 1): @question.QuestionText</h5>
 
+                    @if (question.options != null && question.options.Any())
+                    {
+                        foreach (var option in question.options)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="question_@i"
+                                       value="@option.OptionText"
+                                       id="option_@option.OptionId" />
+                                <label class="form-check-label" for="option_@option.OptionId">
+                                    @option.OptionText
+                                </label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">No options available for this question.</p>
+                    }
+
+                    <input type="hidden" name="correct_@i" value="@question.correctString" />
+                </div>
+            </div>
+        }
+
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+
+    <div id="resultContainer" class="mt-4"></div>
+}
+
+@section Scripts {
+    <script>
+        function gradeQuiz(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('quizForm');
+            const resultDiv = document.getElementById('resultContainer');
+            let score = 0;
+            let total = 0;
+
+            const hiddenInputs = form.querySelectorAll('input[type="hidden"][name^="correct_"]');
+
+            hiddenInputs.forEach((hidden, index) => {
+                const correct = hidden.value.trim();
+                const selected = form.querySelector(`input[name="question_${index}"]:checked`);
+                total++;
+
+                if (selected && selected.value.trim() === correct) {
+                    score++;
+                }
+            });
+
+            const percent = ((score / total) * 100).toFixed(1);
+            resultDiv.innerHTML = `
+                <div class="alert alert-info">
+                    You scored <strong>${score}</strong> out of <strong>${total}</strong> (${percent}%)
+                </div>
+            `;
+            return false;
+        }
+    </script>
+}

@@ -1,10 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Quizadilla.Models.Quiz>
+
 @{
-    ViewData["Title"] = "YUrrr";
+    ViewData["Title"] = "Discover Quizzes";
 }
 
-<h1 class ="display-1">Welcome to Quizadilla!</h1>
+<h2 class="mb-4">Discover Quizzes</h2>
 
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No quizzes found. Why not <a asp-action="Create">create one</a>?
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var quiz in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@quiz.Title</h5>
+                        <p class="card-text text-muted">@quiz.Description</p>
 
+                        <p class="fw-bold">Questions: @quiz.Questions.Count()</p>
+
+                        <a asp-action="Quiz" asp-route-id="@quiz.QuizId" class="btn btn-primary">
+                            View Quiz
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-secondary ms-2">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@quiz.QuizId" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this quiz?');">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

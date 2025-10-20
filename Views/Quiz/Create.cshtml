@@ -1,0 +1,72 @@
+@model Quizadilla.Models.Quiz
+
+@{
+    ViewData["Title"] = "Create Quiz";
+}
+
+<h2>Create a New Quiz</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <h4>Questions</h4>
+    <div id="questionsContainer"></div>
+    <button type="button" class="btn btn-secondary mb-3" onclick="addQuestion()">+ Add Question</button>
+
+    <div class="form-group">
+        <input type="submit" value="Create Quiz" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let questionCount = 0;
+
+        function addQuestion() {
+            const qIndex = questionCount++;
+            const container = document.getElementById("questionsContainer");
+
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("border", "p-3", "mb-3", "rounded");
+            questionDiv.innerHTML = `
+                <div class="form-group mb-2">
+                    <label>Question Text</label>
+                    <input name="Questions[${qIndex}].QuestionText" class="form-control" required />
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Correct Answer</label>
+                    <input name="Questions[${qIndex}].correctString" class="form-control" required />
+                </div>
+
+                <h6>Options</h6>
+                <div id="optionsContainer-${qIndex}"></div>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="addOption(${qIndex})">+ Add Option</button>
+            `;
+            container.appendChild(questionDiv);
+        }
+
+        function addOption(qIndex) {
+            const container = document.getElementById(`optionsContainer-${qIndex}`);
+            const optIndex = container.children.length;
+
+            const optionDiv = document.createElement("div");
+            optionDiv.classList.add("mb-1");
+            optionDiv.innerHTML = `
+                <input name="Questions[${qIndex}].options[${optIndex}].OptionText" class="form-control" placeholder="Option text" required />
+            `;
+            container.appendChild(optionDiv);
+        }
+    </script>
+}
