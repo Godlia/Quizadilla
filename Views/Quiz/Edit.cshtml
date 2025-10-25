@@ -1,0 +1,110 @@
+@model Quizadilla.Models.Quiz
+
+@{
+    ViewData["Title"] = "Edit Quiz";
+}
+
+<h2>Edit Quiz</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="QuizId" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <h4>Questions</h4>
+    <div id="questionsContainer">
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            var q = Model.Questions.ElementAt(i);
+            <div class="border p-3 mb-3 rounded">
+                <input type="hidden" name="Questions[@i].Id" value="@q.Id" />
+
+                <div class="form-group mb-2">
+                    <label>Question Text</label>
+                    <input name="Questions[@i].QuestionText" value="@q.QuestionText" class="form-control" />
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Correct Answer</label>
+                    <input name="Questions[@i].correctString" value="@q.correctString" class="form-control" />
+                </div>
+
+                <h6>Options</h6>
+                <div id="optionsContainer-@i">
+                    @for (int j = 0; j < q.options.Count; j++)
+                    {
+                        var opt = q.options.ElementAt(j);
+                        <div class="mb-1">
+                            <input type="hidden" name="Questions[@i].options[@j].OptionId" value="@opt.OptionId" />
+                            <input name="Questions[@i].options[@j].OptionText"
+                                   value="@opt.OptionText"
+                                   class="form-control"
+                                   placeholder="Option text" />
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="addOption(@i)">+ Add Option</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary mb-3" onclick="addQuestion()">+ Add Question</button>
+    <div>
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
+        <a asp-action="Discover" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        let questionCount = @Model.Questions.Count;
+
+        function addQuestion() {
+            const qIndex = questionCount++;
+            const container = document.getElementById("questionsContainer");
+
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("border", "p-3", "mb-3", "rounded");
+            questionDiv.innerHTML = `
+                <div class="form-group mb-2">
+                    <label>Question Text</label>
+                    <input name="Questions[${qIndex}].QuestionText" class="form-control" />
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Correct Answer</label>
+                    <input name="Questions[${qIndex}].correctString" class="form-control" />
+                </div>
+
+                <h6>Options</h6>
+                <div id="optionsContainer-${qIndex}"></div>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="addOption(${qIndex})">+ Add Option</button>
+            `;
+            container.appendChild(questionDiv);
+        }
+
+        function addOption(qIndex) {
+            const container = document.getElementById(`optionsContainer-${qIndex}`);
+            const optIndex = container.children.length;
+
+            const optionDiv = document.createElement("div");
+            optionDiv.classList.add("mb-1");
+            optionDiv.innerHTML = `
+                <input name="Questions[${qIndex}].options[${optIndex}].OptionText" class="form-control" placeholder="Option text" />
+            `;
+            container.appendChild(optionDiv);
+        }
+    </script>
+}
