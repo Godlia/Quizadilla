@@ -160,6 +160,17 @@ public class QuizController : Controller
             .ThenInclude(q => q.options)
             .FirstOrDefault(q => q.QuizId == id);
 
+
+        if (quiz == null)
+            return NotFound();
+
+            var Rng = new Random();
+            foreach (var question in quiz.Questions)
+
+        { 
+                question.options = question.options.OrderBy(o => Rng.Next()).ToList(); 
+            }
+
         return View(quiz);
     }
 
