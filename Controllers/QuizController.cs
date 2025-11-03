@@ -31,7 +31,7 @@ public class QuizController : Controller
         return View(quiz);
     }
 
-    [HttpPost] Q
+    [HttpPost] 
     public IActionResult Delete(int id)
     {
         var quiz = db.Quizzes
