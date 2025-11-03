@@ -31,7 +31,7 @@ public class QuizController : Controller
         return View(quiz);
     }
 
-    [HttpPost]
+    [HttpPost] Q
     public IActionResult Delete(int id)
     {
         var quiz = db.Quizzes
@@ -179,7 +179,7 @@ public class QuizController : Controller
 
     public IActionResult Discover()
     {
-
+        /*
         var peepee = new Quiz();
         peepee.Title = "Fatass";
         peepee.Description = "Just a test quiz.";
@@ -196,12 +196,14 @@ public class QuizController : Controller
                            correctString = "Paris"
             },
           };
-
+        
 
         //db.Quizzes.Add(peepee);
         //db.SaveChanges();
 
         Console.WriteLine("Quizzes added to the database.");
+        
+        */
 
         var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
 
