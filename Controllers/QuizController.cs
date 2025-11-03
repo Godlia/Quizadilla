@@ -164,17 +164,35 @@ public class QuizController : Controller
     {
         return View();
     }
-    public IActionResult Create(Quiz quiz)
+   public IActionResult Create(Quiz quiz)
+{
+    if (ModelState.IsValid)
     {
-        if (ModelState.IsValid)
+        foreach (var q in quiz.Questions ?? new List<Question>())
         {
-            db.Quizzes.Add(quiz);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            q.options ??= new List<Option>();
+
+            var correct = (q.correctString ?? "").Trim();
+            if (!string.IsNullOrWhiteSpace(correct))
+            {
+                var hasCorrect = q.options.Any(o =>
+                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
+
+                if (!hasCorrect)
+                {
+                    q.options.Add(new Option { OptionText = q.correctString });
+                }
+            }
         }
 
-        return View(quiz);
+        db.Quizzes.Add(quiz);
+        db.SaveChanges();
+        return RedirectToAction("Discover");
     }
+
+    return View(quiz);
+}
+
 
 
     public IActionResult Discover()

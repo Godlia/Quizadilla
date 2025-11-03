@@ -1,7 +1,9 @@
 @model Quizadilla.Models.Quiz
+@using System.Linq
 
 @{
     ViewData["Title"] = "Create Quiz";
+    var questions = Model?.Questions?.ToList() ?? new List<Quizadilla.Models.Question>();
 }
 
 <h2>Create a New Quiz</h2>
@@ -20,10 +22,73 @@
     </div>
 
     <h4>Questions</h4>
-    <div id="questionsContainer"></div>
+    <div id="questionsContainer">
+        @if (questions.Count > 0)
+        {
+            for (int i = 0; i < questions.Count; i++)
+            {
+                var q = questions[i];
+                <div class="border p-3 mb-3 rounded">
+                    <div class="form-group mb-2">
+                        <label>Question Text</label>
+                        <input name="Questions[@i].QuestionText" value="@q.QuestionText" class="form-control" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label>Correct Answer</label>
+                        <input name="Questions[@i].correctString" value="@q.correctString" class="form-control" />
+                    </div>
+
+                    <h6>Options</h6>
+                    <div id="optionsContainer-@i" data-qindex="@i">
+                        @for (int j = 0; j < q.options.Count; j++)
+                        {
+                            <div class="option-row d-flex gap-2 align-items-start mb-1">
+                                <input name="Questions[@i].options[@j].OptionText"
+                                       value="@q.options.ElementAt(j).OptionText"
+                                       class="form-control"
+                                       placeholder="Option text" />
+                                <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>
+                            </div>
+                        }
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm mb-2"
+                            onclick="addOption(@i)">+ Add Option</button>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="border p-3 mb-3 rounded">
+                <div class="form-group mb-2">
+                    <label>Question Text</label>
+                    <input name="Questions[0].QuestionText" class="form-control" />
+                </div>
+                <div class="form-group mb-2">
+                    <label>Correct Answer</label>
+                    <input name="Questions[0].correctString" class="form-control" />
+                </div>
+
+                <h6>Options</h6>
+                <div id="optionsContainer-0" data-qindex="0">
+                    <div class="option-row d-flex gap-2 align-items-start mb-1">
+                        <input name="Questions[0].options[0].OptionText" class="form-control" placeholder="Option text" />
+                        <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm mb-2"
+                        onclick="addOption(0)">+ Add Option</button>
+            </div>
+        }
+    </div>
+
     <button type="button" class="btn btn-secondary mb-3" onclick="addQuestion()">+ Add Question</button>
 
-    <div class="form-group">
+    <div>
         <input type="submit" value="Create Quiz" class="btn btn-primary" />
     </div>
 </form>
@@ -31,42 +96,66 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        let questionCount = 0;
+        let questionCount = @questions.Count == 0 ? 1 : @questions.Count;
 
         function addQuestion() {
             const qIndex = questionCount++;
-            const container = document.getElementById("questionsContainer");
+            const qContainer = document.getElementById('questionsContainer');
 
-            const questionDiv = document.createElement("div");
-            questionDiv.classList.add("border", "p-3", "mb-3", "rounded");
-            questionDiv.innerHTML = `
+            const html = `
+              <div class="border p-3 mb-3 rounded">
                 <div class="form-group mb-2">
-                    <label>Question Text</label>
-                    <input name="Questions[${qIndex}].QuestionText" class="form-control" required />
+                  <label>Question Text</label>
+                  <input name="Questions[${qIndex}].QuestionText" class="form-control" />
                 </div>
-
                 <div class="form-group mb-2">
-                    <label>Correct Answer</label>
-                    <input name="Questions[${qIndex}].correctString" class="form-control" required />
+                  <label>Correct Answer</label>
+                  <input name="Questions[${qIndex}].correctString" class="form-control" />
                 </div>
 
                 <h6>Options</h6>
-                <div id="optionsContainer-${qIndex}"></div>
+                <div id="optionsContainer-${qIndex}" data-qindex="${qIndex}">
+                  <div class="option-row d-flex gap-2 align-items-start mb-1">
+                    <input name="Questions[${qIndex}].options[0].OptionText" class="form-control" placeholder="Option text" />
+                    <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>
+                  </div>
+                </div>
+
                 <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="addOption(${qIndex})">+ Add Option</button>
-            `;
-            container.appendChild(questionDiv);
+              </div>`;
+            qContainer.insertAdjacentHTML('beforeend', html);
         }
 
         function addOption(qIndex) {
             const container = document.getElementById(`optionsContainer-${qIndex}`);
-            const optIndex = container.children.length;
+            const optIndex = container.querySelectorAll('.option-row').length;
 
-            const optionDiv = document.createElement("div");
-            optionDiv.classList.add("mb-1");
-            optionDiv.innerHTML = `
-                <input name="Questions[${qIndex}].options[${optIndex}].OptionText" class="form-control" placeholder="Option text" required />
-            `;
-            container.appendChild(optionDiv);
+            const row = document.createElement('div');
+            row.className = 'option-row d-flex gap-2 align-items-start mb-1';
+            row.innerHTML = `
+                <input name="Questions[${qIndex}].options[${optIndex}].OptionText"
+                       class="form-control"
+                       placeholder="Option text" />
+                <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>`;
+            container.appendChild(row);
+        }
+
+        document.getElementById('questionsContainer')
+            .addEventListener('click', function (e) {
+                if (!e.target.classList.contains('option-remove')) return;
+                const row = e.target.closest('.option-row');
+                const container = row.parentElement;
+                row.remove();
+                reindexOptions(container);
+            });
+
+        function reindexOptions(container) {
+            const qIndex = container.dataset.qindex;
+            const rows = container.querySelectorAll('.option-row');
+            rows.forEach((row, idx) => {
+                const input = row.querySelector('input[name$=".OptionText"]');
+                if (input) input.name = `Questions[${qIndex}].options[${idx}].OptionText`;
+            });
         }
     </script>
 }
