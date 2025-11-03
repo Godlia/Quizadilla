@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Quizadilla.Models;
+using Microsoft.AspNetCore.Identity;
+using Quizadilla.Data;
+using Quizadilla.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("QuizDbContextConnection"))
 );
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthDbContextConnection"))
+);
+
+builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AuthDbContext>();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -37,5 +47,6 @@ app.MapControllerRoute(
     name: "Quiz",
     pattern: "{controller=Quiz}/{action=Index}/{id?}");
 
+app.MapRazorPages();
 
 app.Run();
