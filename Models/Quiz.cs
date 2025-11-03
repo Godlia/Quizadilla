@@ -19,6 +19,8 @@ namespace Quizadilla.Models
         // Use a collection type instead of an array for EF navigation
         public ICollection<Question> Questions { get; set; } = new List<Question>();
 
+         public string? Theme { get; set; }
+
         
         public string toString()
         {
