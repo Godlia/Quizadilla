@@ -12,6 +12,9 @@ public class QuizController : Controller
 {
     private readonly QuizDbContext db;
 
+    private static readonly string[] Themes = { "tomato", "guac", "cheese", "onion", "chicken", "salsa" };
+    private static readonly Random Rng = new();
+
     public QuizController(QuizDbContext context)
     {
         db = context;
@@ -168,22 +171,25 @@ public class QuizController : Controller
 {
     if (ModelState.IsValid)
     {
-        foreach (var q in quiz.Questions ?? new List<Question>())
-        {
-            q.options ??= new List<Option>();
-
-            var correct = (q.correctString ?? "").Trim();
-            if (!string.IsNullOrWhiteSpace(correct))
+            foreach (var q in quiz.Questions ?? new List<Question>())
             {
-                var hasCorrect = q.options.Any(o =>
-                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
+                q.options ??= new List<Option>();
 
-                if (!hasCorrect)
+                var correct = (q.correctString ?? "").Trim();
+                if (!string.IsNullOrWhiteSpace(correct))
                 {
-                    q.options.Add(new Option { OptionText = q.correctString });
+                    var hasCorrect = q.options.Any(o =>
+                        string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
+
+                    if (!hasCorrect)
+                    {
+                        q.options.Add(new Option { OptionText = q.correctString });
+                    }
                 }
             }
-        }
+
+            if (string.IsNullOrWhiteSpace(quiz.Theme))
+                quiz.Theme = Themes[Rng.Next(Themes.Length)];
 
         db.Quizzes.Add(quiz);
         db.SaveChanges();
