@@ -150,6 +150,63 @@ using (var scope = app.Services.CreateScope())
             },
             new Quiz
             {
+                Title = "Monuments of the Solar System",
+                Description = "How well do you know our solar system?",
+                Theme = "onion",
+                Questions = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "What is the tallest mountain in the solar system?",
+                        correctString = "Olympus Mons",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "Kilimanjaro" },
+                            new Option { OptionText = "Maxwell Montes" },
+                            new Option { OptionText = "Olympus Mons" },
+                            new Option { OptionText = "Mount Everest" }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "What is the biggest asteroid in the solar system?",
+                        correctString = "Ceres",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "Vesta" },
+                            new Option { OptionText = "Psyche" },
+                            new Option { OptionText = "Pluto" },
+                            new Option { OptionText = "Ceres" }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "What man made object has traveled the farthest from earth?",
+                        correctString = "Voyager 1",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "Voyager 1" },
+                            new Option { OptionText = "Voyager 2" },
+                            new Option { OptionText = "Apollo 13" },
+                            new Option { OptionText = "Sputnik 1" }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "What is the biggest planet in the solar system?",
+                        correctString = "Jupiter",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "Saturn" },
+                            new Option { OptionText = "Jupiter" },
+                            new Option { OptionText = "Uranus" },
+                            new Option { OptionText = "Earth" }
+                        }
+                    }
+                }
+            },
+            new Quiz
+            {
                 Title = "Science Facts",
                 Description = "Test your knowledge of basic science facts.",
                 Theme = "salsa",
