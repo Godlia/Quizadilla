@@ -110,8 +110,12 @@
   </div>
 </div>
 <div class="d-flex align-items-center justify-content-center mt-3 gap-5">
-    <button class="btn btn-primary">Browse through quizzes!</button>
-    <button class="btn btn-primary">Create your own Quiz!</button>
+    <a asp-controller="Quiz" asp-action="Discover" class="btn btn-primary">
+    Browse through quizzes!
+    </a>
+    <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">
+    Create your own Quiz!
+    </a>
 </div>
 <br>
 <br>
