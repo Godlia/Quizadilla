@@ -1,42 +1,31 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using project.Models;
+using Microsoft.EntityFrameworkCore;
+using Quizadilla.Models;
 
-namespace project.Controllers;
+namespace Quizadilla.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly QuizDbContext db;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, QuizDbContext context)
     {
         _logger = logger;
+        db = context;
     }
-    /* REDIRECT TO CSHTML SITE CONTROLLERS*/
+
     public IActionResult Index()
     {
-        return View();
+        var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
+        return View(quizzes);
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    public IActionResult Test()
-    {
-        return View();
-    }
-
-    public IActionResult MyAccount()
-    {
-        return View();
-    }
-    public IActionResult Quizzes()
-    {
-        return View();
-    }
-    /* END REDIRECT TO CSHTML SITE CONTROLLERS*/
+    public IActionResult Privacy() => View();
+    public IActionResult Test() => View();
+    public IActionResult MyAccount() => View();
+    public IActionResult Quizzes() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

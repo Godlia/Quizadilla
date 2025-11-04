@@ -1,4 +1,4 @@
-﻿using project.Models;
+﻿using Quizadilla.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
