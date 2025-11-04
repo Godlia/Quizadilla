@@ -136,7 +136,7 @@ using (var scope = app.Services.CreateScope())
                     },
                     new Question
                     {
-                        QuestionText = "Who broke two toes while filming a scene for The Lord of the Rings: Two Towers?",
+                        QuestionText = "Who broke two toes whilst filming a scene for The Lord of the Rings: Two Towers?",
                         correctString = "Viggo Mortensen - Aragorn",
                         options = new List<Option>
                         {
