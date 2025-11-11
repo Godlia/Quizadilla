@@ -35,68 +35,22 @@
       <button class="scroll-btn scroll-btn-left"  type="button" data-target="#ingr-belt" aria-label="Scroll left">‹</button>
       <button class="scroll-btn scroll-btn-right" type="button" data-target="#ingr-belt" aria-label="Scroll right">›</button>
 
-<!-- MIDLERIDIGE UI-QUIZZER!!!!!!!!!!!!!!!!!!! SKAL ENDRES NÅR VI FÅR INN NOEN EKTE QUIZZZER !!!!!!!!!!!!!!! -->
-      <div id="ingr-belt" class="ingredient-scroller">
-        <div class="card ingredient-card theme-cheese">
-          <div class="ingredient-top"></div>
-          <div class="card-body">
-            <h3 class="ingredient-title">Cheesy Capitals</h3>
-            <p class="ingredient-meta mb-3">Geography · 12 questions</p>
-            <div class="ingredient-actions d-flex gap-2">
-              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
-              <a class="btn btn-primary btn-sm" href="#">Play</a>
+<div class="ingredient-scroller">
+@foreach (var quiz in Model)
+{
+    var theme = string.IsNullOrWhiteSpace(quiz.Theme) ? "tomato" : quiz.Theme;
+    <div class="ingredient-card card theme-@theme">
+        <div class="ingredient-top"></div>
+        <div class="card-body">
+            <h5 class="ingredient-title">@quiz.Title</h5>
+            <p class="ingredient-meta">@quiz.Description</p>
+            <div class="ingredient-actions d-flex justify-content-between mt-3">
+                <a asp-controller="Quiz" asp-action="Quiz" asp-route-id="@quiz.QuizId" class="btn btn-primary btn-sm">Play</a>
             </div>
-          </div>
         </div>
-
-        <div class="card ingredient-card theme-tomato">
-          <div class="ingredient-top"></div>
-          <div class="card-body">
-            <h3 class="ingredient-title">Tomato Tech Trivia</h3>
-            <p class="ingredient-meta mb-3">IT · 10 questions</p>
-            <div class="ingredient-actions d-flex gap-2">
-              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
-              <a class="btn btn-primary btn-sm" href="#">Play</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card ingredient-card theme-guac">
-          <div class="ingredient-top"></div>
-          <div class="card-body">
-            <h3 class="ingredient-title">Layers of History</h3>
-            <p class="ingredient-meta mb-3">History · 15 questions</p>
-            <div class="ingredient-actions d-flex gap-2">
-              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
-              <a class="btn btn-primary btn-sm" href="#">Play</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card ingredient-card theme-chicken">
-          <div class="ingredient-top"></div>
-          <div class="card-body">
-            <h3 class="ingredient-title">Chicken Code Challenge</h3>
-            <p class="ingredient-meta mb-3">Coding · 8 questions</p>
-            <div class="ingredient-actions d-flex gap-2">
-              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
-              <a class="btn btn-primary btn-sm" href="#">Play</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card ingredient-card theme-salsa">
-          <div class="ingredient-top"></div>
-          <div class="card-body">
-            <h3 class="ingredient-title">Salsa Speed Round</h3>
-            <p class="ingredient-meta mb-3">Mixed · 20 questions</p>
-            <div class="ingredient-actions d-flex gap-2">
-              <a class="btn btn-outline-secondary btn-sm" href="#">Preview</a>
-              <a class="btn btn-primary btn-sm" href="#">Play</a>
-            </div>
-          </div>
-        </div>
-    <!-- FERDIG MIDLERTIDIGE UI-QUIZZER !!!!!!!!!!!!!!!  -->
+    </div>
+}
+</div>
       </div>
     </div>
   </div>
@@ -110,8 +64,12 @@
   </div>
 </div>
 <div class="d-flex align-items-center justify-content-center mt-3 gap-5">
-    <button class="btn btn-primary">Browse through quizzes!</button>
-    <button class="btn btn-primary">Create your own Quiz!</button>
+    <a asp-controller="Quiz" asp-action="Discover" class="btn btn-primary">
+    Browse through quizzes!
+    </a>
+    <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">
+    Create your own Quiz!
+    </a>
 </div>
 <br>
 <br>
