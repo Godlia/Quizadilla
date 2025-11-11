@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Quizadilla.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Quizadilla.Controllers;
 
@@ -178,10 +179,18 @@ public class QuizController : Controller
     {
         return View();
     }
-   public IActionResult Create(Quiz quiz)
+
+    [Authorize]
+   public IActionResult Create()
 {
-    if (ModelState.IsValid)
+    return View();
+}
+    [Authorize]
+    [HttpPost]
+    public IActionResult CreateQuiz(Quiz quiz)
     {
+        if (true)
+        {
             foreach (var q in quiz.Questions ?? new List<Question>())
             {
                 q.options ??= new List<Option>();
@@ -199,47 +208,26 @@ public class QuizController : Controller
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(quiz.Theme))
-                quiz.Theme = Themes[Rng.Next(Themes.Length)];
+            if (string.IsNullOrWhiteSpace(quiz.Theme)) quiz.Theme = Themes[Rng.Next(Themes.Length)];
 
-        db.Quizzes.Add(quiz);
-        db.SaveChanges();
-        return RedirectToAction("Discover");
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+            quiz.UserID = userId;
+
+            db.Quizzes.Add(quiz);
+            db.SaveChanges();
+            return RedirectToAction("MyQuizzes");
+        } else
+        {
+            return BadRequest("Error in modelstate");
+        }
+        
     }
-
-    return View(quiz);
-}
-
-
-
     public IActionResult Discover()
     {
-        /*
-        var peepee = new Quiz();
-        peepee.Title = "Fatass";
-        peepee.Description = "Just a test quiz.";
-        peepee.Questions = new List<Question>
-        {
-            new Question { QuestionText = "What is the capital of France?",
-                           options = new List<Option>
-                           {
-                               new Option { OptionText = "Berlin" },
-                               new Option { OptionText = "Madrid" },
-                               new Option { OptionText = "Paris" },
-                               new Option { OptionText = "Rome" }
-                           },
-                           correctString = "Paris"
-            },
-          };
-        
-
-        //db.Quizzes.Add(peepee);
-        //db.SaveChanges();
-
-        Console.WriteLine("Quizzes added to the database.");
-        
-        */
-
         var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
 
         //print out all quizzes, questions, and options using it's toString method
@@ -249,5 +237,18 @@ public class QuizController : Controller
         }
 
         return View(quizzes);
+    }
+
+    [Authorize]
+    public IActionResult MyQuizzes()
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if(userId == null)
+        {
+        } else { 
+            var quizzes = db.Quizzes.Where<Quiz>(q => q.UserID == userId).ToList();
+            return View(quizzes);
+        }
+        return BadRequest();
     }
 }

@@ -15,7 +15,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("AuthDbContextConnection"))
 );
 
-builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AuthDbContext>();
+builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
 
 builder.Services.AddRazorPages();
 
@@ -27,7 +27,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
     db.Database.Migrate();
 
-    // ✅ Only seed if no quizzes exist
+    // Only seed if no quizzes exist
     if (!db.Quizzes.Any())
     {
         var sampleQuizzes = new List<Quiz>
@@ -276,7 +276,7 @@ using (var scope = app.Services.CreateScope())
 
         db.Quizzes.AddRange(sampleQuizzes);
         db.SaveChanges();
-        Console.WriteLine("✅ Sample quizzes added to the database.");
+        Console.WriteLine(" Sample quizzes added to the database.");
     }
 }
 

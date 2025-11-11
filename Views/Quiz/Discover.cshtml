@@ -24,12 +24,6 @@
 
             <div class="ingredient-actions d-flex justify-content-between mt-3">
                 <a asp-controller="Quiz" asp-action="Quiz" asp-route-id="@quiz.QuizId" class="btn btn-primary btn-sm">Play</a>
-                <div class="d-flex gap-2">
-                    <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-outline-secondary btn-sm">Edit</a>
-                    <form asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

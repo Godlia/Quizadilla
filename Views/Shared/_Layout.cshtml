@@ -46,7 +46,13 @@
                 </form>
 
             <!-- Auth -->
-                    <!--await Html.PartialAsync("/Areas/Identity/Pages/_AuthLayout.cshtml") -->
+                <div class="dropdown me-3">
+                        <a href="#" class="text-dark fs-4 person-icon dropdown-toggle" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person"></i>
+                        </a>
+                    <partial name="_LoginPartial" />
+                </div>
+
 
             <!-- Hamburger -->
                 <button id="menuToggle" class="navbar-toggler" type="button">
