@@ -9,7 +9,7 @@ namespace Quizadilla.Models
         public int QuizId { get; set; }
 
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
         [Required]
         public string Title { get; set; } = string.Empty;
@@ -18,6 +18,8 @@ namespace Quizadilla.Models
 
         // Use a collection type instead of an array for EF navigation
         public ICollection<Question> Questions { get; set; } = new List<Question>();
+
+        public string? Theme { get; set; }
 
         
         public string toString()

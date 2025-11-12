@@ -5,12 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Quizadilla.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Quizadilla.Controllers;
 
 public class QuizController : Controller
 {
     private readonly QuizDbContext db;
+
+    private static readonly string[] Themes = { "tomato", "guac", "cheese", "onion", "chicken", "salsa" };
+    private static readonly Random Rng = new();
 
     public QuizController(QuizDbContext context)
     {
@@ -31,7 +35,7 @@ public class QuizController : Controller
         return View(quiz);
     }
 
-    [HttpPost]
+    [HttpPost] 
     public IActionResult Delete(int id)
     {
         var quiz = db.Quizzes
@@ -157,6 +161,17 @@ public class QuizController : Controller
             .ThenInclude(q => q.options)
             .FirstOrDefault(q => q.QuizId == id);
 
+
+        if (quiz == null)
+            return NotFound();
+
+            var Rng = new Random();
+            foreach (var question in quiz.Questions)
+
+        { 
+                question.options = question.options.OrderBy(o => Rng.Next()).ToList(); 
+            }
+
         return View(quiz);
     }
 
@@ -164,45 +179,55 @@ public class QuizController : Controller
     {
         return View();
     }
-    public IActionResult Create(Quiz quiz)
+
+    [Authorize]
+   public IActionResult Create()
+{
+    return View();
+}
+    [Authorize]
+    [HttpPost]
+    public IActionResult CreateQuiz(Quiz quiz)
     {
-        if (ModelState.IsValid)
+        if (true)
         {
+            foreach (var q in quiz.Questions ?? new List<Question>())
+            {
+                q.options ??= new List<Option>();
+
+                var correct = (q.correctString ?? "").Trim();
+                if (!string.IsNullOrWhiteSpace(correct))
+                {
+                    var hasCorrect = q.options.Any(o =>
+                        string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
+
+                    if (!hasCorrect)
+                    {
+                        q.options.Add(new Option { OptionText = q.correctString });
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(quiz.Theme)) quiz.Theme = Themes[Rng.Next(Themes.Length)];
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+            quiz.UserID = userId;
+
             db.Quizzes.Add(quiz);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("MyQuizzes");
+        } else
+        {
+            return BadRequest("Error in modelstate");
         }
-
-        return View(quiz);
+        
     }
-
-
     public IActionResult Discover()
     {
-
-        var peepee = new Quiz();
-        peepee.Title = "Fatass";
-        peepee.Description = "Just a test quiz.";
-        peepee.Questions = new List<Question>
-        {
-            new Question { QuestionText = "What is the capital of France?",
-                           options = new List<Option>
-                           {
-                               new Option { OptionText = "Berlin" },
-                               new Option { OptionText = "Madrid" },
-                               new Option { OptionText = "Paris" },
-                               new Option { OptionText = "Rome" }
-                           },
-                           correctString = "Paris"
-            },
-          };
-
-
-        //db.Quizzes.Add(peepee);
-        //db.SaveChanges();
-
-        Console.WriteLine("Quizzes added to the database.");
-
         var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
 
         //print out all quizzes, questions, and options using it's toString method
@@ -212,5 +237,18 @@ public class QuizController : Controller
         }
 
         return View(quizzes);
+    }
+
+    [Authorize]
+    public IActionResult MyQuizzes()
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if(userId == null)
+        {
+        } else { 
+            var quizzes = db.Quizzes.Where<Quiz>(q => q.UserID == userId).ToList();
+            return View(quizzes);
+        }
+        return BadRequest();
     }
 }

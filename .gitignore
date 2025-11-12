@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 *.swp
 QuizDatabase.db-wal
 QuizDatabase.db-shm
+/Quizadilla.db
+/Quizadilla.db-shm
+/Quizadilla.db-wal

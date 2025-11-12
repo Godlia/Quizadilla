@@ -1,90 +1,132 @@
 ﻿@model Quizadilla.Models.Quiz
+@using System.Linq
 
 @{
-    ViewData["Title"] = Model.Title;
+    var questions = Model.Questions?.ToList() ?? new List<Quizadilla.Models.Question>();
 }
 
-<h2 class="mb-4">@Model.Title</h2>
-<p class="text-muted">@Model.Description</p>
+<h2>@Model.Title</h2>
+<p>@Model.Description</p>
 
-@if (Model.Questions == null || !Model.Questions.Any())
-{
-    <div class="alert alert-info">
-        This quiz has no questions yet.
-    </div>
-}
-else
-{
-    <form id="quizForm" onsubmit="return gradeQuiz(event)">
-        @for (int i = 0; i < Model.Questions.Count; i++)
-        {
-            var question = Model.Questions.ElementAt(i);
+<div id="scoreSummary" class="alert alert-info d-none text-center">
+    <div id="scoreText"></div>
+    <a asp-action="Discover" asp-controller="Quiz" class="btn btn-primary mt-3">Back to Discover</a>
+</div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5>Question @(i + 1): @question.QuestionText</h5>
+<form id="quizForm">
+    <div id="progress" class="mb-3 fw-semibold"></div>
 
-                    @if (question.options != null && question.options.Any())
-                    {
-                        foreach (var option in question.options)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="question_@i"
-                                       value="@option.OptionText"
-                                       id="option_@option.OptionId" />
-                                <label class="form-check-label" for="option_@option.OptionId">
-                                    @option.OptionText
-                                </label>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <p class="text-danger">No options available for this question.</p>
-                    }
+    @for (var i = 0; i < questions.Count; i++)
+    {
+        var q = questions[i];
+        var opts = q.options?.ToList() ?? new List<Quizadilla.Models.Option>();
+        <div class="q-step card mb-3" style="display:@(i == 0 ? "block" : "none")" data-correct="@q.correctString">
+            <div class="card-body">
+                <h5 class="card-title">Question @(i + 1): @q.QuestionText</h5>
 
-                    <input type="hidden" name="correct_@i" value="@question.correctString" />
+                @for (var j = 0; j < opts.Count; j++)
+                {
+                    var opt = opts[j];
+                    var inputId = $"q{i}-opt{j}";
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="answers[@i]"
+                               value="@opt.OptionText"
+                               id="@inputId" />
+                        <label class="form-check-label" for="@inputId">@opt.OptionText</label>
+                    </div>
+                }
+
+                <div class="mt-3">
+                    <div class="feedback small fw-semibold mb-2"></div>
+                    <button type="button" class="btn btn-primary check">Check answer</button>
+                    <button type="button" class="btn btn-outline-secondary next d-none">Next</button>
+                    <button type="button" class="btn btn-success finish d-none">Finish</button>
                 </div>
             </div>
+        </div>
+    }
+</form>
+
+@section Scripts{
+<script>
+(function () {
+    const steps = Array.from(document.querySelectorAll('.q-step'));
+    const progress = document.getElementById('progress');
+    const scoreSummary = document.getElementById('scoreSummary');
+    const scoreText = document.getElementById('scoreText');
+    let i = 0;
+    let score = 0;
+
+    function update() {
+        steps.forEach((s, idx) => s.style.display = idx === i ? 'block' : 'none');
+        progress.textContent = `Question ${i + 1} of ${steps.length}`;
+        scoreSummary.classList.add('d-none');
+    }
+
+    function getSelectedValue(stepIndex){
+        const radio = document.querySelector(`input[name="answers[${stepIndex}]"]:checked`);
+        return radio ? radio.value.trim() : null;
+    }
+
+    function setInputsDisabled(stepIndex, disabled){
+        document.querySelectorAll(`input[name="answers[${stepIndex}]"]`).forEach(el => el.disabled = disabled);
+    }
+
+    function showFeedback(stepEl, ok, correctText){
+        const box = stepEl.querySelector('.feedback');
+        box.classList.remove('text-danger','text-success');
+        box.classList.add(ok ? 'text-success' : 'text-danger');
+        box.textContent = ok ? 'Correct!' : `Incorrect. Correct answer: ${correctText}`;
+    }
+
+    function revealControls(stepEl, isLast){
+        stepEl.querySelector('.check').classList.add('d-none');
+        if (isLast){
+            stepEl.querySelector('.finish').classList.remove('d-none');
+        } else {
+            stepEl.querySelector('.next').classList.remove('d-none');
+        }
+    }
+
+    function finalScore(){
+        const pct = Math.round((score / steps.length) * 100);
+        scoreText.textContent = `Your score: ${score} / ${steps.length} (${pct}%)`;
+        scoreSummary.classList.remove('d-none');
+
+        document.getElementById('quizForm').style.display = 'none';
+        progress.textContent = 'Quiz complete!';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('quizForm').addEventListener('click', (e) => {
+        const step = steps[i];
+        const isLast = (i === steps.length - 1);
+
+        if (e.target.classList.contains('check')) {
+            const chosen = getSelectedValue(i);
+            if (!chosen) { alert('Please select an answer.'); return; }
+
+            const correct = (step.dataset.correct || '').trim();
+            const ok = chosen.toLowerCase() === correct.toLowerCase();
+            if (ok) score++;
+            showFeedback(step, ok, correct);
+            setInputsDisabled(i, true);
+            revealControls(step, isLast);
         }
 
-        <button type="submit" class="btn btn-primary">Submit Quiz</button>
-    </form>
-
-    <div id="resultContainer" class="mt-4"></div>
-}
-
-@section Scripts {
-    <script>
-        function gradeQuiz(event) {
-            event.preventDefault();
-
-            const form = document.getElementById('quizForm');
-            const resultDiv = document.getElementById('resultContainer');
-            let score = 0;
-            let total = 0;
-
-            const hiddenInputs = form.querySelectorAll('input[type="hidden"][name^="correct_"]');
-
-            hiddenInputs.forEach((hidden, index) => {
-                const correct = hidden.value.trim();
-                const selected = form.querySelector(`input[name="question_${index}"]:checked`);
-                total++;
-
-                if (selected && selected.value.trim() === correct) {
-                    score++;
-                }
-            });
-
-            const percent = ((score / total) * 100).toFixed(1);
-            resultDiv.innerHTML = `
-                <div class="alert alert-info">
-                    You scored <strong>${score}</strong> out of <strong>${total}</strong> (${percent}%)
-                </div>
-            `;
-            return false;
+        if (e.target.classList.contains('next')) {
+            i++;
+            update();
         }
-    </script>
+
+        if (e.target.classList.contains('finish')) {
+            finalScore();
+        }
+    });
+
+    update();
+})();
+</script>
 }

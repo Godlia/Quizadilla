@@ -1,4 +1,4 @@
-namespace project.Models;
+namespace Quizadilla.Models;
 
 public class ErrorViewModel
 {
@@ -6,3 +6,4 @@ public class ErrorViewModel
 
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }
+
