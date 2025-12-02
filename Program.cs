@@ -3,6 +3,7 @@ using Quizadilla.Models;
 using Microsoft.AspNetCore.Identity;
 using Quizadilla.Data;
 using Quizadilla.Areas.Identity.Data;
+using Quizadilla.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +20,12 @@ builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.Re
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<IQuizService, QuizService>();
+
 var app = builder.Build();
 
 // Apply migrations and seed sample data
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
@@ -303,3 +307,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
