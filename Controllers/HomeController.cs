@@ -7,18 +7,20 @@ namespace Quizadilla.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly IQuizRepository _repo;
     private readonly ILogger<HomeController> _logger;
     private readonly QuizDbContext db;
 
-    public HomeController(ILogger<HomeController> logger, QuizDbContext context)
+    public HomeController(ILogger<HomeController> logger, QuizDbContext context, IQuizRepository repo)
     {
         _logger = logger;
         db = context;
+        _repo = repo;
     }
 
     public IActionResult Index()
     {
-        var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
+        var quizzes = _repo.GetQuizzes();
         return View(quizzes);
     }
 

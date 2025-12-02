@@ -1,25 +1,29 @@
-using Quizadilla.Models;
-using Quizadilla.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Quizadilla.Models;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Quizadilla.Controllers;
 
 public class QuizController : Controller
 {
-    private readonly IQuizService _quizService;
+    private readonly IQuizRepository _repo;
 
-    public QuizController(IQuizService quizService)
+    private static readonly string[] Themes = { "tomato", "guac", "cheese", "onion", "chicken", "salsa" };
+    private static readonly Random Rng = new();
+
+    public QuizController(IQuizRepository repo)
     {
-        _quizService = quizService;
+        _repo = repo;
     }
 
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        var quiz = _quizService.GetQuizForEdit(id);
-        if (quiz == null)
-            return NotFound();
+        var quiz = _repo.GetQuizForEdit(id);
+        if (quiz == null) return NotFound();
 
         return View(quiz);
     }
@@ -27,10 +31,8 @@ public class QuizController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
-        var ok = _quizService.DeleteQuiz(id);
-        if (!ok)
-            return NotFound();
-
+        _repo.DeleteQuiz(id);
+        _repo.Save();
         return RedirectToAction("Discover");
     }
 
@@ -41,18 +43,20 @@ public class QuizController : Controller
         if (!ModelState.IsValid)
             return View(updatedQuiz);
 
-        var result = _quizService.UpdateQuiz(updatedQuiz);
-        if (result == null)
-            return NotFound();
+        _repo.UpdateQuiz(updatedQuiz);
+        _repo.Save();
 
         return RedirectToAction("Discover");
     }
 
     public IActionResult Quiz(int id = 0)
     {
-        var quiz = _quizService.GetQuizForPlay(id);
-        if (quiz == null)
-            return NotFound();
+        var quiz = _repo.GetQuizWithDetails(id);
+        if (quiz == null) return NotFound();
+
+        var rng = new Random();
+        foreach (var question in quiz.Questions)
+            question.options = question.options.OrderBy(o => rng.Next()).ToList();
 
         return View(quiz);
     }
@@ -72,28 +76,38 @@ public class QuizController : Controller
     [HttpPost]
     public IActionResult CreateQuiz(Quiz quiz)
     {
-        if (!ModelState.IsValid)
-            return View("Create", quiz);
-
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
+        foreach (var q in quiz.Questions ?? new List<Question>())
         {
-            return BadRequest();
+            q.options ??= new List<Option>();
+
+            var correct = (q.correctString ?? "").Trim();
+            if (!string.IsNullOrWhiteSpace(correct))
+            {
+                var hasCorrect = q.options.Any(o =>
+                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
+
+                if (!hasCorrect)
+                    q.options.Add(new Option { OptionText = q.correctString });
+            }
         }
 
-        _quizService.CreateQuiz(quiz, userId);
+        if (string.IsNullOrWhiteSpace(quiz.Theme))
+            quiz.Theme = Themes[Rng.Next(Themes.Length)];
+
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return BadRequest();
+
+        quiz.UserID = userId;
+
+        _repo.AddQuiz(quiz);
+        _repo.Save();
+
         return RedirectToAction("MyQuizzes");
     }
 
     public IActionResult Discover()
     {
-        var quizzes = _quizService.GetAllQuizzes();
-
-        foreach (var quiz in quizzes)
-        {
-            Console.WriteLine(quiz.toString());
-        }
-
+        var quizzes = _repo.GetQuizzes();
         return View(quizzes);
     }
 
@@ -101,12 +115,10 @@ public class QuizController : Controller
     public IActionResult MyQuizzes()
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
-        {
-            return BadRequest();
-        }
+        if (userId == null) return BadRequest();
 
-        var quizzes = _quizService.GetQuizzesForUser(userId);
+        var quizzes = _repo.GetUserQuizzes(userId);
         return View(quizzes);
     }
 }
+
