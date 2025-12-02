@@ -120,5 +120,25 @@ public class QuizController : Controller
         var quizzes = _repo.GetUserQuizzes(userId);
         return View(quizzes);
     }
+
+    public IActionResult Search(string needle)
+    {
+        if (needle == null)
+        {
+            throw new ArgumentNullException("The search term was empty");
+        }
+        var quizzes = _repo.GetQuizzes();
+        var result = new List<Quiz>();
+        foreach (Quiz quiz in quizzes)
+        {
+            if (quiz.Title.Contains(needle))
+            {
+                result.Add(quiz);
+            }
+        }
+        return View(result);
+
+
+    }
 }
 
