@@ -9,7 +9,7 @@ namespace Quizadilla.Models
         public int QuizId { get; set; }
 
         [Required]
-        public string UserID { get; set; }
+        public required string UserID { get; set; }
 
         [Required]
         public string Title { get; set; } = string.Empty;

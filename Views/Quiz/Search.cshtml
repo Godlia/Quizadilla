@@ -17,9 +17,13 @@
             <div class="card-body">
                 <h5 class="ingredient-title">@quiz.Title</h5>
                 <div class="ingredient-meta">
-                    @((quiz.Description ?? "No description").Length > 80
-                                    ? (quiz.Description.Substring(0, 80) + "…")
-                                    : quiz.Description)
+                    @{
+                        var description = quiz.Description ?? "No description";
+                        var displayText = description.Length > 80
+                            ? (description.Substring(0, 80) + "…")
+                            : description;
+                    }
+                    @displayText
                 </div>
 
                 <div class="ingredient-actions d-flex justify-content-between mt-3">

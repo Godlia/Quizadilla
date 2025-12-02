@@ -39,6 +39,7 @@ using (var scope = app.Services.CreateScope())
                 Title = "Nordic Capitals",
                 Description = "Test your knowledge of the capitals of Nordic countries.",
                 Theme = "cheese",
+                UserID = "0",
                 Questions = new List<Question>
                 {
                     new Question
@@ -108,6 +109,7 @@ using (var scope = app.Services.CreateScope())
                 Title = "Movies Trivia",
                 Description = "How well do you know your movies?",
                 Theme = "guac",
+                UserID = "0",
                 Questions = new List<Question>
                 {
                     new Question
@@ -165,6 +167,7 @@ using (var scope = app.Services.CreateScope())
                 Title = "Monuments of the Solar System",
                 Description = "How well do you know our solar system?",
                 Theme = "onion",
+                UserID = "0",
                 Questions = new List<Question>
                 {
                     new Question
@@ -222,6 +225,7 @@ using (var scope = app.Services.CreateScope())
                 Title = "Science Facts",
                 Description = "Test your knowledge of basic science facts.",
                 Theme = "salsa",
+                UserID = "0",
                 Questions = new List<Question>
                 {
                     new Question
