@@ -1,76 +1,40 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Quizadilla.Models;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Quizadilla.Models;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Quizadilla.Controllers;
 
 public class QuizController : Controller
 {
-    private readonly QuizDbContext db;
+    private readonly IQuizRepository _repo;
 
     private static readonly string[] Themes = { "tomato", "guac", "cheese", "onion", "chicken", "salsa" };
     private static readonly Random Rng = new();
 
-    public QuizController(QuizDbContext context)
+    public QuizController(IQuizRepository repo)
     {
-        db = context;
+        _repo = repo;
     }
 
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        var quiz = db.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.options)
-            .FirstOrDefault(q => q.QuizId == id);
-
-        if (quiz == null)
-            return NotFound();
+        var quiz = _repo.GetQuizForEdit(id);
+        if (quiz == null) return NotFound();
 
         return View(quiz);
     }
 
-    [HttpPost] 
+    [HttpPost]
     public IActionResult Delete(int id)
     {
-        var quiz = db.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.options)
-            .FirstOrDefault(q => q.QuizId == id);
-
-        if (quiz == null)
-        {
-            return NotFound();
-        }
-
-        // Remove related entities (Options -> Questions -> Quiz)
-        foreach (var question in quiz.Questions.ToList())
-        {
-            // Remove all options for this question
-            if (question.options != null && question.options.Any())
-            {
-                foreach (var option in question.options.ToList())
-                {
-                    db.Remove(option);
-                }
-            }
-
-            db.Remove(question);
-        }
-
-        db.Remove(quiz);
-        db.SaveChanges();
-
+        _repo.DeleteQuiz(id);
+        _repo.Save();
         return RedirectToAction("Discover");
     }
-
-
-
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -79,98 +43,20 @@ public class QuizController : Controller
         if (!ModelState.IsValid)
             return View(updatedQuiz);
 
-        var existingQuiz = db.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.options)
-            .FirstOrDefault(q => q.QuizId == updatedQuiz.QuizId);
+        _repo.UpdateQuiz(updatedQuiz);
+        _repo.Save();
 
-        if (existingQuiz == null)
-            return NotFound();
-
-        // --- Update quiz fields ---
-        existingQuiz.Title = updatedQuiz.Title;
-        existingQuiz.Description = updatedQuiz.Description;
-
-        // --- Handle Questions ---
-        var existingQuestions = existingQuiz.Questions.ToList();
-
-        // Remove deleted questions
-        foreach (var existingQuestion in existingQuestions)
-        {
-            if (!updatedQuiz.Questions.Any(q => q.Id == existingQuestion.Id))
-            {
-                db.Remove(existingQuestion);
-            }
-        }
-
-        // Add or update questions
-        foreach (var q in updatedQuiz.Questions)
-        {
-            var existingQuestion = existingQuestions.FirstOrDefault(eq => eq.Id == q.Id);
-
-            if (existingQuestion == null)
-            {
-                // New question
-                existingQuiz.Questions.Add(q);
-            }
-            else
-            {
-                // Update question
-                existingQuestion.QuestionText = q.QuestionText;
-                existingQuestion.correctString = q.correctString;
-
-                // --- Handle Options ---
-                var existingOptions = existingQuestion.options.ToList();
-
-                // Remove deleted options
-                foreach (var existingOption in existingOptions)
-                {
-                    if (!q.options.Any(o => o.OptionId == existingOption.OptionId))
-                    {
-                        db.Remove(existingOption);
-                    }
-                }
-
-                // Add or update options
-                foreach (var opt in q.options)
-                {
-                    var existingOpt = existingOptions.FirstOrDefault(o => o.OptionId == opt.OptionId);
-                    if (existingOpt == null)
-                    {
-                        existingQuestion.options.Add(opt);
-                    }
-                    else
-                    {
-                        existingOpt.OptionText = opt.OptionText;
-                    }
-                }
-            }
-        }
-
-        db.SaveChanges();
         return RedirectToAction("Discover");
     }
 
-
-
-
     public IActionResult Quiz(int id = 0)
     {
-        Quiz quiz = db.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.options)
-            .FirstOrDefault(q => q.QuizId == id);
+        var quiz = _repo.GetQuizWithDetails(id);
+        if (quiz == null) return NotFound();
 
-
-        if (quiz == null)
-            return NotFound();
-
-            var Rng = new Random();
-            foreach (var question in quiz.Questions)
-
-        { 
-                question.options = question.options.OrderBy(o => Rng.Next()).ToList(); 
-            }
+        var rng = new Random();
+        foreach (var question in quiz.Questions)
+            question.options = question.options.OrderBy(o => rng.Next()).ToList();
 
         return View(quiz);
     }
@@ -181,61 +67,47 @@ public class QuizController : Controller
     }
 
     [Authorize]
-   public IActionResult Create()
-{
-    return View();
-}
+    public IActionResult Create()
+    {
+        return View();
+    }
+
     [Authorize]
     [HttpPost]
     public IActionResult CreateQuiz(Quiz quiz)
     {
-        if (true)
+        foreach (var q in quiz.Questions ?? new List<Question>())
         {
-            foreach (var q in quiz.Questions ?? new List<Question>())
+            q.options ??= new List<Option>();
+
+            var correct = (q.correctString ?? "").Trim();
+            if (!string.IsNullOrWhiteSpace(correct))
             {
-                q.options ??= new List<Option>();
+                var hasCorrect = q.options.Any(o =>
+                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
 
-                var correct = (q.correctString ?? "").Trim();
-                if (!string.IsNullOrWhiteSpace(correct))
-                {
-                    var hasCorrect = q.options.Any(o =>
-                        string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
-
-                    if (!hasCorrect)
-                    {
-                        q.options.Add(new Option { OptionText = q.correctString });
-                    }
-                }
+                if (!hasCorrect)
+                    q.options.Add(new Option { OptionText = q.correctString });
             }
-
-            if (string.IsNullOrWhiteSpace(quiz.Theme)) quiz.Theme = Themes[Rng.Next(Themes.Length)];
-
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
-                return BadRequest();
-            }
-            quiz.UserID = userId;
-
-            db.Quizzes.Add(quiz);
-            db.SaveChanges();
-            return RedirectToAction("MyQuizzes");
-        } else
-        {
-            return BadRequest("Error in modelstate");
         }
-        
+
+        if (string.IsNullOrWhiteSpace(quiz.Theme))
+            quiz.Theme = Themes[Rng.Next(Themes.Length)];
+
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return BadRequest();
+
+        quiz.UserID = userId;
+
+        _repo.AddQuiz(quiz);
+        _repo.Save();
+
+        return RedirectToAction("MyQuizzes");
     }
+
     public IActionResult Discover()
     {
-        var quizzes = db.Quizzes.Include(q => q.Questions).ToList();
-
-        //print out all quizzes, questions, and options using it's toString method
-        foreach (var quiz in quizzes)
-        {
-            Console.WriteLine(quiz.toString());
-        }
-
+        var quizzes = _repo.GetQuizzes();
         return View(quizzes);
     }
 
@@ -243,12 +115,9 @@ public class QuizController : Controller
     public IActionResult MyQuizzes()
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if(userId == null)
-        {
-        } else { 
-            var quizzes = db.Quizzes.Where<Quiz>(q => q.UserID == userId).ToList();
-            return View(quizzes);
-        }
-        return BadRequest();
+        if (userId == null) return BadRequest();
+
+        var quizzes = _repo.GetUserQuizzes(userId);
+        return View(quizzes);
     }
 }

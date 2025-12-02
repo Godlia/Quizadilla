@@ -15,6 +15,8 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("AuthDbContextConnection"))
 );
 
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+
 builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
 
 builder.Services.AddRazorPages();
