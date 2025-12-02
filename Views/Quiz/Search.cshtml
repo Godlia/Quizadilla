@@ -1,0 +1,32 @@
+@model IEnumerable<Quizadilla.Models.Quiz>
+
+@{
+    ViewData["Title"] = "Search Result";
+}
+
+<h2 class="mb-4">Quiz Search</h2>
+
+
+<div class="ingredient-scroller">
+    @foreach (var quiz in Model)
+    {
+        var theme = string.IsNullOrWhiteSpace(quiz.Theme) ? "tomato" : quiz.Theme; // fallback
+                                                                                   <div class="ingredient-card card theme-@theme">
+                                                                                       <div class="ingredient-top"></div>
+
+            <div class="card-body">
+                <h5 class="ingredient-title">@quiz.Title</h5>
+                <div class="ingredient-meta">
+                    @((quiz.Description ?? "No description").Length > 80
+                                    ? (quiz.Description.Substring(0, 80) + "…")
+                                    : quiz.Description)
+                </div>
+
+                <div class="ingredient-actions d-flex justify-content-between mt-3">
+                    <a asp-controller="Quiz" asp-action="Quiz" asp-route-id="@quiz.QuizId"
+                        class="btn btn-primary btn-sm">Play</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
