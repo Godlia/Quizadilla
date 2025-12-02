@@ -1,0 +1,429 @@
+[
+  {
+    "QuizId": 1,
+    "UserID": "0",
+    "Title": "Nordic Capitals",
+    "Description": "Test your knowledge of the capitals of Nordic countries.",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "What is the capital of Norway?",
+        "options": [
+          {
+            "OptionId": 1,
+            "OptionText": "Oslo"
+          },
+          {
+            "OptionId": 2,
+            "OptionText": "Stockholm"
+          },
+          {
+            "OptionId": 3,
+            "OptionText": "Copenhagen"
+          },
+          {
+            "OptionId": 4,
+            "OptionText": "Helsinki"
+          }
+        ],
+        "correctString": "Oslo"
+      },
+      {
+        "Id": 2,
+        "QuestionText": "What is the capital of Sweden?",
+        "options": [
+          {
+            "OptionId": 5,
+            "OptionText": "Oslo"
+          },
+          {
+            "OptionId": 6,
+            "OptionText": "Stockholm"
+          },
+          {
+            "OptionId": 7,
+            "OptionText": "Copenhagen"
+          },
+          {
+            "OptionId": 8,
+            "OptionText": "Helsinki"
+          }
+        ],
+        "correctString": "Stockholm"
+      },
+      {
+        "Id": 3,
+        "QuestionText": "What is the capital of Denmark?",
+        "options": [
+          {
+            "OptionId": 9,
+            "OptionText": "Oslo"
+          },
+          {
+            "OptionId": 10,
+            "OptionText": "Reykjavik"
+          },
+          {
+            "OptionId": 11,
+            "OptionText": "Copenhagen"
+          },
+          {
+            "OptionId": 12,
+            "OptionText": "Helsinki"
+          }
+        ],
+        "correctString": "Copenhagen"
+      },
+      {
+        "Id": 4,
+        "QuestionText": "What is the capital of Finland?",
+        "options": [
+          {
+            "OptionId": 13,
+            "OptionText": "Oslo"
+          },
+          {
+            "OptionId": 14,
+            "OptionText": "Stockholm"
+          },
+          {
+            "OptionId": 15,
+            "OptionText": "Copenhagen"
+          },
+          {
+            "OptionId": 16,
+            "OptionText": "Helsinki"
+          }
+        ],
+        "correctString": "Helsinki"
+      },
+      {
+        "Id": 5,
+        "QuestionText": "What is the capital of Iceland?",
+        "options": [
+          {
+            "OptionId": 17,
+            "OptionText": "Oslo"
+          },
+          {
+            "OptionId": 18,
+            "OptionText": "Stockholm"
+          },
+          {
+            "OptionId": 19,
+            "OptionText": "Copenhagen"
+          },
+          {
+            "OptionId": 20,
+            "OptionText": "Reykjavik"
+          }
+        ],
+        "correctString": "Reykjavik"
+      }
+    ],
+    "Theme": "cheese"
+  },
+  {
+    "QuizId": 2,
+    "UserID": "0",
+    "Title": "Movies Trivia",
+    "Description": "How well do you know your movies?",
+    "Questions": [
+      {
+        "Id": 6,
+        "QuestionText": "Who directed \u0027Inception\u0027?",
+        "options": [
+          {
+            "OptionId": 21,
+            "OptionText": "Steven Spielberg"
+          },
+          {
+            "OptionId": 22,
+            "OptionText": "Christopher Nolan"
+          },
+          {
+            "OptionId": 23,
+            "OptionText": "James Cameron"
+          },
+          {
+            "OptionId": 24,
+            "OptionText": "Quentin Tarantino"
+          }
+        ],
+        "correctString": "Christopher Nolan"
+      },
+      {
+        "Id": 7,
+        "QuestionText": "What was the first Star Wars movie to be released?",
+        "options": [
+          {
+            "OptionId": 25,
+            "OptionText": "Star Wars: Episode IV - A New Hope"
+          },
+          {
+            "OptionId": 26,
+            "OptionText": "Star Wars: Episode I - The Phantom Menace"
+          },
+          {
+            "OptionId": 27,
+            "OptionText": "Rogue One"
+          },
+          {
+            "OptionId": 28,
+            "OptionText": "Solo: A Star Wars Story"
+          }
+        ],
+        "correctString": "Star Wars: Episode IV - A New Hope"
+      },
+      {
+        "Id": 8,
+        "QuestionText": "Who directed \u0027The Room\u0027?",
+        "options": [
+          {
+            "OptionId": 29,
+            "OptionText": "Tim Burton"
+          },
+          {
+            "OptionId": 30,
+            "OptionText": "Ridley Scott"
+          },
+          {
+            "OptionId": 31,
+            "OptionText": "Tommy Wiseau"
+          },
+          {
+            "OptionId": 32,
+            "OptionText": "Michael Bay"
+          }
+        ],
+        "correctString": "Tommy Wiseau"
+      },
+      {
+        "Id": 9,
+        "QuestionText": "Who broke two toes whilst filming a scene for The Lord of the Rings: Two Towers?",
+        "options": [
+          {
+            "OptionId": 33,
+            "OptionText": "Ian McKellen - Gandalf"
+          },
+          {
+            "OptionId": 34,
+            "OptionText": "Christopher Lee - Saruman"
+          },
+          {
+            "OptionId": 35,
+            "OptionText": "Viggo Mortensen - Aragorn"
+          },
+          {
+            "OptionId": 36,
+            "OptionText": "Orlando Bloom - Legolas"
+          }
+        ],
+        "correctString": "Viggo Mortensen - Aragorn"
+      }
+    ],
+    "Theme": "guac"
+  },
+  {
+    "QuizId": 3,
+    "UserID": "0",
+    "Title": "Monuments of the Solar System",
+    "Description": "How well do you know our solar system?",
+    "Questions": [
+      {
+        "Id": 10,
+        "QuestionText": "What is the tallest mountain in the solar system?",
+        "options": [
+          {
+            "OptionId": 37,
+            "OptionText": "Kilimanjaro"
+          },
+          {
+            "OptionId": 38,
+            "OptionText": "Maxwell Montes"
+          },
+          {
+            "OptionId": 39,
+            "OptionText": "Olympus Mons"
+          },
+          {
+            "OptionId": 40,
+            "OptionText": "Mount Everest"
+          }
+        ],
+        "correctString": "Olympus Mons"
+      },
+      {
+        "Id": 11,
+        "QuestionText": "What is the biggest asteroid in the solar system?",
+        "options": [
+          {
+            "OptionId": 41,
+            "OptionText": "Vesta"
+          },
+          {
+            "OptionId": 42,
+            "OptionText": "Psyche"
+          },
+          {
+            "OptionId": 43,
+            "OptionText": "Pluto"
+          },
+          {
+            "OptionId": 44,
+            "OptionText": "Ceres"
+          }
+        ],
+        "correctString": "Ceres"
+      },
+      {
+        "Id": 12,
+        "QuestionText": "What man made object has traveled the farthest from earth?",
+        "options": [
+          {
+            "OptionId": 45,
+            "OptionText": "Voyager 1"
+          },
+          {
+            "OptionId": 46,
+            "OptionText": "Voyager 2"
+          },
+          {
+            "OptionId": 47,
+            "OptionText": "Apollo 13"
+          },
+          {
+            "OptionId": 48,
+            "OptionText": "Sputnik 1"
+          }
+        ],
+        "correctString": "Voyager 1"
+      },
+      {
+        "Id": 13,
+        "QuestionText": "What is the biggest planet in the solar system?",
+        "options": [
+          {
+            "OptionId": 49,
+            "OptionText": "Saturn"
+          },
+          {
+            "OptionId": 50,
+            "OptionText": "Jupiter"
+          },
+          {
+            "OptionId": 51,
+            "OptionText": "Uranus"
+          },
+          {
+            "OptionId": 52,
+            "OptionText": "Earth"
+          }
+        ],
+        "correctString": "Jupiter"
+      }
+    ],
+    "Theme": "onion"
+  },
+  {
+    "QuizId": 4,
+    "UserID": "0",
+    "Title": "Science Facts",
+    "Description": "Test your knowledge of basic science facts.",
+    "Questions": [
+      {
+        "Id": 14,
+        "QuestionText": "What planet is known as the Red Planet?",
+        "options": [
+          {
+            "OptionId": 53,
+            "OptionText": "Venus"
+          },
+          {
+            "OptionId": 54,
+            "OptionText": "Mars"
+          },
+          {
+            "OptionId": 55,
+            "OptionText": "Jupiter"
+          },
+          {
+            "OptionId": 56,
+            "OptionText": "Saturn"
+          }
+        ],
+        "correctString": "Mars"
+      },
+      {
+        "Id": 15,
+        "QuestionText": "What is the chemical symbol for water?",
+        "options": [
+          {
+            "OptionId": 57,
+            "OptionText": "CO2"
+          },
+          {
+            "OptionId": 58,
+            "OptionText": "H2O"
+          },
+          {
+            "OptionId": 59,
+            "OptionText": "O2"
+          },
+          {
+            "OptionId": 60,
+            "OptionText": "NaCl"
+          }
+        ],
+        "correctString": "H2O"
+      },
+      {
+        "Id": 16,
+        "QuestionText": "What gas do plants absorb from the atmosphere?",
+        "options": [
+          {
+            "OptionId": 61,
+            "OptionText": "Oxygen"
+          },
+          {
+            "OptionId": 62,
+            "OptionText": "Nitrogen"
+          },
+          {
+            "OptionId": 63,
+            "OptionText": "Carbon Dioxide"
+          },
+          {
+            "OptionId": 64,
+            "OptionText": "Hydrogen"
+          }
+        ],
+        "correctString": "Carbon Dioxide"
+      },
+      {
+        "Id": 17,
+        "QuestionText": "What is the hardest natural substance on Earth?",
+        "options": [
+          {
+            "OptionId": 65,
+            "OptionText": "Gold"
+          },
+          {
+            "OptionId": 66,
+            "OptionText": "Iron"
+          },
+          {
+            "OptionId": 67,
+            "OptionText": "Diamond"
+          },
+          {
+            "OptionId": 68,
+            "OptionText": "Silver"
+          }
+        ],
+        "correctString": "Diamond"
+      }
+    ],
+    "Theme": "salsa"
+  }
+]
