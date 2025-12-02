@@ -87,7 +87,7 @@ public class QuizController : Controller
                     string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
 
                 if (!hasCorrect)
-                    q.options.Add(new Option { OptionText = q.correctString });
+                    q.options.Add(new Option { OptionText = q.correctString ?? "" });
             }
         }
 
