@@ -19,7 +19,7 @@ namespace QuizadillaTests
             return new QuizDbContext(options);
         }
 
-        // 1) CREATE
+        // CREATE
         [Fact]
         public void AddQuiz_ShouldAddQuizToDatabase()
         {
@@ -52,7 +52,7 @@ namespace QuizadillaTests
             Assert.Single(db.Quizzes.First().Questions);
         }
 
-        // 2) CREATE with null questions
+        // CREATE with null questions
         [Fact]
         public void AddQuiz_ShouldAllowNullQuestions()
         {
@@ -73,7 +73,7 @@ namespace QuizadillaTests
             Assert.Single(db.Quizzes);
         }
 
-        // 3) READ
+        // READ
         [Fact]
         public void GetQuizForEdit_ShouldReturnQuiz_WhenExists()
         {
@@ -105,7 +105,7 @@ namespace QuizadillaTests
             Assert.Single(loaded.Questions.First().options);
         }
 
-        // 4) READ negative
+        // READ negative
         [Fact]
         public void GetQuizForEdit_ShouldReturnNull_WhenNotFound()
         {
@@ -117,7 +117,7 @@ namespace QuizadillaTests
             Assert.Null(result);
         }
 
-        // 5) UPDATE
+        // UPDATE
         [Fact]
         public void UpdateQuiz_ShouldModifyTitleAndDescription()
         {
@@ -154,7 +154,7 @@ namespace QuizadillaTests
             Assert.Equal("New desc", loaded.Description);
         }
 
-        // 6) UPDATE negative
+        // UPDATE negative
         [Fact]
         public void UpdateQuiz_ShouldDoNothing_WhenQuizDoesNotExist()
         {
@@ -175,7 +175,7 @@ namespace QuizadillaTests
             Assert.Empty(db.Quizzes);
         }
 
-        // 7) DELETE
+        // DELETE
         [Fact]
         public void DeleteQuiz_ShouldRemoveQuiz()
         {
@@ -210,7 +210,7 @@ namespace QuizadillaTests
             Assert.Empty(db.Quizzes);
         }
 
-        // 8) DELETE negative
+        // DELETE negative
         [Fact]
         public void DeleteQuiz_ShouldNotThrow_WhenQuizDoesNotExist()
         {
