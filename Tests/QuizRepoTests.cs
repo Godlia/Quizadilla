@@ -24,7 +24,7 @@ namespace QuizadillaTests
         public void AddQuiz_ShouldAddQuizToDatabase()
         {
             var db = GetInMemoryDbContext();
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
             var quiz = new Quiz
             {
@@ -45,8 +45,8 @@ namespace QuizadillaTests
                 }
             };
 
-            service.AddQuiz(quiz);
-            service.Save();
+            repo.AddQuiz(quiz);
+            repo.Save();
 
             Assert.Single(db.Quizzes);
             Assert.Single(db.Quizzes.First().Questions);
@@ -57,7 +57,7 @@ namespace QuizadillaTests
         public void AddQuiz_ShouldAllowNullQuestions()
         {
             var db = GetInMemoryDbContext();
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
             var quiz = new Quiz
             {
@@ -67,8 +67,8 @@ namespace QuizadillaTests
                 Questions = null
             };
 
-            service.AddQuiz(quiz);
-            service.Save();
+            repo.AddQuiz(quiz);
+            repo.Save();
 
             Assert.Single(db.Quizzes);
         }
@@ -96,9 +96,9 @@ namespace QuizadillaTests
             db.Quizzes.Add(quiz);
             db.SaveChanges();
 
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
-            var loaded = service.GetQuizForEdit(quiz.QuizId);
+            var loaded = repo.GetQuizForEdit(quiz.QuizId);
 
             Assert.NotNull(loaded);
             Assert.Single(loaded!.Questions);
@@ -110,9 +110,9 @@ namespace QuizadillaTests
         public void GetQuizForEdit_ShouldReturnNull_WhenNotFound()
         {
             var db = GetInMemoryDbContext();
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
-            var result = service.GetQuizForEdit(999);
+            var result = repo.GetQuizForEdit(999);
 
             Assert.Null(result);
         }
@@ -134,7 +134,7 @@ namespace QuizadillaTests
             db.Quizzes.Add(original);
             db.SaveChanges();
 
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
             var updated = new Quiz
             {
@@ -145,8 +145,8 @@ namespace QuizadillaTests
                 Questions = new List<Question>()
             };
 
-            service.UpdateQuiz(updated);
-            service.Save();
+            repo.UpdateQuiz(updated);
+            repo.Save();
 
             var loaded = db.Quizzes.First();
 
@@ -159,7 +159,7 @@ namespace QuizadillaTests
         public void UpdateQuiz_ShouldDoNothing_WhenQuizDoesNotExist()
         {
             var db = GetInMemoryDbContext();
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
             var updated = new Quiz
             {
@@ -169,8 +169,8 @@ namespace QuizadillaTests
                 Questions = new List<Question>()
             };
 
-            service.UpdateQuiz(updated);
-            service.Save();
+            repo.UpdateQuiz(updated);
+            repo.Save();
 
             Assert.Empty(db.Quizzes);
         }
@@ -202,10 +202,10 @@ namespace QuizadillaTests
             db.Quizzes.Add(quiz);
             db.SaveChanges();
 
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
-            service.DeleteQuiz(quiz.QuizId);
-            service.Save();
+            repo.DeleteQuiz(quiz.QuizId);
+            repo.Save();
 
             Assert.Empty(db.Quizzes);
         }
@@ -215,10 +215,10 @@ namespace QuizadillaTests
         public void DeleteQuiz_ShouldNotThrow_WhenQuizDoesNotExist()
         {
             var db = GetInMemoryDbContext();
-            var service = new QuizRepository(db);
+            var repo = new QuizRepository(db);
 
-            service.DeleteQuiz(999);
-            service.Save();
+            repo.DeleteQuiz(999);
+            repo.Save();
 
             Assert.Empty(db.Quizzes);
         }
