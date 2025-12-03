@@ -4,11 +4,13 @@ import { fetchQuiz } from "../api/quizzes";
 
 export default function QuizPlay() {
   const { id } = useParams();
+
   const [quiz, setQuiz] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState({}); 
   const [finished, setFinished] = useState(false);
   const [score, setScore] = useState(0);
+  const [results, setResults] = useState([]); 
 
   useEffect(() => {
     fetchQuiz(id)
@@ -20,6 +22,12 @@ export default function QuizPlay() {
 
   const questions = quiz.questions || [];
   const currentQuestion = questions[currentIndex];
+  if (!currentQuestion) return <p>No questions in this quiz.</p>;
+
+ 
+  function getQuestionId(q) {
+    return q.id ?? q.questionId ?? q.Id;
+  }
 
   function chooseAnswer(questionId, optionText) {
     setAnswers((prev) => ({
@@ -42,35 +50,99 @@ export default function QuizPlay() {
 
   function finish() {
     let s = 0;
-    for (const q of questions) {
-      const qid = q.id;
-      const userAnswer = answers[qid];
-      if (userAnswer && userAnswer === q.correctString) {
-        s++;
-      }
-    }
+    const detailed = questions.map((q) => {
+      const qid = getQuestionId(q);
+      const userAnswer = answers[qid] ?? null;
+      const correctAnswer = q.correctString ?? "";
+      const isCorrect = userAnswer != null && userAnswer === correctAnswer;
+
+      if (isCorrect) s++;
+
+      return {
+        id: qid,
+        questionText: q.questionText,
+        userAnswer,
+        correctAnswer,
+        isCorrect,
+      };
+    });
+
     setScore(s);
+    setResults(detailed);
     setFinished(true);
   }
 
   if (finished) {
     return (
-      <div className="text-center">
+      <div>
         <h2>{quiz.title}</h2>
+        <p className="text-muted">{quiz.description}</p>
+
         <div id="scoreSummary" className="alert alert-info text-center mt-4">
           <div id="scoreText">
-            You scored {score} out of {questions.length}
+            You scored <strong>{score}</strong> out of{" "}
+            <strong>{questions.length}</strong>
           </div>
         </div>
-        <Link to="/discover" className="btn btn-primary mt-3">
-          Back to Discover
-        </Link>
+
+        <h3 className="mt-4 mb-3">Review your answers</h3>
+
+        <div className="quiz-review-list">
+          {results.map((r, index) => (
+            <div
+              key={r.id ?? index}
+              className={
+                "quiz-result-card mb-3 p-3 rounded " +
+                (r.isCorrect ? "quiz-correct" : "quiz-wrong")
+              }
+            >
+              <div className="fw-bold mb-1">
+                Question {index + 1}{" "}
+                {r.isCorrect ? (
+                  <span className="text-success">(Correct)</span>
+                ) : (
+                  <span className="text-danger">(Wrong)</span>
+                )}
+              </div>
+              <div className="mb-2">{r.questionText}</div>
+
+              <div className="mb-1">
+                <strong>Your answer:</strong>{" "}
+                {r.userAnswer ?? <em>No answer selected</em>}
+              </div>
+              {!r.isCorrect && (
+                <div className="mb-1">
+                  <strong>Correct answer:</strong> {r.correctAnswer || "—"}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4">
+          <Link to="/discover" className="btn btn-primary me-2">
+            Back to Discover
+          </Link>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              setAnswers({});
+              setFinished(false);
+              setCurrentIndex(0);
+              setScore(0);
+              setResults([]);
+            }}
+          >
+            Retake quiz
+          </button>
+        </div>
       </div>
     );
   }
 
   const options = currentQuestion.options || [];
-  const qid = currentQuestion.id;
+  const qid = getQuestionId(currentQuestion);
 
   return (
     <div>
@@ -85,8 +157,9 @@ export default function QuizPlay() {
           <p className="mt-3">{currentQuestion.questionText}</p>
 
           {options.map((o, index) => {
-            const oid = `q${qid}-o${o.optionId || index}`;
+            const oid = `q${qid}-o${o.optionId ?? index}`;
             const checked = answers[qid] === o.optionText;
+
             return (
               <div className="form-check" key={oid}>
                 <input
@@ -118,7 +191,11 @@ export default function QuizPlay() {
                 Next
               </button>
             ) : (
-              <button type="button" className="btn btn-success" onClick={finish}>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={finish}
+              >
                 Finish
               </button>
             )}

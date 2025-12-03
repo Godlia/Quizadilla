@@ -347,7 +347,7 @@ h1 {
   font-weight: 700;
 }
 
-/* Hero spacing like original home page */
+
 .custom-background-color h1 {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
@@ -360,4 +360,18 @@ h1 {
 
 .footer.custom-navbar-footer {
   background-color: var(--navbar-color);
+}
+
+.quiz-result-card {
+  background-color: #fff;
+  border-left: 4px solid #ccc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.quiz-result-card.quiz-correct {
+  border-left-color: #28a745;
+}
+
+.quiz-result-card.quiz-wrong {
+  border-left-color: #dc3545;
 }
