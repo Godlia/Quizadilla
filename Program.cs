@@ -9,6 +9,7 @@ builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("QuizDbContextConnection"))
 );
 
+<<<<<<< HEAD
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
@@ -18,20 +19,39 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+=======
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+
+builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
+>>>>>>> main
+
 
 
 var app = builder.Build();
 
+<<<<<<< HEAD
+=======
+// Apply migrations and seed sample data
+
+>>>>>>> main
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
     db.Database.Migrate();
 
+<<<<<<< HEAD
   
+=======
+
+    // Only seed if no quizzes exist
+>>>>>>> main
     if (!db.Quizzes.Any())
     {
-        var sampleQuizzes = new List<Quiz>
+        var json = System.IO.File.ReadAllText("Data/TemplateData/seed.json");
+        var sampleQuizzes = System.Text.Json.JsonSerializer.Deserialize<List<Quiz>>(json);
+        if (sampleQuizzes != null)
         {
+<<<<<<< HEAD
             new Quiz
             {
                 Title = "Nordic Capitals",
@@ -282,8 +302,15 @@ using (var scope = app.Services.CreateScope())
         db.Quizzes.AddRange(sampleQuizzes);
         db.SaveChanges();
         Console.WriteLine("✅ Sample quizzes added to the database.");
+=======
+            db.Quizzes.AddRange(sampleQuizzes);
+            db.SaveChanges();
+            Console.WriteLine(" Sample quizzes added to the database.");
+        }
+>>>>>>> main
     }
 }
+
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
@@ -303,4 +330,15 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
+<<<<<<< HEAD
 app.Run();
+=======
+app.MapControllerRoute(
+    name: "Quiz",
+    pattern: "{controller=Quiz}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+
+app.Run();
+
+>>>>>>> main
