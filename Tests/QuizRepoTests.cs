@@ -29,17 +29,19 @@ namespace QuizadillaTests
             var quiz = new Quiz
             {
                 Title = "Test Quiz",
-                Description = "Desc",
-                UserID = "test-user",
+                Description = "This works 100%",
+                UserID = "createQuizTeeest",
                 Questions = new List<Question>
                 {
                     new Question
                     {
-                        QuestionText = "Q1",
+                        QuestionText = "What is oppsite of wrong?",
                         correctString = "Correct",
                         options = new List<Option>
                         {
-                            new Option { OptionText = "Wrong" }
+                            new Option { OptionText = "Wrong" },
+                            new Option { OptionText = "Also wrong" },
+                            new Option { OptionText = "Correct" }
                         }
                     }
                 }
@@ -61,9 +63,9 @@ namespace QuizadillaTests
 
             var quiz = new Quiz
             {
-                Title = "Empty quiz",
-                Description = "No questions",
-                UserID = "test-user",
+                Title = "Empty quiz just like my soul",
+                Description = "No questions asked no anwsers provided",
+                UserID = "feeling-funny-today",
                 Questions = null
             };
 
@@ -81,14 +83,14 @@ namespace QuizadillaTests
 
             var quiz = new Quiz
             {
-                Title = "Quiz",
-                UserID = "test-user",
+                Title = "Quizhehesiu",
+                UserID = "Akinfenwa",
                 Questions = new List<Question>
                 {
                     new Question
                     {
-                        QuestionText = "Q1",
-                        options = new List<Option> { new Option { OptionText = "A" } }
+                        QuestionText = "babag-ala-fortnajt",
+                        options = new List<Option> { new Option { OptionText = "babag" } }
                     }
                 }
             };
@@ -107,27 +109,27 @@ namespace QuizadillaTests
 
         // READ negative
         [Fact]
-        public void GetQuizForEdit_ShouldReturnNull_WhenNotFound()
+        public void GetQuizForEdit_PlsReturnNull_WhenNotExist()
         {
             var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
-            var result = repo.GetQuizForEdit(999);
+            var result = repo.GetQuizForEdit(6767);
 
             Assert.Null(result);
         }
 
         // UPDATE
         [Fact]
-        public void UpdateQuiz_ShouldModifyTitleAndDescription()
+        public void UpdateQuiz_PleaseUpdateTitlePlusDescription()
         {
             var db = GetInMemoryDbContext();
 
             var original = new Quiz
             {
-                Title = "Old title",
-                Description = "Old desc",
-                UserID = "test-user",
+                Title = "Please work?",
+                Description = "I hope this works",
+                UserID = "67",
                 Questions = new List<Question>()
             };
 
@@ -139,9 +141,9 @@ namespace QuizadillaTests
             var updated = new Quiz
             {
                 QuizId = original.QuizId,
-                Title = "New title",
-                Description = "New desc",
-                UserID = "test-user",
+                Title = "Did it work?",
+                Description = "Please?",
+                UserID = "67",
                 Questions = new List<Question>()
             };
 
@@ -150,13 +152,13 @@ namespace QuizadillaTests
 
             var loaded = db.Quizzes.First();
 
-            Assert.Equal("New title", loaded.Title);
-            Assert.Equal("New desc", loaded.Description);
+            Assert.Equal("Did it work?", loaded.Title);
+            Assert.Equal("Please?", loaded.Description);
         }
 
         // UPDATE negative
         [Fact]
-        public void UpdateQuiz_ShouldDoNothing_WhenQuizDoesNotExist()
+        public void UpdateQuiz_SupposedToDoNothing_WhenQuizNotExisting()
         {
             var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
@@ -164,8 +166,8 @@ namespace QuizadillaTests
             var updated = new Quiz
             {
                 QuizId = 123,
-                Title = "Does not exist",
-                UserID = "test-user",
+                Title = "Should be non-existent like my social life",
+                UserID = "Six-Seven up zero sugar",
                 Questions = new List<Question>()
             };
 
@@ -217,7 +219,7 @@ namespace QuizadillaTests
             var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
-            repo.DeleteQuiz(999);
+            repo.DeleteQuiz(6767);
             repo.Save();
 
             Assert.Empty(db.Quizzes);
