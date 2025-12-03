@@ -29,17 +29,19 @@ namespace QuizadillaTests
             var quiz = new Quiz
             {
                 Title = "Test Quiz",
-                Description = "Desc",
-                UserID = "test-user",
+                Description = "This works 100%",
+                UserID = "createQuizTeeest",
                 Questions = new List<Question>
                 {
                     new Question
                     {
-                        QuestionText = "Q1",
+                        QuestionText = "What is oppsite of wrong?",
                         correctString = "Correct",
                         options = new List<Option>
                         {
-                            new Option { OptionText = "Wrong" }
+                            new Option { OptionText = "Wrong" },
+                            new Option { OptionText = "Also wrong" },
+                            new Option { OptionText = "Correct" }
                         }
                     }
                 }
@@ -61,9 +63,9 @@ namespace QuizadillaTests
 
             var quiz = new Quiz
             {
-                Title = "Empty quiz",
-                Description = "No questions",
-                UserID = "test-user",
+                Title = "Empty quiz just like my soul",
+                Description = "No questions asked no anwsers provided",
+                UserID = "feeling-funny-today",
                 Questions = null
             };
 
