@@ -7,8 +7,8 @@ export default function Layout({ children }) {
       <main role="main" className="flex-grow-1 container mt-4">
         {children}
       </main>
-      <footer className="border-top footer text-muted">
-        <div className="container">
+      <footer className="border-top footer custom-navbar-footer">
+        <div className="container text-center">
           &copy; {new Date().getFullYear()} - Quizadilla (React)
         </div>
       </footer>

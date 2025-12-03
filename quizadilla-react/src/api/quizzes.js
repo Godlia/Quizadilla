@@ -39,8 +39,16 @@ export async function createQuiz(quiz) {
     body: JSON.stringify(quiz),
     credentials: "include",
   });
-  return handle(res);
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("Create quiz failed:", res.status, text);
+    throw new Error(text || `Create failed (${res.status})`);
+  }
+
+  return res.json();
 }
+
 
 export async function updateQuiz(id, quiz) {
   const res = await fetch(`${API_BASE}/${id}`, {

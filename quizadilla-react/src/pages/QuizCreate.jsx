@@ -54,18 +54,24 @@ export default function QuizCreate() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const quiz = {
-      title,
-      description,
-      theme,
-      questions,
-    };
+  const quiz = {
+    title,
+    description,
+    theme,
+    questions,
+  };
 
+  try {
     await createQuiz(quiz);
     navigate("/my");
+  } catch (err) {
+    console.error(err);
+    alert("Saving quiz failed:\n" + err.message);
   }
+}
+
 
   return (
     <div>
