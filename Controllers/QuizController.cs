@@ -133,6 +133,13 @@ public class QuizController : Controller
                 ModelState.AddModelError("", "Each question must have at least two options.");
                 return RedirectToAction("Create");
             }
+            if(question.Options.All(o => !o.IsCorrect))
+            {
+                ModelState.AddModelError("", "Each question must have at least one correct option.");
+                return RedirectToAction("Create");
+            }
+
+
         }
 
         if (string.IsNullOrWhiteSpace(quiz.Theme))
