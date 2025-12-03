@@ -1,18 +1,26 @@
 ﻿@model IEnumerable<Quizadilla.Models.Quiz>
 
 @{
-    ViewData["Title"] = "Discover Quizzes";
+    ViewData["Title"] = "Your Quizzes";
 }
 
-<h2 class="mb-4">Discover Quizzes</h2>
+<h2 class="mb-4">Your Quizzes</h2>
 
-
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3">
+        You haven't made any quizzes yet! 
+        <a asp-controller="Quiz" asp-action="Create" class="fw-bold">Click here to make one</a>.
+    </div>
+}
+else
+{
 <div class="ingredient-scroller">
     @foreach (var quiz in Model)
     {
         var theme = string.IsNullOrWhiteSpace(quiz.Theme) ? "tomato" : quiz.Theme; // fallback
-                                                                                   <div class="ingredient-card card theme-@theme">
-                                                                                       <div class="ingredient-top"></div>
+            <div class="ingredient-card card theme-@theme">
+            <div class="ingredient-top"></div>
 
             <div class="card-body">
                 <h5 class="ingredient-title">@quiz.Title</h5>
@@ -35,3 +43,4 @@
         </div>
         }
 </div>
+}
