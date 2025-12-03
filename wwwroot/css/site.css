@@ -68,19 +68,35 @@ main{
     }
 
     /* Small screens */
-    @media (max-width: 660px) {
-      .nav-mid,
+    @media (max-width: 1400px) {
       .search-form,
       .person-icon {
         display: none !important;
       }
     }
+    @media (max-width: 660px) {
+     .nav-mid{
+        display: none !important;
+      }
+    }
+    @media (min-width:1401px){
+      .search-form2,
+      .sidebar-acc {
+        display: none !important;
+      }
+    }
+
 
     /* Big screen show all */
     @media (min-width: 661px) {
       .sidebar a.small-only {
         display: none !important;
       }
+    @media (min-width: 661px) {
+      .small-only {
+        display: none !important;
+      }
+    }
     }
     /* standard-pos */
 .right-content {
@@ -334,4 +350,17 @@ main, .container, .custom-background-color {
 .ingredient-actions-top{
   margin-left:1rem;
   margin-right:1rem; 
+}
+.sidebar-item {
+    font-size: 1rem !important; 
+    line-height: 1.4;     /* jevn spacing */
+    color: #000;          /* samme tekstfarge */
+    padding: 2px 0;       /* jevnt mellomrom */
+    display: block;       /* full bredde */
+}
+.sidebar-item.btn:hover{
+   color: #0d6efd !important;
+}
+.sidebar-item:hover{
+    color: #0d6efd !important;
 }
