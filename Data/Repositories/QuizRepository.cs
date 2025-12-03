@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Quizadilla.Models;
+using System.Linq;
+using System.Collections.Generic;
 
 public class QuizRepository : IQuizRepository
 {
@@ -37,6 +39,17 @@ public class QuizRepository : IQuizRepository
 
     public void AddQuiz(Quiz quiz)
     {
+        // Ensure each question has options initialized and at least one correct option
+        foreach (var q in quiz.Questions ?? Enumerable.Empty<Question>())
+        {
+            q.options ??= new List<Option>();
+            if (!q.options.Any(o => o.IsCorrect))
+            {
+                if (q.options.Any())
+                    q.options.First().IsCorrect = true;
+            }
+        }
+
         _db.Quizzes.Add(quiz);
     }
 
@@ -74,30 +87,34 @@ public class QuizRepository : IQuizRepository
         }
 
         // Add/update questions & options
-        foreach (var q in updatedQuiz.Questions)
+        foreach (var q in updatedQuiz.Questions ?? Enumerable.Empty<Question>())
         {
             var eq = existingQuestions.FirstOrDefault(x => x.Id == q.Id);
 
             if (eq == null)
             {
+                // New question: ensure options initialized and a correct option exists
+                q.options ??= new List<Option>();
+                if (!q.options.Any(o => o.IsCorrect) && q.options.Any())
+                    q.options.First().IsCorrect = true;
+
                 existingQuiz.Questions.Add(q);
                 continue;
             }
 
             eq.QuestionText = q.QuestionText;
-            eq.correctString = q.correctString;
 
             var existingOptions = eq.options.ToList();
 
             // Remove deleted options
             foreach (var eo in existingOptions)
             {
-                if (!q.options.Any(o => o.OptionId == eo.OptionId))
+                if (!(q.options?.Any(o => o.OptionId == eo.OptionId) ?? false))
                     _db.Remove(eo);
             }
 
             // Add or update options
-            foreach (var opt in q.options)
+            foreach (var opt in q.options ?? Enumerable.Empty<Option>())
             {
                 var eo = existingOptions.FirstOrDefault(o => o.OptionId == opt.OptionId);
 
@@ -108,8 +125,13 @@ public class QuizRepository : IQuizRepository
                 else
                 {
                     eo.OptionText = opt.OptionText;
+                    eo.IsCorrect = opt.IsCorrect; // persist correctness flag
                 }
             }
+
+            // Ensure at least one option is marked correct after updates
+            if (!eq.options.Any(o => o.IsCorrect) && eq.options.Any())
+                eq.options.First().IsCorrect = true;
         }
     }
 

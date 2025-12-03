@@ -36,12 +36,11 @@ namespace QuizadillaTests
                     new Question
                     {
                         QuestionText = "What is oppsite of wrong?",
-                        correctString = "Correct",
                         options = new List<Option>
                         {
                             new Option { OptionText = "Wrong" },
                             new Option { OptionText = "Also wrong" },
-                            new Option { OptionText = "Correct" }
+                            new Option { OptionText = "Correct", IsCorrect = true }
                         }
                     }
                 }

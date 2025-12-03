@@ -34,11 +34,6 @@
                         <input name="Questions[@i].QuestionText" value="@q.QuestionText" class="form-control" />
                     </div>
 
-                    <div class="form-group mb-2">
-                        <label>Correct Answer</label>
-                        <input name="Questions[@i].correctString" value="@q.correctString" class="form-control" />
-                    </div>
-
                     <h6>Options</h6>
                     <div id="optionsContainer-@i" data-qindex="@i">
                         @for (int j = 0; j < q.options.Count; j++)
@@ -66,14 +61,10 @@
                     <label>Question Text</label>
                     <input name="Questions[0].QuestionText" class="form-control" />
                 </div>
-                <div class="form-group mb-2">
-                    <label>Correct Answer</label>
-                    <input name="Questions[0].correctString" class="form-control" />
-                </div>
-
                 <h6>Options</h6>
                 <div id="optionsContainer-0" data-qindex="0">
                     <div class="option-row d-flex gap-2 align-items-start mb-1">
+                        <input type="checkbox" name="Questions[0].options[0].IsCorrect">
                         <input name="Questions[0].options[0].OptionText" class="form-control" placeholder="Option text" />
                         <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>
                     </div>
@@ -108,14 +99,10 @@
                   <label>Question Text</label>
                   <input name="Questions[${qIndex}].QuestionText" class="form-control" />
                 </div>
-                <div class="form-group mb-2">
-                  <label>Correct Answer</label>
-                  <input name="Questions[${qIndex}].correctString" class="form-control" />
-                </div>
-
                 <h6>Options</h6>
                 <div id="optionsContainer-${qIndex}" data-qindex="${qIndex}">
                   <div class="option-row d-flex gap-2 align-items-start mb-1">
+                    <input type="checkbox" name="Questions[${qIndex}].options[0].IsCorrect" />
                     <input name="Questions[${qIndex}].options[0].OptionText" class="form-control" placeholder="Option text" />
                     <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>
                   </div>
@@ -133,9 +120,11 @@
             const row = document.createElement('div');
             row.className = 'option-row d-flex gap-2 align-items-start mb-1';
             row.innerHTML = `
+                <input type="checkbox" name="Questions[${qIndex}].options[${optIndex}].IsCorrect" />
                 <input name="Questions[${qIndex}].options[${optIndex}].OptionText"
                        class="form-control"
                        placeholder="Option text" />
+
                 <button type="button" class="btn btn-outline-danger btn-sm option-remove">Delete</button>`;
             container.appendChild(row);
         }

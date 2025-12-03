@@ -4,6 +4,7 @@ using Quizadilla.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Quizadilla.Controllers;
 
@@ -38,15 +39,41 @@ public class QuizController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Quiz updatedQuiz)
+    public IActionResult EditQuiz(Quiz updatedQuiz)
     {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var oldQuiz = _repo.GetQuizWithDetails(updatedQuiz.QuizId);
+        if (userId == null) return Unauthorized();
+        if (oldQuiz == null || oldQuiz.UserID != userId) return Unauthorized();
+
+
         if (!ModelState.IsValid)
-            return View(updatedQuiz);
+        {
+            Console.WriteLine("ModelState is invalid");
+            // Ensure collections the view iterates aren't null to avoid rendering errors
+            updatedQuiz.Questions ??= new List<Question>();
+            foreach (var q in updatedQuiz.Questions)
+                q.options ??= new List<Option>();
+            try
+            {
+                _repo.UpdateQuiz(updatedQuiz);
+                _repo.Save();
+                return RedirectToAction("MyQuizzes");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception during quiz update: " + ex.Message);
+                // Return the same Edit view so validation messages and the user's input are shown
+                return View("Edit", updatedQuiz);
+            }
+
+
+        }
 
         _repo.UpdateQuiz(updatedQuiz);
         _repo.Save();
+        return RedirectToAction("MyQuizzes");
 
-        return RedirectToAction("Discover");
     }
 
     public IActionResult Quiz(int id = 0)
@@ -76,18 +103,19 @@ public class QuizController : Controller
     [HttpPost]
     public IActionResult CreateQuiz(Quiz quiz)
     {
+        // Ensure questions/options exist and that at least one Option per question is marked correct.
         foreach (var q in quiz.Questions ?? new List<Question>())
         {
             q.options ??= new List<Option>();
 
-            var correct = (q.correctString ?? "").Trim();
-            if (!string.IsNullOrWhiteSpace(correct))
+            // If the UI now supplies an IsCorrect flag on Option, prefer that.
+            // If none are marked correct, choose the first option as the correct one to keep data consistent.
+            if (!q.options.Any(o => o.IsCorrect))
             {
-                var hasCorrect = q.options.Any(o =>
-                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
-
-                if (!hasCorrect)
-                    q.options.Add(new Option { OptionText = q.correctString ?? "" });
+                if (q.options.Any())
+                {
+                    q.options.First().IsCorrect = true;
+                }
             }
         }
 
@@ -137,8 +165,6 @@ public class QuizController : Controller
             }
         }
         return View(result);
-
-
     }
 }
 

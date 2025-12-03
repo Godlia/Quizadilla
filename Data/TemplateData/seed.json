@@ -11,7 +11,8 @@
         "options": [
           {
             "OptionId": 1,
-            "OptionText": "Oslo"
+            "OptionText": "Oslo",
+            "IsCorrect": true
           },
           {
             "OptionId": 2,
@@ -38,7 +39,8 @@
           },
           {
             "OptionId": 6,
-            "OptionText": "Stockholm"
+            "OptionText": "Stockholm",
+            "IsCorrect": true
           },
           {
             "OptionId": 7,
@@ -48,8 +50,7 @@
             "OptionId": 8,
             "OptionText": "Helsinki"
           }
-        ],
-        "correctString": "Stockholm"
+        ]
       },
       {
         "Id": 3,
@@ -65,14 +66,14 @@
           },
           {
             "OptionId": 11,
-            "OptionText": "Copenhagen"
+            "OptionText": "Copenhagen",
+            "IsCorrect": true
           },
           {
             "OptionId": 12,
             "OptionText": "Helsinki"
           }
-        ],
-        "correctString": "Copenhagen"
+        ]
       },
       {
         "Id": 4,
@@ -92,10 +93,10 @@
           },
           {
             "OptionId": 16,
-            "OptionText": "Helsinki"
+            "OptionText": "Helsinki",
+            "IsCorrect": true
           }
-        ],
-        "correctString": "Helsinki"
+        ]
       },
       {
         "Id": 5,
@@ -115,10 +116,10 @@
           },
           {
             "OptionId": 20,
-            "OptionText": "Reykjavik"
+            "OptionText": "Reykjavik",
+            "IsCorrect": true
           }
-        ],
-        "correctString": "Reykjavik"
+        ]
       }
     ],
     "Theme": "cheese"
@@ -139,7 +140,8 @@
           },
           {
             "OptionId": 22,
-            "OptionText": "Christopher Nolan"
+            "OptionText": "Christopher Nolan",
+            "IsCorrect": true
           },
           {
             "OptionId": 23,
@@ -149,8 +151,7 @@
             "OptionId": 24,
             "OptionText": "Quentin Tarantino"
           }
-        ],
-        "correctString": "Christopher Nolan"
+        ]
       },
       {
         "Id": 7,
@@ -158,7 +159,8 @@
         "options": [
           {
             "OptionId": 25,
-            "OptionText": "Star Wars: Episode IV - A New Hope"
+            "OptionText": "Star Wars: Episode IV - A New Hope",
+            "IsCorrect": true
           },
           {
             "OptionId": 26,
@@ -172,8 +174,7 @@
             "OptionId": 28,
             "OptionText": "Solo: A Star Wars Story"
           }
-        ],
-        "correctString": "Star Wars: Episode IV - A New Hope"
+        ]
       },
       {
         "Id": 8,
@@ -189,14 +190,14 @@
           },
           {
             "OptionId": 31,
-            "OptionText": "Tommy Wiseau"
+            "OptionText": "Tommy Wiseau",
+            "IsCorrect": true
           },
           {
             "OptionId": 32,
             "OptionText": "Michael Bay"
           }
-        ],
-        "correctString": "Tommy Wiseau"
+        ]
       },
       {
         "Id": 9,
@@ -212,14 +213,14 @@
           },
           {
             "OptionId": 35,
-            "OptionText": "Viggo Mortensen - Aragorn"
+            "OptionText": "Viggo Mortensen - Aragorn",
+            "IsCorrect": true
           },
           {
             "OptionId": 36,
             "OptionText": "Orlando Bloom - Legolas"
           }
-        ],
-        "correctString": "Viggo Mortensen - Aragorn"
+        ]
       }
     ],
     "Theme": "guac"
@@ -244,14 +245,14 @@
           },
           {
             "OptionId": 39,
-            "OptionText": "Olympus Mons"
+            "OptionText": "Olympus Mons",
+            "IsCorrect": true
           },
           {
             "OptionId": 40,
             "OptionText": "Mount Everest"
           }
-        ],
-        "correctString": "Olympus Mons"
+        ]
       },
       {
         "Id": 11,
@@ -271,10 +272,10 @@
           },
           {
             "OptionId": 44,
-            "OptionText": "Ceres"
+            "OptionText": "Ceres",
+            "IsCorrect": true
           }
-        ],
-        "correctString": "Ceres"
+        ]
       },
       {
         "Id": 12,
@@ -282,7 +283,8 @@
         "options": [
           {
             "OptionId": 45,
-            "OptionText": "Voyager 1"
+            "OptionText": "Voyager 1",
+            "IsCorrect": true
           },
           {
             "OptionId": 46,
@@ -296,8 +298,7 @@
             "OptionId": 48,
             "OptionText": "Sputnik 1"
           }
-        ],
-        "correctString": "Voyager 1"
+        ]
       },
       {
         "Id": 13,
@@ -309,7 +310,8 @@
           },
           {
             "OptionId": 50,
-            "OptionText": "Jupiter"
+            "OptionText": "Jupiter",
+            "IsCorrect": true
           },
           {
             "OptionId": 51,
@@ -319,8 +321,7 @@
             "OptionId": 52,
             "OptionText": "Earth"
           }
-        ],
-        "correctString": "Jupiter"
+        ]
       }
     ],
     "Theme": "onion"
@@ -341,7 +342,8 @@
           },
           {
             "OptionId": 54,
-            "OptionText": "Mars"
+            "OptionText": "Mars",
+            "IsCorrect": true
           },
           {
             "OptionId": 55,
@@ -351,8 +353,7 @@
             "OptionId": 56,
             "OptionText": "Saturn"
           }
-        ],
-        "correctString": "Mars"
+        ]
       },
       {
         "Id": 15,
@@ -364,7 +365,8 @@
           },
           {
             "OptionId": 58,
-            "OptionText": "H2O"
+            "OptionText": "H2O",
+            "IsCorrect": true
           },
           {
             "OptionId": 59,
@@ -374,8 +376,7 @@
             "OptionId": 60,
             "OptionText": "NaCl"
           }
-        ],
-        "correctString": "H2O"
+        ]
       },
       {
         "Id": 16,
@@ -391,14 +392,14 @@
           },
           {
             "OptionId": 63,
-            "OptionText": "Carbon Dioxide"
+            "OptionText": "Carbon Dioxide",
+            "IsCorrect": true
           },
           {
             "OptionId": 64,
             "OptionText": "Hydrogen"
           }
-        ],
-        "correctString": "Carbon Dioxide"
+        ]
       },
       {
         "Id": 17,
@@ -414,14 +415,14 @@
           },
           {
             "OptionId": 67,
-            "OptionText": "Diamond"
+            "OptionText": "Diamond",
+            "IsCorrect": true
           },
           {
             "OptionId": 68,
             "OptionText": "Silver"
           }
-        ],
-        "correctString": "Diamond"
+        ]
       }
     ],
     "Theme": "salsa"
