@@ -14,7 +14,6 @@ namespace Quizadilla.Models
 
         public ICollection<Option> options { get; set; } = new List<Option>();
 
-        public string correctString { get; set; } = string.Empty;
 
         public string toString()
         {
@@ -26,7 +25,6 @@ namespace Quizadilla.Models
             {
                 returnString += "\t" + option.toString() + "\n";
             }
-            returnString += "Correct Answer: " + correctString + "\n";
             return returnString;
         }
     }

@@ -6,7 +6,8 @@
 
 <h2>Edit Quiz</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="EditQuiz" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="QuizId" />
 
     <div class="form-group mb-3">
@@ -34,18 +35,18 @@
                     <input name="Questions[@i].QuestionText" value="@q.QuestionText" class="form-control" />
                 </div>
 
-                <div class="form-group mb-2">
-                    <label>Correct Answer</label>
-                    <input name="Questions[@i].correctString" value="@q.correctString" class="form-control" />
-                </div>
-
                 <h6>Options</h6>
                 <div id="optionsContainer-@i">
                     @for (int j = 0; j < q.options.Count; j++)
                     {
                         var opt = q.options.ElementAt(j);
-                        <div class="mb-1">
+                        <div class="mb-1 d-flex align-items-center gap-2">
                             <input type="hidden" name="Questions[@i].options[@j].OptionId" value="@opt.OptionId" />
+                            <input type="checkbox"
+                                   name="Questions[@i].options[@j].IsCorrect"
+                                   value="true"
+                                   @(opt.IsCorrect ? "checked" : "")
+                                   aria-label="Is correct" />
                             <input name="Questions[@i].options[@j].OptionText"
                                    value="@opt.OptionText"
                                    class="form-control"
@@ -83,11 +84,6 @@
                     <input name="Questions[${qIndex}].QuestionText" class="form-control" />
                 </div>
 
-                <div class="form-group mb-2">
-                    <label>Correct Answer</label>
-                    <input name="Questions[${qIndex}].correctString" class="form-control" />
-                </div>
-
                 <h6>Options</h6>
                 <div id="optionsContainer-${qIndex}"></div>
                 <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="addOption(${qIndex})">+ Add Option</button>
@@ -100,8 +96,10 @@
             const optIndex = container.children.length;
 
             const optionDiv = document.createElement("div");
-            optionDiv.classList.add("mb-1");
+            optionDiv.classList.add("mb-1", "d-flex", "align-items-center", "gap-2");
             optionDiv.innerHTML = `
+                <!-- keep hidden=false immediately before checkbox -->
+                <input type="checkbox" name="Questions[${qIndex}].options[${optIndex}].IsCorrect" value="true" aria-label="Is correct" />
                 <input name="Questions[${qIndex}].options[${optIndex}].OptionText" class="form-control" placeholder="Option text" />
             `;
             container.appendChild(optionDiv);

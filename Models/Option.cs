@@ -9,6 +9,7 @@ namespace Quizadilla.Models
         [Required]
         public string OptionText { get; set; } = string.Empty;
 
+        public bool IsCorrect { get; set; } = false;
         public string toString()
         {
             string returnString = string.Empty;
