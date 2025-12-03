@@ -22,15 +22,14 @@ export default function Home() {
 
   const trending = useMemo(() => {
     if (!quizzes) return [];
-    // for now, just take the first 4 quizzes like your seed data
-    return quizzes.slice(0, 4);
+    return quizzes.slice(0, 20);
   }, [quizzes]);
 
   return (
     <div className="custom-background-color">
-      {/* Top hero row */}
+      {}
       <div className="row align-items-start mt-4">
-        {/* Left: hero text */}
+        {}
         <div className="col-lg-6 mb-3">
           <h1 className="text-center text-lg-start">Welcome to Quizzadilla</h1>
           <p className="text-center text-lg-start text-index">
@@ -38,7 +37,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Right: today's random quiz card */}
+        {}
         <div className="col-lg-6 mb-3">
           {todaysQuiz && (
             <div className="todays-quiz p-3">
@@ -62,7 +61,7 @@ export default function Home() {
                 >
                   Play
                 </Link>
-                {/* Preview-knapp kan du fylle senere hvis du vil */}
+                {}
                 <Link
                   to={`/quiz/${todaysQuiz.quizId}`}
                   className="btn btn-outline-secondary btn-sm"
@@ -75,7 +74,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Trending section */}
+      {}
       <section className="mt-5">
         <h2 className="text-center">Trending</h2>
         <p className="text-center text-index mb-4">
@@ -89,7 +88,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* Bottom “we have quizzes for everyone” banner */}
+      {}
       <section className="mt-5 mb-4 text-center">
         <h3>We have quizzes for everyone!</h3>
         <p className="text-index">

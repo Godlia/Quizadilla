@@ -19,7 +19,7 @@ export default function Discover() {
     <>
       <h2 className="mb-3">Discover Quizzes</h2>
       <p className="text-index mb-4">
-        Scroll through tasty quizzes, just like i den gamle versjonen 🍅
+        Scroll through these tasty quizzes
       </p>
       <QuizCardList quizzes={quizzes} />
     </>
