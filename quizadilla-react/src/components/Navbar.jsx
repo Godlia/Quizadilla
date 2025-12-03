@@ -1,97 +1,78 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const [needle, setNeedle] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
+  const [needle, setNeedle] = useState("");
 
-  // Attach sidebar + dropdown behaviour (ported from site.js)
+  // ------- Search submit -------
+  function onSearchSubmit(e) {
+    e.preventDefault();
+    if (needle.trim() === "") return;
+    navigate(`/search?needle=${encodeURIComponent(needle)}`);
+  }
+
+  // ------- Sidebar + dropdown behaviour -------
   useEffect(() => {
     const sidebar = document.getElementById("sidebar");
     const menuToggle = document.getElementById("menuToggle");
     const closeSidebar = document.getElementById("closeSidebar");
     const quizDropdownBtn = document.getElementById("quizDropdownBtn");
-    const quizDropdown = document.querySelector(".sidebar-dropdown");
-    const quizSubmenu = document.querySelector(".sidebar-submenu");
-    const body = document.body;
+    const quizSubmenu = document.getElementById("quizSubmenu");
 
     function toggleSidebar() {
-      if (!sidebar || !menuToggle) return;
-      const isActive = sidebar.classList.toggle("active");
-      body.classList.toggle("sidebar-open", isActive);
-      menuToggle.style.visibility = isActive ? "hidden" : "visible";
+      sidebar.classList.toggle("active");
     }
-
     function close() {
-      if (!sidebar || !menuToggle) return;
       sidebar.classList.remove("active");
-      body.classList.remove("sidebar-open");
-      menuToggle.style.visibility = "visible";
     }
-
-    function toggleQuizDropdown() {
-      if (!quizSubmenu || !quizDropdown) return;
+    function toggleQuiz() {
       quizSubmenu.classList.toggle("d-none");
-      quizDropdown.classList.toggle("open");
     }
 
     menuToggle?.addEventListener("click", toggleSidebar);
     closeSidebar?.addEventListener("click", close);
-    quizDropdownBtn?.addEventListener("click", toggleQuizDropdown);
+    quizDropdownBtn?.addEventListener("click", toggleQuiz);
 
     return () => {
       menuToggle?.removeEventListener("click", toggleSidebar);
       closeSidebar?.removeEventListener("click", close);
-      quizDropdownBtn?.removeEventListener("click", toggleQuizDropdown);
+      quizDropdownBtn?.removeEventListener("click", toggleQuiz);
     };
   }, []);
 
-  function onSearchSubmit(e) {
-    e.preventDefault();
-    const term = needle.trim();
-    if (!term) return;
-    navigate(`/search?needle=${encodeURIComponent(term)}`);
-  }
-
   return (
     <header>
-      <nav className="navbar navbar-expand-lg navbar-light custom-navbar-footer">
-        <div className="container-fluid">
-          {/* Brand with logo */}
-          <Link className="navbar-brand d-flex align-items-center me-2" to="/">
-            <img
-              src="/img/ChatGPT-Logo.svg"   
-              alt="Quizadilla logo"
-              width="32"
-              height="32"
-              className="me-2"
-            />
+      {/* TOP NAVBAR */}
+      <nav className="navbar navbar-light custom-navbar-footer border-bottom box-shadow mb-3">
+        <div className="container-fluid d-flex align-items-center justify-content-between">
+
+          {/* LEFT LOGO */}
+          <Link className="navbar-brand d-flex align-items-center" to="/">
+            <img src="/img/ChatGPT-Logo.svg" alt="logo" width="35" className="me-2" />
             <span className="fw-bold">Quizadilla</span>
           </Link>
 
-          {/* Centered nav links */}
+          {/* MID LINKS */}
           <div className="flex-grow-1 d-flex justify-content-center">
-            <ul className="navbar-nav flex-row nav-mid" style={{ fontSize: "1.1rem" }}>
+            <ul className="navbar-nav flex-row nav-mid" style={{ fontSize: "1.2rem", fontWeight: 400 }}>
               <li className="nav-item mx-2">
-                <Link className="nav-link text-dark" to="/">
-                  Home
-                </Link>
+                <Link className="nav-link text-dark" to="/">Home</Link>
               </li>
               <li className="nav-item mx-2">
-                <Link className="nav-link text-dark" to="/discover">
-                  Discover Quizzes
-                </Link>
+                <Link className="nav-link text-dark" to="/discover">Discover Quizzes</Link>
               </li>
               <li className="nav-item mx-2">
-                <Link className="nav-link text-dark" to="/create">
-                  Create Quiz
-                </Link>
+                <Link className="nav-link text-dark" to="/create">Create Quiz</Link>
               </li>
             </ul>
           </div>
 
-          {/* Right side: search + person + burger */}
+          {/* RIGHT ITEMS */}
           <div className="right-content d-flex align-items-center">
+            
             {/* Search */}
             <form className="d-flex search-form me-2" onSubmit={onSearchSubmit}>
               <div className="input-group">
@@ -103,72 +84,120 @@ export default function Navbar() {
                   onChange={(e) => setNeedle(e.target.value)}
                 />
                 <button className="btn btn-outline-secondary clear-btn" type="submit">
-                  <i className="bi bi-search" />
+                  <i className="bi bi-search"></i>
                 </button>
               </div>
             </form>
 
-            {/* Person icon – entry point for future login */}
-            <button
-              type="button"
-              className="text-dark fs-4 person-icon btn btn-link"
-              title="Log in"
-            >
-              <i className="bi bi-person" />
-            </button>
+            {/* Account */}
+            <div className="dropdown me-3">
+              <button
+                className="text-dark fs-4 person-icon dropdown-toggle btn btn-link"
+                id="accountDropdown"
+                data-bs-toggle="dropdown"
+              >
+                <i className="bi bi-person" />
+              </button>
+
+              <ul className="dropdown-menu">
+                {!isAuthenticated ? (
+                  <>
+                    <li><Link className="dropdown-item" to="/login">Login</Link></li>
+                    <li><Link className="dropdown-item" to="/register">Register</Link></li>
+                  </>
+                ) : (
+                  <>
+                    <li><Link className="dropdown-item" to="/account">My Account</Link></li>
+                    <li><button className="dropdown-item" onClick={logout}>Logout</button></li>
+                  </>
+                )}
+              </ul>
+            </div>
 
             {/* Hamburger */}
-            <button id="menuToggle" className="navbar-toggler ms-1" type="button">
+            <button id="menuToggle" className="navbar-toggler" type="button">
               <span className="navbar-toggler-icon"></span>
             </button>
+
           </div>
         </div>
       </nav>
 
-      {/* Right sidebar (hamburger menu) */}
+      {/* SIDEBAR */}
       <div id="sidebar" className="sidebar custom-navbar-footer">
+
         <div className="sidebar-header">
           <h5 className="mb-0 text-dark">
-            Menudilla{" "}
-            <img src="/img/logo.svg" alt="Logo" width="24" className="ms-1" />
+            Menudilla <img src="/img/ChatGPT-Logo.svg" alt="logo" width="35" className="ms-1" />
           </h5>
-          <button id="closeSidebar" className="btn btn-link text-dark">
-            <i className="bi bi-x-lg"></i>
-          </button>
+          <button className="btn-close" id="closeSidebar"></button>
         </div>
 
-        <div className="sidebar-body">
-          <Link className="sidebar-link" to="/">
-            Home
-          </Link>
-          <Link className="sidebar-link" to="/discover">
-            Discover quizzes
-          </Link>
-          <Link className="sidebar-link" to="/create">
-            Create quiz
-          </Link>
-
-          <hr />
-
-          <div className="sidebar-dropdown">
-            <button
-              id="quizDropdownBtn"
-              className="sidebar-link d-flex w-100 align-items-center justify-content-between"
-              type="button"
-            >
-              <span>Quizzes</span>
-              <i className="bi bi-chevron-down" />
+        {/* SIDEBAR SEARCH */}
+        <form className="d-flex search-form2 me-2" onSubmit={onSearchSubmit}>
+          <div className="input-group">
+            <input
+              type="search"
+              className="form-control"
+              placeholder="Search"
+              value={needle}
+              onChange={(e) => setNeedle(e.target.value)}
+            />
+            <button className="btn btn-outline-secondary clear-btn" type="submit">
+              <i className="bi bi-search"></i>
             </button>
-            <div id="quizSubmenu" className="sidebar-submenu d-none">
-              <Link className="sidebar-link ps-4" to="/discover">
-                Discover quizzes
-              </Link>
-              <Link className="sidebar-link ps-4" to="/my">
-                My quizzes
-              </Link>
-            </div>
+          </div>
+        </form>
+
+        <hr className="search-form2" />
+
+        {/* SIDEBAR LINKS */}
+        <Link to="/">Home</Link>
+        <Link to="/privacy">Privacy</Link>
+        <Link to="/support">Support</Link>
+
+        {/* ACCOUNT DROPDOWN */}
+        <div className="sidebar-dropdown sidebar-acc">
+          <button id="accountDropdownBtn" className="sidebar-link d-flex w-100 align-items-center justify-content-between">
+            <span>{isAuthenticated ? "My Account" : "Login/Register"}</span>
+            <i className="bi bi-chevron-down ms-2" />
+          </button>
+
+          <div id="accountSubmenu" className="sidebar-submenu d-none ps-3">
+            {!isAuthenticated ? (
+              <>
+                <Link className="sidebar-item d-block" to="/login">Login</Link>
+                <Link className="sidebar-item d-block" to="/register">Register</Link>
+              </>
+            ) : (
+              <>
+                <Link className="sidebar-item d-block" to="/account">My Account</Link>
+                <button className="sidebar-item btn btn-link d-block text-start" onClick={logout}>Logout</button>
+              </>
+            )}
           </div>
         </div>
+
+        <hr />
+
+        {/* QUIZZES DROPDOWN */}
+        <div className="sidebar-dropdown">
+          <button id="quizDropdownBtn" className="sidebar-link d-flex w-100 align-items-center justify-content-between">
+            <span>Quizzes</span>
+            <i className="bi bi-chevron-down ms-2"></i>
+          </button>
+
+          <div id="quizSubmenu" className="sidebar-submenu d-none ps-3">
+            <Link className="sidebar-item d-block" to="/discover">Discover Quizzes</Link>
+            <Link className="sidebar-item d-block" to="/create">Create Quiz</Link>
+            <Link className="sidebar-item d-block" to="/categories">Categories</Link>
+            <Link className="sidebar-item d-block" to="/popular">Most Popular</Link>
+            {isAuthenticated && (
+              <Link className="sidebar-item d-block" to="/my">My Quizzes</Link>
+            )}
+          </div>
+        </div>
+
       </div>
     </header>
   );
