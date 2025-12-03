@@ -16,7 +16,7 @@ public class QuizRepository : IQuizRepository
     {
         return _db.Quizzes
             .Include(q => q.Questions)
-            .ThenInclude(q => q.options)
+            .ThenInclude(q => q.Options)
             .FirstOrDefault(q => q.QuizId == id);
     }
 
@@ -39,14 +39,14 @@ public class QuizRepository : IQuizRepository
 
     public void AddQuiz(Quiz quiz)
     {
-        // Ensure each question has options initialized and at least one correct option
+        // Ensure each question has Options initialized and at least one correct option
         foreach (var q in quiz.Questions ?? Enumerable.Empty<Question>())
         {
-            q.options ??= new List<Option>();
-            if (!q.options.Any(o => o.IsCorrect))
+            q.Options ??= new List<Option>();
+            if (!q.Options.Any(o => o.IsCorrect))
             {
-                if (q.options.Any())
-                    q.options.First().IsCorrect = true;
+                if (q.Options.Any())
+                    q.Options.First().IsCorrect = true;
             }
         }
 
@@ -60,7 +60,7 @@ public class QuizRepository : IQuizRepository
 
         foreach (var question in quiz.Questions.ToList())
         {
-            foreach (var option in question.options.ToList())
+            foreach (var option in question.Options.ToList())
                 _db.Remove(option);
 
             _db.Remove(question);
@@ -86,17 +86,17 @@ public class QuizRepository : IQuizRepository
                 _db.Remove(eq);
         }
 
-        // Add/update questions & options
+        // Add/update questions & Options
         foreach (var q in updatedQuiz.Questions ?? Enumerable.Empty<Question>())
         {
             var eq = existingQuestions.FirstOrDefault(x => x.Id == q.Id);
 
             if (eq == null)
             {
-                // New question: ensure options initialized and a correct option exists
-                q.options ??= new List<Option>();
-                if (!q.options.Any(o => o.IsCorrect) && q.options.Any())
-                    q.options.First().IsCorrect = true;
+                // New question: ensure Options initialized and a correct option exists
+                q.Options ??= new List<Option>();
+                if (!q.Options.Any(o => o.IsCorrect) && q.Options.Any())
+                    q.Options.First().IsCorrect = true;
 
                 existingQuiz.Questions.Add(q);
                 continue;
@@ -104,23 +104,23 @@ public class QuizRepository : IQuizRepository
 
             eq.QuestionText = q.QuestionText;
 
-            var existingOptions = eq.options.ToList();
+            var existingOptions = eq.Options.ToList();
 
-            // Remove deleted options
+            // Remove deleted Options
             foreach (var eo in existingOptions)
             {
-                if (!(q.options?.Any(o => o.OptionId == eo.OptionId) ?? false))
+                if (!(q.Options?.Any(o => o.OptionId == eo.OptionId) ?? false))
                     _db.Remove(eo);
             }
 
-            // Add or update options
-            foreach (var opt in q.options ?? Enumerable.Empty<Option>())
+            // Add or update Options
+            foreach (var opt in q.Options ?? Enumerable.Empty<Option>())
             {
                 var eo = existingOptions.FirstOrDefault(o => o.OptionId == opt.OptionId);
 
                 if (eo == null)
                 {
-                    eq.options.Add(opt);
+                    eq.Options.Add(opt);
                 }
                 else
                 {
@@ -130,8 +130,8 @@ public class QuizRepository : IQuizRepository
             }
 
             // Ensure at least one option is marked correct after updates
-            if (!eq.options.Any(o => o.IsCorrect) && eq.options.Any())
-                eq.options.First().IsCorrect = true;
+            if (!eq.Options.Any(o => o.IsCorrect) && eq.Options.Any())
+                eq.Options.First().IsCorrect = true;
         }
     }
 

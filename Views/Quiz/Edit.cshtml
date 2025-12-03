@@ -37,9 +37,9 @@
 
                 <h6>Options</h6>
                 <div id="optionsContainer-@i">
-                    @for (int j = 0; j < q.options.Count; j++)
+                    @for (int j = 0; j < q.Options.Count; j++)
                     {
-                        var opt = q.options.ElementAt(j);
+                        var opt = q.Options.ElementAt(j);
                         <div class="mb-1 d-flex align-items-center gap-2">
                             <input type="hidden" name="Questions[@i].options[@j].OptionId" value="@opt.OptionId" />
                             <input type="checkbox"

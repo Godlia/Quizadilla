@@ -19,7 +19,7 @@
     @for (var i = 0; i < questions.Count; i++)
     {
         var q = questions[i];
-        var opts = q.options?.ToList() ?? new List<Quizadilla.Models.Option>();
+        var opts = q.Options?.ToList() ?? new List<Quizadilla.Models.Option>();
         var correctList = opts.Where(o => o.IsCorrect).Select(o => o.OptionText ?? string.Empty).ToList();
         var encodedCorrectJson = System.Text.Json.JsonSerializer.Serialize(correctList);
         <div class="q-step card mb-3" style="@(i == 0 ? "display:block;" : "display:none;")" data-correct='@Html.Raw(encodedCorrectJson)'>

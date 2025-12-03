@@ -53,7 +53,7 @@ public class QuizController : Controller
             // Ensure collections the view iterates aren't null to avoid rendering errors
             updatedQuiz.Questions ??= new List<Question>();
             foreach (var q in updatedQuiz.Questions)
-                q.options ??= new List<Option>();
+                q.Options ??= new List<Option>();
             try
             {
                 _repo.UpdateQuiz(updatedQuiz);
@@ -83,7 +83,7 @@ public class QuizController : Controller
 
         var rng = new Random();
         foreach (var question in quiz.Questions)
-            question.options = question.options.OrderBy(o => rng.Next()).ToList();
+            question.Options = question.Options.OrderBy(o => rng.Next()).ToList();
 
         return View(quiz);
     }
@@ -112,12 +112,12 @@ public class QuizController : Controller
     public IActionResult CreateQuiz(Quiz quiz)
     {
         // Ensure questions/options exist and that at least one Option per question is marked correct.
-        foreach (var q in quiz.Questions ?? new List<Question>())
+        // Allow multiple options to be marked IsCorrect (do not force a single correct option).
+        /*foreach (var q in quiz.Questions ??= new List<Question>())
         {
             q.options ??= new List<Option>();
 
-            // If the UI now supplies an IsCorrect flag on Option, prefer that.
-            // If none are marked correct, choose the first option as the correct one to keep data consistent.
+            // Preserve any IsCorrect flags the UI posted. If none are set, pick the first so data stays consistent.
             if (!q.options.Any(o => o.IsCorrect))
             {
                 if (q.options.Any())
@@ -125,13 +125,21 @@ public class QuizController : Controller
                     q.options.First().IsCorrect = true;
                 }
             }
+        }*/
+
+        foreach(var question in quiz.Questions)
+        {
+            if(question.Options.Count < 2) { 
+                ModelState.AddModelError("", "Each question must have at least two options.");
+                return RedirectToAction("Create");
+            }
         }
 
         if (string.IsNullOrWhiteSpace(quiz.Theme))
             quiz.Theme = Themes[Rng.Next(Themes.Length)];
 
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return BadRequest();
+        if (userId == null) return Unauthorized();
 
         quiz.UserID = userId;
 

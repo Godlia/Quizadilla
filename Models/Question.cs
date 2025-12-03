@@ -12,7 +12,7 @@ namespace Quizadilla.Models
         [Required]
         public string QuestionText { get; set; } = string.Empty;
 
-        public ICollection<Option> options { get; set; } = new List<Option>();
+        public ICollection<Option> Options { get; set; } = new List<Option>();
 
 
         public string toString()
@@ -21,7 +21,7 @@ namespace Quizadilla.Models
             returnString += "Question ID: " + Id + "\n";
             returnString += "Question Text: " + QuestionText + "\n";
             returnString += "Options: \n";
-            foreach (var option in options)
+            foreach (var option in Options)
             {
                 returnString += "\t" + option.toString() + "\n";
             }
