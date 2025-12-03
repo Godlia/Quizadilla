@@ -1,0 +1,48 @@
+@using Microsoft.AspNetCore.Identity
+@using Quizadilla.Areas.Identity.Data
+
+@inject SignInManager<QuizadillaUser> SignInManager
+@inject UserManager<QuizadillaUser> UserManager
+
+    <div id="accountSubmenu" class="collapse">
+        <ul class="list-unstyled ps-3 my-2">
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a class="d-block" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        Manage Account
+                    </a>
+                </li>
+
+                <li>
+                    <a class="d-block" asp-controller="Quiz" asp-action="MyQuizzes">
+                    My Quizzes
+                    </a>
+                </li>
+
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                        <button type="submit" class="btn btn-link p-0 d-block text-start">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a class="d-block" asp-area="Identity" asp-page="/Account/Login">
+                        Login
+                    </a>
+                </li>
+
+                <li>
+                    <a class="d-block" asp-area="Identity" asp-page="/Account/Register">
+                        Register
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </div>

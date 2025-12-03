@@ -25,9 +25,9 @@ public class HomeController : Controller
     }
 
     public IActionResult Privacy() => View();
-    public IActionResult Test() => View();
-    public IActionResult MyAccount() => View();
     public IActionResult Quizzes() => View();
+    public IActionResult Support() => View();
+    
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

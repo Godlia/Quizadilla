@@ -65,6 +65,14 @@ public class QuizController : Controller
     {
         return View();
     }
+    public IActionResult Categories()
+    {
+        return View();
+    }
+    public IActionResult MostPopular()
+    {
+        return View();
+    }
 
     [Authorize]
     public IActionResult Create()
