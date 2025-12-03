@@ -7,7 +7,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li>
-        <a class="d-block text-dark">Hello @UserManager.GetUserName(User)!</a>
+        <span class="d-block text-dark">Hello @UserManager.GetUserName(User)!</span>
     </li>
 
     <li>
@@ -26,13 +26,6 @@
             
         </form>
     </li>
-
-    <li>
-        <a class="d-block" asp-controller="Quiz" asp-action="MyQuizzes">
-            My Quizzes
-        </a>
-    </li>
-
 }
 else
 {
