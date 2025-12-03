@@ -1,0 +1,363 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+:root {
+  --navbar-color: #ffcc66;
+  --background-color: #fff3e0;
+  --text-color: black;   
+  --btn-color: #ffcc66;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
+main{
+  flex: 1;
+}
+  /* Navbar-right popup nav*/
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #fff;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      transition: right 0.3s ease-in-out;
+      z-index: 1050;
+      padding: 1.5rem;
+    }
+    .sidebar.active {
+      right: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .sidebar a {
+      display: block;
+      color: #333;
+      text-decoration: none;
+      margin: 0.75rem 0;
+      font-size: 1.1rem;
+    }
+    .sidebar a:hover {
+      color: #0d6efd;
+    }
+
+    /* Small screens */
+    @media (max-width: 660px) {
+      .nav-mid,
+      .search-form,
+      .person-icon {
+        display: none !important;
+      }
+    }
+
+    /* Big screen show all */
+    @media (min-width: 661px) {
+      .sidebar a.small-only {
+        display: none !important;
+      }
+    }
+    /* standard-pos */
+.right-content {
+  transition: transform 0.3s ease;
+}
+
+/* NAVBAR RESIZE WHEN OPEN SIDEBAR*/
+.sidebar-open .right-content {
+  transform: translateX(-250px); /* Width */
+}
+.right-content {
+  gap: 0.2rem;          
+  margin-right: 0.1rem;
+}
+
+.search-form input {
+  width: 200px;         
+}
+/*ACCOUNT NO UNDERLINE N DROPDOWN ARROW*/
+.person-icon.dropdown-toggle {
+  text-decoration: none !important;  
+  border: none !important;           
+}
+.person-icon.dropdown-toggle:focus,
+.person-icon.dropdown-toggle:hover {
+  text-decoration: none !important;  
+  outline: none;                     
+}
+.person-icon.dropdown-toggle::after {
+  display: none !important;
+}
+
+/* SIDEBAR DROPDOWN_MENU QUIZZES */
+.sidebar a,
+.sidebar-link {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.1rem;
+  text-align: left;
+  text-decoration: none;
+  margin: 0.6rem 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  color: #0d6efd;
+}
+
+/* SUBMENU QUIZZES */
+.sidebar-submenu {
+  margin-left: 1.2rem;
+  margin-top: 0.3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-submenu a {
+  font-size: 1rem;
+  color: #333;
+  text-decoration: none;
+  margin: 0.25rem 0;
+}
+
+.sidebar-submenu a:hover {
+  color: #0d6efd;
+}
+
+.sidebar-dropdown.open i {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.sidebar-dropdown i {
+  transition: transform 0.2s ease;
+}
+
+.sidebar a, .sidebar-link { font-size:1.1rem; color:#222; text-decoration:none; }
+.sidebar-link { background:transparent; border:0; padding:0; cursor:pointer; }
+#quizSubmenu a { font-size:1rem; color:#333; }
+.sidebar-dropdown .bi-chevron-down { transition: transform .2s ease; }
+.sidebar-dropdown .collapse.show + .bi-chevron-down,
+.sidebar-dropdown .sidebar-link[aria-expanded="true"] .bi-chevron-down { transform: rotate(180deg); }
+
+
+
+.navbar {
+    background-color: var(--navbar-color);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link{
+    color: black !important;
+    font-weight: 500;
+}
+
+.dropdown-divider{
+  color: black;
+}
+.input-group-text{
+  background-color: white;
+  border-right: 0;
+}
+.navbar-toggler{
+  padding: 0.25rem 0rem;
+}
+
+/*Searchbar*/
+.clear-btn {
+  border: 1px solid #ccc;      
+  border-left: none;           
+  border-radius: 0;            
+  background-color: white;   
+}
+
+/*Index.cshtml*/
+
+/*Base of the card*/
+.ingredient-card.card{
+  border:0;
+  border-radius:1rem;
+  overflow:hidden;
+  box-shadow:0 10px 16px rgba(0,0,0,.08);
+  transition:transform .15s ease, box-shadow .15s ease;
+  background:#fff;
+}
+.ingredient-card.card:hover{ transform:translateY(-3px); box-shadow:0 14px 24px rgba(0,0,0,.12); }
+
+/*ingredient top area*/
+.ingredient-top{
+  height:140px;
+  position:relative;
+
+
+  /*Little highlight of card on hover */
+}
+.ingredient-card:hover .ingredient-top::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(60% 60% at 35% 30%, rgba(255,255,255,.15) 0 60%, transparent 61%);
+}
+
+/*body*/
+.ingredient-card .card-body{ padding: .9rem .95rem 1rem; }
+.ingredient-title{ margin:0 0 .25rem 0; font-size:1.05rem; font-weight:700; }
+.ingredient-meta{ font-size:.9rem; color:#555; }
+.ingredient-actions .btn{ --bs-btn-padding-y:.3rem; --bs-btn-padding-x:.6rem; --bs-btn-font-size:.85rem; }
+
+
+
+/*Ingredients, top of the "quizz-cards", design helped by chatGPT*/
+
+/*Tomato*/
+.theme-tomato .ingredient-top{
+  background:
+    radial-gradient(120px 90px at 70% 75%, rgba(0,0,0,.08) 0 25%, transparent 26% 100%),
+    radial-gradient(120px 90px at 35% 28%, rgba(255,255,255,.25) 0 35%, transparent 36% 100%),
+    linear-gradient(135deg, #ff6060, #d62828);
+}
+
+/*Guac*/
+.theme-guac .ingredient-top{
+  background:
+    radial-gradient(120px 90px at 32% 28%, rgba(255,255,255,.20) 0 35%, transparent 36% 100%),
+    linear-gradient(135deg, #a3e635, #65a30d);
+}
+
+/*Cheese*/
+.theme-cheese .ingredient-top{
+  background:
+    radial-gradient(12px 12px at 22% 28%, rgba(255,255,255,.45) 0 40%, transparent 41%),
+    radial-gradient(10px 10px at 75% 60%, rgba(255,255,255,.40) 0 40%, transparent 41%),
+    linear-gradient(145deg, #ffe66d, #ffd23f);
+}
+
+/*Onion*/
+.theme-onion .ingredient-top{
+  background:
+    radial-gradient(circle at 50% 50%, #f3e8ff 0 16%, transparent 16% 17%, #d8b4fe 17% 32%, transparent 32% 33%, #a855f7 33% 48%, transparent 48% 49%, #7e22ce 49% 64%, transparent 64%),
+    linear-gradient(135deg, #c084fc, #a855f7);
+}
+
+/*Chicken*/
+.theme-chicken .ingredient-top{
+  background:
+    radial-gradient(130px 100px at 40% 30%, rgba(255,255,255,.22) 0 40%, transparent 41% 100%),
+    linear-gradient(135deg, #f2b880, #e89f59);
+}
+
+/*Salsa*/
+.theme-salsa .ingredient-top{
+  background:
+    conic-gradient(from 0deg, #ff8a5b 0 40%, #ff3b3f 40% 70%, #ff6f61 70% 100%);
+}
+
+/*Scroller*/
+.ingredient-scroller{ display:flex; gap:1rem; overflow-x:auto; scroll-behavior:smooth; scroll-snap-type:x mandatory; padding:.25rem .5rem 1rem; }
+.ingredient-scroller > .ingredient-card{ flex:0 0 240px; scroll-snap-align:start; }
+.scroll-btn{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border:0; border-radius:50%; background:rgba(255,255,255,.9); box-shadow:0 6px 16px rgba(0,0,0,.15); display:grid; place-items:center; }
+.scroll-btn-left{ left:0; translate:-40% 0; } .scroll-btn-right{ right:0; translate:40% 0; }
+.scroll-btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+
+.scroll-btn {
+  z-index: 5;
+}
+
+/*Text-index*/
+.text-index{
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* === Footer fix === */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important;
+}
+
+main, .container, .custom-background-color {
+  height: auto !important;
+  overflow: visible !important;
+  flex-grow: 1 !important;
+}
+.todays-quiz{
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 16px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+  background: var(--navbar-color);
+}
+.text-index-quiz{
+  padding-top: 0.7rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.ingredient-title-top{
+  margin-left:1rem;
+  margin-right:1rem; 
+  font-size:1.05rem; 
+  font-weight:700;
+}
+.ingredient-meta-top{
+  margin-left:1rem;
+  margin-right:1rem; 
+  font-size:.9rem; 
+  color:#555; 
+}
+.ingredient-actions-top{
+  margin-left:1rem;
+  margin-right:1rem; 
+}
+
+
+h1 {
+  font-weight: 700;
+}
+
+/* Hero spacing like original home page */
+.custom-background-color h1 {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.custom-background-color .text-index {
+  font-size: 1.1rem;
+}
+
+
+.footer.custom-navbar-footer {
+  background-color: var(--navbar-color);
+}

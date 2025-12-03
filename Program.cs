@@ -1,26 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using Quizadilla.Models;
-using Microsoft.AspNetCore.Identity;
-using Quizadilla.Data;
-using Quizadilla.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("QuizDbContextConnection"))
 );
-builder.Services.AddDbContext<AuthDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("AuthDbContextConnection"))
-);
 
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
-builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
+//builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
 
-builder.Services.AddRazorPages();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -57,17 +58,24 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("AllowReact");
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.MapControllerRoute(
     name: "Quiz",
     pattern: "{controller=Quiz}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+//app.MapRazorPages();
+
+app.MapControllers();
 
 app.Run();
 
