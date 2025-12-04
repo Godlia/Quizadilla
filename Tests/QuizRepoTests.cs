@@ -12,11 +12,11 @@ namespace QuizadillaTests
     {
         private QuizDbContext GetInMemoryDbContext()
         {
-            var options = new DbContextOptionsBuilder<QuizDbContext>()
+            var Options = new DbContextOptionsBuilder<QuizDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            return new QuizDbContext(options);
+            return new QuizDbContext(Options);
         }
 
 
@@ -37,10 +37,9 @@ namespace QuizadillaTests
                     new Question
                     {
                         QuestionText = "Q1",
-                        correctString = "Correct",
-                        options = new List<Option>
+                        Options = new List<Option>
                         {
-                            new Option { OptionText = "A" },
+                            new Option { OptionText = "A", IsCorrect = true },
                             new Option { OptionText = "B" }
                         }
                     }
@@ -52,12 +51,12 @@ namespace QuizadillaTests
 
             var stored = db.Quizzes
                 .Include(q => q.Questions)
-                .ThenInclude(q => q.options)
+                .ThenInclude(q => q.Options)
                 .Single();
 
             Assert.Equal("Test Quiz", stored.Title);
             Assert.Single(stored.Questions);
-            Assert.Equal(2, stored.Questions.First().options.Count);
+            Assert.Equal(2, stored.Questions.First().Options.Count);
         }
 
         // Negative null questions
@@ -99,7 +98,7 @@ namespace QuizadillaTests
                     new Question
                     {
                         QuestionText = "Q1",
-                        options = new List<Option> { new Option { OptionText = "A" } }
+                        Options = new List<Option> { new Option { OptionText = "A" } }
                     }
                 }
             };
@@ -113,7 +112,7 @@ namespace QuizadillaTests
 
             Assert.NotNull(loaded);
             Assert.Single(loaded!.Questions);
-            Assert.Single(loaded.Questions.First().options);
+            Assert.Single(loaded.Questions.First().Options);
         }
 
         [Fact]
@@ -143,20 +142,18 @@ namespace QuizadillaTests
                     new Question
                     {
                         QuestionText = "Q1",
-                        correctString = "A",
-                        options = new List<Option>
+                        Options = new List<Option>
                         {
-                            new Option { OptionText = "A" }, 
+                            new Option { OptionText = "A", IsCorrect = true }, 
                             new Option { OptionText = "B" } 
                         }
                     },
                     new Question
                     {
                         QuestionText = "Q2",
-                        correctString = "X",
-                        options = new List<Option>
+                        Options = new List<Option>
                         {
-                            new Option { OptionText = "X" }
+                            new Option { OptionText = "X", IsCorrect = true}
                         }
                     }
                 }
@@ -171,8 +168,8 @@ namespace QuizadillaTests
             var stored = repo.GetQuizForEdit(original.QuizId)!;
             var q1 = stored.Questions.First();
             var q2 = stored.Questions.Skip(1).First();
-            var q1OptA = q1.options.First();
-            var q1OptB = q1.options.Skip(1).First();
+            var q1OptA = q1.Options.First();
+            var q1OptB = q1.Options.Skip(1).First();
 
             // Build "updated" object as API (best api itw) does
             var updated = new Quiz
@@ -188,13 +185,13 @@ namespace QuizadillaTests
                     {
                         Id = q1.Id,
                         QuestionText = "Q1 updated",
-                        correctString = "NEW",
-                        options = new List<Option>
+                        Options = new List<Option>
                         {
                             new Option
                             {
                                 OptionId = q1OptA.OptionId,
-                                OptionText = "A updated"
+                                OptionText = "A updated",
+                                IsCorrect = true
                             },
                             
                             new Option
@@ -219,13 +216,13 @@ namespace QuizadillaTests
             Assert.Single(reloaded.Questions);
             var updatedQ1 = reloaded.Questions.First();
             Assert.Equal("Q1 updated", updatedQ1.QuestionText);
-            Assert.Equal("NEW", updatedQ1.correctString);
+            Assert.Equal(true, updatedQ1.Options.First(o => o.OptionText == "A updated").IsCorrect);
 
             // B rem, A upd, C new
-            Assert.Equal(2, updatedQ1.options.Count);
-            Assert.Contains(updatedQ1.options, o => o.OptionText == "A updated");
-            Assert.Contains(updatedQ1.options, o => o.OptionText == "C new");
-            Assert.DoesNotContain(updatedQ1.options, o => o.OptionText == "B");
+            Assert.Equal(2, updatedQ1.Options.Count);
+            Assert.Contains(updatedQ1.Options, o => o.OptionText == "A updated");
+            Assert.Contains(updatedQ1.Options, o => o.OptionText == "C new");
+            Assert.DoesNotContain(updatedQ1.Options, o => o.OptionText == "B");
         }
 
         [Fact]
@@ -264,7 +261,7 @@ namespace QuizadillaTests
                     new Question
                     {
                         QuestionText = "Q1",
-                        options = new List<Option>
+                        Options = new List<Option>
                         {
                             new Option { OptionText = "A" },
                             new Option { OptionText = "B" }
