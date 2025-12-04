@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect
+} from "react";
+
 import { me, logout as logoutApi } from "../api/auth";
 
 const AuthContext = createContext();
@@ -23,7 +29,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function loginUser(email) {
-    setUser({ email });   // <---- THE FIX
+    setUser({ email }); 
   }
 
   async function logout() {

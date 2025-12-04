@@ -1,4 +1,6 @@
+import React from "react";                      // <- MANGLET HOS DEG
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Discover from "./pages/Discover";
@@ -10,23 +12,31 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import QuizEdit from "./pages/QuizEdit";
+
 import { useAuth } from "./context/AuthContext";
 
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
 
-  // Optional: prevent flicker
-  if (loading) return <div>Loading...</div>;
+  // Prevent UI from flashing before auth loads
+  if (loading) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <Layout>
       <Routes>
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/quiz/:id" element={<QuizPlay />} />
 
-        {/* Protected routes */}
+        {/* PROTECTED ROUTES */}
         <Route
           path="/my"
           element={
@@ -46,11 +56,10 @@ export default function App() {
           }
         />
 
-        {/* Public routes */}
+        {/* AUTH ROUTES */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<Account />} />
-
       </Routes>
     </Layout>
   );

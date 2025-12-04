@@ -47,22 +47,32 @@ namespace Quizadilla.Controllers
         // POST: /api/auth/register
         // -------------------------
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
-        {
-            var user = new QuizadillaUser
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto){
+        if (!ModelState.IsValid)
+            return BadRequest(new { 
+            errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList()
+            });
+
+
+        var user = new QuizadillaUser{
+            UserName = dto.Email,
+            Email = dto.Email
+        };
+
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded){
+            return BadRequest(new
             {
-                UserName = dto.Email,
-                Email = dto.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, dto.Password);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            await _signInManager.SignInAsync(user, isPersistent: true);
-
-            return Ok(new { message = "Registered and logged in" });
+            errors = result.Errors.Select(e => e.Description).ToList()
+            });
         }
+
+        return Ok(new { message = "Registration successful" });
+    }
 
         // -------------------------
         // POST: /api/auth/logout

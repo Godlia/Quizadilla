@@ -3,12 +3,15 @@ using System.Collections.Generic;
 namespace Quizadilla.Dtos
 {
     // --------------------------
-    // QUIZ DTO
+    // QUIZ DTO (for update)
     // --------------------------
     public class UpdateQuizDto
     {
         public string Title { get; set; } = "";
         public string? Description { get; set; }
+
+        // NEW: theme support
+        public string? Theme { get; set; }
 
         // Liste av spørsmål
         public List<UpdateQuestionDto> Questions { get; set; } = new();
@@ -24,8 +27,8 @@ namespace Quizadilla.Dtos
 
         public string QuestionText { get; set; } = "";
 
-        // CorrectString må være Optional (samme som i EF-modellen)
-        public string? CorrectString { get; set; } = "";
+        // Optional (samme som i EF-modellen)
+        public string? CorrectString { get; set; }
 
         // Liste av alternativer
         public List<UpdateOptionDto> Options { get; set; } = new();

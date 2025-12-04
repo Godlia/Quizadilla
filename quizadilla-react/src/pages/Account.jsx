@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { changeEmail, changePassword, changeUsername, deleteAccount } from "../api/auth";
+import { changeEmail, changePassword, deleteAccount } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
 
 export default function Account() {
@@ -14,37 +14,109 @@ export default function Account() {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
+  // ----------------------------------------
+  // VALIDATION HELPERS
+  // ----------------------------------------
+
+  function isValidEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
+  function isValidPassword(password) {
+    // Minst 8 tegn, stor bokstav, tall og spesialtegn
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+  }
+
+  function showError(message) {
+    setErr(message);
+    setMsg("");
+  }
+
+  function showSuccess(message) {
+    setMsg(message);
+    setErr("");
+  }
+
+  // ----------------------------------------
+  // EMAIL UPDATE
+  // ----------------------------------------
   async function handleEmail() {
     setMsg(""); setErr("");
+
+    if (!newEmail.trim()) return showError("Email cannot be empty.");
+    if (!isValidEmail(newEmail)) return showError("Invalid email format.");
+
     try {
       const result = await changeEmail(newEmail);
       loginUser(result.email);
-      setMsg("Email updated!");
+      showSuccess("Email updated!");
     } catch (e) {
-      setErr("Failed: " + e.message);
+      showError(e.message);
     }
   }
 
+  // ----------------------------------------
+  // USERNAME UPDATE
+  // ----------------------------------------
   async function handleUsername() {
     setMsg(""); setErr("");
+
+    if (!newUsername.trim()) return showError("Username cannot be empty.");
+    if (newUsername.length < 3)
+      return showError("Username must be at least 3 characters long.");
+
     try {
       await changeUsername(newUsername);
-      setMsg("Username updated!");
+      showSuccess("Username updated!");
     } catch (e) {
-      setErr("Failed: " + e.message);
+      showError(e.message);
     }
   }
 
+  // ----------------------------------------
+  // PASSWORD UPDATE
+  // ----------------------------------------
   async function handlePassword() {
     setMsg(""); setErr("");
+
+    if (!currentPassword.trim() || !newPassword.trim())
+      return showError("Both password fields must be filled.");
+
+    if (newPassword === currentPassword)
+      return showError("New password cannot be the same as the current one.");
+
+    if (!isValidPassword(newPassword))
+      return showError(
+        "Password must be at least 8 characters, contain one uppercase letter, one number and one special character."
+      );
+
     try {
       await changePassword(currentPassword, newPassword);
-      setMsg("Password updated!");
+      showSuccess("Password updated!");
     } catch (e) {
-      setErr("Failed: " + e.message);
+      showError(e.message);
     }
   }
 
+  // ----------------------------------------
+  // DELETE ACCOUNT
+  // ----------------------------------------
+  async function handleDelete() {
+    setMsg(""); setErr("");
+
+    if (!confirm("Are you sure? This cannot be undone.")) return;
+
+    try {
+      await deleteAccount();
+      window.location.href = "/";
+    } catch (e) {
+      showError(e.message);
+    }
+  }
+
+  // ----------------------------------------
+  // UI
+  // ----------------------------------------
   return (
     <div className="container mt-5" style={{ maxWidth: 600 }}>
       <h2>My Account</h2>
@@ -70,21 +142,6 @@ export default function Account() {
 
       <hr />
 
-      {/* Change Username */}
-      <h4>Change Username - (Working but not really working)</h4>
-      <input
-        className="form-control mb-2"
-        type="text"
-        placeholder="New username"
-        value={newUsername}
-        onChange={(e) => setNewUsername(e.target.value)}
-      />
-      <button className="btn btn-primary mb-4" onClick={handleUsername}>
-        Update Username
-      </button>
-
-      <hr />
-
       {/* Change Password */}
       <h4>Change Password</h4>
       <input
@@ -104,29 +161,16 @@ export default function Account() {
       <button className="btn btn-primary" onClick={handlePassword}>
         Change Password
       </button>
+
       <hr />
 
-<h4 className="text-danger">Danger Zone</h4>
-<p>This will permanently delete your account and all associated data.</p>
+      {/* Delete Account */}
+      <h4 className="text-danger">Danger Zone</h4>
+      <p>This will permanently delete your account and all associated data.</p>
 
-<button
-  className="btn btn-danger"
-  onClick={async () => {
-    if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
-
-    setMsg(""); setErr("");
-
-    try {
-      await deleteAccount();
-      window.location.href = "/";
-    } catch (e) {
-      setErr("Failed: " + e.message);
-    }
-  }}
->
-  Delete My Account
-</button>
-
+      <button className="btn btn-danger" onClick={handleDelete}>
+        Delete My Account
+      </button>
     </div>
   );
 }

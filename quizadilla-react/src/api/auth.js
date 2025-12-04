@@ -1,87 +1,57 @@
-const API_URL = "http://localhost:5135/api/auth"; // endre port hvis nødvendig
+// src/api/auth.js
 
-async function handle(res) {
+const BASE = "http://localhost:5135/api/auth";
+
+async function api(path, method = "GET", body) {
+  const res = await fetch(BASE + path, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
+    // Send error object with .response so register.jsx can read it
+    const error = new Error("Request failed");
+    error.response = res;
+    throw error;
   }
-  // some responses (logout) return no body
-  try {
-    return await res.json();
-  } catch {
-    return {};
-  }
+
+  return res.json();
 }
 
-export async function login(email, password) {
-  const res = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  return handle(res);
+// ---------------------------
+// AUTH FUNCTIONS
+// ---------------------------
+
+export function register(email, password) {
+  return api("/register", "POST", { email, password });
 }
 
-export async function register(email, password) {
-  const res = await fetch(`${API_URL}/register`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  return handle(res);
+export function login(email, password) {
+  return api("/login", "POST", { email, password });
 }
 
-export async function logout() {
-  const res = await fetch(`${API_URL}/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
-  return handle(res);
+export function logout() {
+  return api("/logout", "POST");
 }
 
-export async function me() {
-  const res = await fetch(`${API_URL}/me`, {
-    credentials: "include",
-  });
-  return handle(res);
-}
-export async function changeEmail(newEmail) {
-  const res = await fetch(`${API_URL}/change-email`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ newEmail })
-  });
-  return handle(res);
+export function me() {
+  return api("/me", "GET");
 }
 
-export async function changeUsername(newUsername) {
-  const res = await fetch(`${API_URL}/change-username`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ newUsername })
-  });
-  return handle(res);
+export function changeEmail(newEmail) {
+  return api("/change-email", "POST", { newEmail });
 }
 
-export async function changePassword(currentPassword, newPassword) {
-  const res = await fetch(`${API_URL}/change-password`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ currentPassword, newPassword })
-  });
-  return handle(res);
-}
-export async function deleteAccount() {
-  const res = await fetch(`${API_URL}/delete-account`, {
-    method: "DELETE",
-    credentials: "include"
-  });
-  return handle(res);
+export function changePassword(currentPassword, newPassword) {
+  return api("/change-password", "POST", { currentPassword, newPassword });
 }
 
+export function changeUsername(newUsername) {
+  return api("/change-username", "POST", { newUsername });
+}
 
+export function deleteAccount() {
+  return api("/delete-account", "DELETE");
+}

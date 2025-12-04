@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchQuiz, updateQuiz } from "../api/quizzes";
 
+const THEMES = ["tomato", "guac", "cheese", "onion", "chicken", "salsa"];
+
 export default function QuizEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,17 +13,16 @@ export default function QuizEdit() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // LOAD EXISTING QUIZ
+  // LOAD
   useEffect(() => {
     async function load() {
       try {
         const data = await fetchQuiz(id);
 
-        // Ensure structure
-        data.questions = data.questions || [];
-        data.questions.forEach(q => {
-          q.options = q.options || [];
-          q.correctString = q.correctString || "";
+        data.questions ||= [];
+        data.questions.forEach((q) => {
+          q.options ||= [];
+          q.correctString ||= "";
         });
 
         setQuiz(data);
@@ -34,30 +35,26 @@ export default function QuizEdit() {
   }, [id]);
 
   // UPDATE FIELDS
-  function updateTitle(t) {
-    setQuiz({ ...quiz, title: t });
+  function updateField(name, value) {
+    setQuiz({ ...quiz, [name]: value });
   }
 
-  function updateDescription(d) {
-    setQuiz({ ...quiz, description: d });
+  function updateQuestion(idx, value) {
+    const copy = [...quiz.questions];
+    copy[idx].questionText = value;
+    setQuiz({ ...quiz, questions: copy });
   }
 
-  function updateQuestion(idx, t) {
-    const updated = [...quiz.questions];
-    updated[idx].questionText = t;
-    setQuiz({ ...quiz, questions: updated });
+  function updateCorrect(idx, value) {
+    const copy = [...quiz.questions];
+    copy[idx].correctString = value;
+    setQuiz({ ...quiz, questions: copy });
   }
 
-  function updateCorrect(idx, t) {
-    const updated = [...quiz.questions];
-    updated[idx].correctString = t;
-    setQuiz({ ...quiz, questions: updated });
-  }
-
-  function updateOption(qi, oi, t) {
-    const updated = [...quiz.questions];
-    updated[qi].options[oi].optionText = t;
-    setQuiz({ ...quiz, questions: updated });
+  function updateOption(qi, oi, value) {
+    const copy = [...quiz.questions];
+    copy[qi].options[oi].optionText = value;
+    setQuiz({ ...quiz, questions: copy });
   }
 
   // ADD / REMOVE
@@ -66,35 +63,27 @@ export default function QuizEdit() {
       ...quiz,
       questions: [
         ...quiz.questions,
-        {
-          id: 0,
-          questionText: "",
-          correctString: "",
-          options: []
-        }
-      ]
+        { id: 0, questionText: "", correctString: "", options: [] },
+      ],
     });
   }
 
   function removeQuestion(idx) {
-    const updated = [...quiz.questions];
-    updated.splice(idx, 1);
-    setQuiz({ ...quiz, questions: updated });
+    const copy = [...quiz.questions];
+    copy.splice(idx, 1);
+    setQuiz({ ...quiz, questions: copy });
   }
 
   function addOption(qi) {
-    const updated = [...quiz.questions];
-    updated[qi].options.push({
-      optionId: 0,
-      optionText: ""
-    });
-    setQuiz({ ...quiz, questions: updated });
+    const copy = [...quiz.questions];
+    copy[qi].options.push({ optionId: 0, optionText: "" });
+    setQuiz({ ...quiz, questions: copy });
   }
 
   function removeOption(qi, oi) {
-    const updated = [...quiz.questions];
-    updated[qi].options.splice(oi, 1);
-    setQuiz({ ...quiz, questions: updated });
+    const copy = [...quiz.questions];
+    copy[qi].options.splice(oi, 1);
+    setQuiz({ ...quiz, questions: copy });
   }
 
   // SAVE
@@ -106,15 +95,16 @@ export default function QuizEdit() {
       const payload = {
         title: quiz.title,
         description: quiz.description,
-        questions: quiz.questions.map(q => ({
+        theme: quiz.theme, // <---- ADDED
+        questions: quiz.questions.map((q) => ({
           id: q.id || 0,
           questionText: q.questionText,
           correctString: q.correctString || "",
-          options: q.options.map(o => ({
+          options: q.options.map((o) => ({
             optionId: o.optionId || 0,
-            optionText: o.optionText
-          }))
-        }))
+            optionText: o.optionText,
+          })),
+        })),
       };
 
       await updateQuiz(id, payload);
@@ -142,7 +132,7 @@ export default function QuizEdit() {
       <input
         className="form-control"
         value={quiz.title}
-        onChange={(e) => updateTitle(e.target.value)}
+        onChange={(e) => updateField("title", e.target.value)}
       />
 
       <label className="form-label mt-3">Description</label>
@@ -150,8 +140,22 @@ export default function QuizEdit() {
         className="form-control"
         rows={3}
         value={quiz.description || ""}
-        onChange={(e) => updateDescription(e.target.value)}
+        onChange={(e) => updateField("description", e.target.value)}
       />
+
+      {/* THEME SELECT */}
+      <label className="form-label mt-3">Theme</label>
+      <select
+        className="form-select"
+        value={quiz.theme || "tomato"}
+        onChange={(e) => updateField("theme", e.target.value)}
+      >
+        {THEMES.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
 
       <hr />
 
@@ -166,7 +170,7 @@ export default function QuizEdit() {
             onChange={(e) => updateQuestion(qi, e.target.value)}
           />
 
-          <label>Correct answer (optional)</label>
+          <label>Correct answer</label>
           <input
             className="form-control mb-2"
             value={q.correctString}
@@ -181,11 +185,19 @@ export default function QuizEdit() {
                 value={o.optionText}
                 onChange={(e) => updateOption(qi, oi, e.target.value)}
               />
-              <button className="btn btn-danger" onClick={() => removeOption(qi, oi)}>×</button>
+              <button
+                className="btn btn-danger"
+                onClick={() => removeOption(qi, oi)}
+              >
+                ×
+              </button>
             </div>
           ))}
 
-          <button className="btn btn-sm btn-secondary" onClick={() => addOption(qi)}>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => addOption(qi)}
+          >
             + Add Option
           </button>
 
@@ -204,7 +216,11 @@ export default function QuizEdit() {
         + Add Question
       </button>
 
-      <button className="btn btn-success btn-lg" disabled={saving} onClick={save}>
+      <button
+        className="btn btn-success btn-lg"
+        disabled={saving}
+        onClick={save}
+      >
         {saving ? "Saving…" : "Save Quiz"}
       </button>
     </div>

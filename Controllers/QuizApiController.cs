@@ -26,39 +26,39 @@ public class QuizApiController : ControllerBase
     // -----------------------------
     // CREATE QUIZ
     // -----------------------------
-   [HttpPost]
-[Authorize]
-public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
-{
-    var user = await _userManager.GetUserAsync(User);
-    if (user == null)
-        return Unauthorized();
-
-    if (string.IsNullOrWhiteSpace(dto.Title))
-        return BadRequest("Quiz title is required");
-
-    var quiz = new Quiz
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
     {
-        Title = dto.Title,
-        Description = dto.Description ?? "",
-        UserID = user.Id,
-        Questions = dto.Questions.Select(q => new Question
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Unauthorized();
+
+        if (string.IsNullOrWhiteSpace(dto.Title))
+            return BadRequest("Quiz title is required");
+
+        var quiz = new Quiz
         {
-            QuestionText = q.QuestionText,
-            correctString = q.CorrectString ?? "",
-            options = q.Options.Select(o => new Option
+            Title = dto.Title,
+            Description = dto.Description ?? "",
+            Theme = dto.Theme ?? "tomato", 
+            UserID = user.Id,
+            Questions = dto.Questions.Select(q => new Question
             {
-                OptionText = o.OptionText
+                QuestionText = q.QuestionText,
+                correctString = q.CorrectString ?? "",
+                options = q.Options.Select(o => new Option
+                {
+                    OptionText = o.OptionText
+                }).ToList()
             }).ToList()
-        }).ToList()
-    };
+        };
 
-    _repo.AddQuiz(quiz);
-    _repo.Save();
+        _repo.AddQuiz(quiz);
+        _repo.Save();
 
-    return Ok(quiz);
-}
-
+        return Ok(quiz);
+    }
 
     // -----------------------------
     // GET ALL
@@ -94,147 +94,127 @@ public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
 
         return Ok(quiz);
     }
+
     // -----------------------------
-    // SEARCH FUNCTION
-    // -----------------------------    
+    // SEARCH
+    // -----------------------------
     [HttpGet("search")]
-public IActionResult Search([FromQuery] string needle)
-{
-    if (string.IsNullOrWhiteSpace(needle))
+    public IActionResult Search([FromQuery] string needle)
     {
-        return BadRequest("Search term was empty");
+        if (string.IsNullOrWhiteSpace(needle))
+            return BadRequest("Search term was empty");
+
+        var quizzes = _repo.GetQuizzes();
+        var result = quizzes
+            .Where(q =>
+                q.Title.Contains(needle, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrEmpty(q.Description) &&
+                 q.Description.Contains(needle, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
+
+        return Ok(result);
     }
-
-    var quizzes = _repo.GetQuizzes();
-    var result = new List<Quiz>();
-
-    foreach (var quiz in quizzes)
-    {
-        if (quiz.Title.Contains(needle, StringComparison.OrdinalIgnoreCase) ||
-            (!string.IsNullOrEmpty(quiz.Description) &&
-             quiz.Description.Contains(needle, StringComparison.OrdinalIgnoreCase)))
-        {
-            result.Add(quiz);
-        }
-    }
-
-    return Ok(result);
-}
 
     // -----------------------------
     // UPDATE QUIZ
     // -----------------------------
     [HttpPut("{id}")]
-[Authorize]
-public async Task<IActionResult> UpdateQuiz(int id, [FromBody] UpdateQuizDto dto)
-{
-    var user = await _userManager.GetUserAsync(User);
-    if (user == null)
-        return Unauthorized();
-
-    var quiz = _repo.GetQuizForEdit(id);
-    if (quiz == null)
-        return NotFound("Quiz not found.");
-
-    if (quiz.UserID != user.Id)
-        return Forbid();
-
-    // Oppdater top-level fields
-    quiz.Title = dto.Title;
-    quiz.Description = dto.Description ?? "";
-
-    //
-    // ------------------------------
-    //    HANDLE QUESTIONS SAFELY
-    // ------------------------------
-    //
-
-    // 1. Map eksisterende spørsmål
-    var existingQuestions = quiz.Questions.ToList();
-
-    // 2. Tøm spørsmål — vi legger tilbake kontrollert
-    quiz.Questions.Clear();
-
-    foreach (var qDto in dto.Questions)
+    [Authorize]
+    public async Task<IActionResult> UpdateQuiz(int id, [FromBody] UpdateQuizDto dto)
     {
-        Question qEntity;
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Unauthorized();
 
-        if (qDto.Id == 0)
+        var quiz = _repo.GetQuizForEdit(id);
+        if (quiz == null)
+            return NotFound("Quiz not found.");
+
+        if (quiz.UserID != user.Id)
+            return Forbid();
+
+        // Update base fields
+        quiz.Title = dto.Title;
+        quiz.Description = dto.Description ?? "";
+        quiz.Theme = dto.Theme ?? quiz.Theme;      // <<--- added
+
+        // -------------------------
+        // Handle Questions
+        // -------------------------
+        var existingQuestions = quiz.Questions.ToList();
+        quiz.Questions.Clear();
+
+        foreach (var qDto in dto.Questions)
         {
-            // NYTT SPØRSMÅL
-            qEntity = new Question();
-        }
-        else
-        {
-            // Finn eksisterende
-            qEntity = existingQuestions.FirstOrDefault(x => x.Id == qDto.Id);
-            if (qEntity == null)
+            Question qEntity;
+
+            if (qDto.Id == 0)
             {
-                return BadRequest($"Question with ID {qDto.Id} not found.");
-            }
-
-            // Rens opp eksisterende options for konflikt
-            _db.Entry(qEntity).Collection(x => x.options).Load();
-        }
-
-        // Oppdater values
-        qEntity.QuestionText = qDto.QuestionText;
-        qEntity.correctString = qDto.CorrectString ?? "";
-
-        //
-        // ------------------------------
-        //    HANDLE OPTIONS SAFELY
-        // ------------------------------
-        //
-
-        var existingOptions = qEntity.options.ToList();
-        qEntity.options.Clear();
-
-        foreach (var oDto in qDto.Options)
-        {
-            Option oEntity;
-
-            if (oDto.OptionId == 0)
-            {
-                // Ny option
-                oEntity = new Option();
+                qEntity = new Question();
             }
             else
             {
-                oEntity = existingOptions.FirstOrDefault(o => o.OptionId == oDto.OptionId);
-                if (oEntity == null)
-                    return BadRequest($"Option with ID {oDto.OptionId} not found.");
+                qEntity = existingQuestions.FirstOrDefault(q => q.Id == qDto.Id);
+                if (qEntity == null)
+                    return BadRequest($"Question with ID {qDto.Id} not found.");
+
+                _db.Entry(qEntity).Collection(q => q.options).Load();
             }
 
-            oEntity.OptionText = oDto.OptionText;
-            qEntity.options.Add(oEntity);
+            qEntity.QuestionText = qDto.QuestionText;
+            qEntity.correctString = qDto.CorrectString ?? "";
+
+            // Handle options
+            var existingOptions = qEntity.options.ToList();
+            qEntity.options.Clear();
+
+            foreach (var oDto in qDto.Options)
+            {
+                Option oEntity;
+
+                if (oDto.OptionId == 0)
+                {
+                    oEntity = new Option();
+                }
+                else
+                {
+                    oEntity = existingOptions.FirstOrDefault(o => o.OptionId == oDto.OptionId);
+                    if (oEntity == null)
+                        return BadRequest($"Option with ID {oDto.OptionId} not found.");
+                }
+
+                oEntity.OptionText = oDto.OptionText;
+                qEntity.options.Add(oEntity);
+            }
+
+            quiz.Questions.Add(qEntity);
         }
 
-        quiz.Questions.Add(qEntity);
+        _repo.Save();
+        return Ok(quiz);
     }
 
-    _repo.Save();
-
-    return Ok(quiz);
-    }
+    // -----------------------------
+    // DELETE
+    // -----------------------------
     [HttpDelete("{id}")]
-[Authorize]
-public async Task<IActionResult> DeleteQuiz(int id)
-{
-    var user = await _userManager.GetUserAsync(User);
-    if (user == null)
-        return Unauthorized();
+    [Authorize]
+    public async Task<IActionResult> DeleteQuiz(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Unauthorized();
 
-    var quiz = _repo.GetQuizForEdit(id);
-    if (quiz == null)
-        return NotFound("Quiz not found");
+        var quiz = _repo.GetQuizForEdit(id);
+        if (quiz == null)
+            return NotFound("Quiz not found");
 
-    if (quiz.UserID != user.Id)
-        return Forbid(); // ikke eier
+        if (quiz.UserID != user.Id)
+            return Forbid();
 
-    _repo.DeleteQuiz(id);
-    _repo.Save();
+        _repo.DeleteQuiz(id);
+        _repo.Save();
 
-    return Ok(new { message = "Quiz deleted" });
-}
+        return Ok(new { message = "Quiz deleted" });
+    }
 }

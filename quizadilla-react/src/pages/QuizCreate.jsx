@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createQuiz } from "../api/quizzes";
 
+const THEMES = ["tomato", "guac", "cheese", "onion", "chicken", "salsa"];
+
 const emptyQuestion = () => ({
   questionText: "",
   correctString: "",
@@ -11,12 +13,11 @@ const emptyQuestion = () => ({
 export default function QuizCreate() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [theme, setTheme] = useState("tomato");
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const navigate = useNavigate();
 
-  // -------------------------
-  // UPDATE QUESTIONS
-  // -------------------------
+  // UPDATE QUESTION TEXT / CORRECT / OPTIONS
   function updateQuestion(index, patch) {
     setQuestions((prev) => {
       const copy = [...prev];
@@ -29,15 +30,13 @@ export default function QuizCreate() {
     setQuestions((prev) => {
       const copy = [...prev];
       const opts = [...copy[qIndex].options];
-      opts[oIndex] = { ...opts[oIndex], optionText: value };
+      opts[oIndex] = { optionText: value };
       copy[qIndex].options = opts;
       return copy;
     });
   }
 
-  // -------------------------
-  // ADD / REMOVE QUESTIONS
-  // -------------------------
+  // ADD & REMOVE
   function addQuestion() {
     setQuestions((prev) => [...prev, emptyQuestion()]);
   }
@@ -45,7 +44,7 @@ export default function QuizCreate() {
   function addOption(qIndex) {
     setQuestions((prev) => {
       const copy = [...prev];
-      copy[qIndex].options = [...copy[qIndex].options, { optionText: "" }];
+      copy[qIndex].options.push({ optionText: "" });
       return copy;
     });
   }
@@ -58,21 +57,18 @@ export default function QuizCreate() {
     });
   }
 
-  // -------------------------
   // SUBMIT
-  // -------------------------
   async function handleSubmit(e) {
     e.preventDefault();
 
     const payload = {
       title,
       description,
+      theme, // <---- ADDED
       questions: questions.map((q) => ({
         questionText: q.questionText,
         correctString: q.correctString,
-        options: q.options.map((o) => ({
-          optionText: o.optionText,
-        })),
+        options: q.options.map((o) => ({ optionText: o.optionText })),
       })),
     };
 
@@ -85,9 +81,6 @@ export default function QuizCreate() {
     }
   }
 
-  // -------------------------
-  // UI
-  // -------------------------
   return (
     <div>
       <h2>Create a New Quiz</h2>
@@ -114,9 +107,25 @@ export default function QuizCreate() {
           />
         </div>
 
+        {/* THEME SELECT */}
+        <div className="mb-3">
+          <label className="form-label">Theme</label>
+          <select
+            className="form-select"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+          >
+            {THEMES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <hr />
 
-        {/* Questions */}
+        {/* QUESTIONS */}
         {questions.map((q, qi) => (
           <div key={qi} className="mb-4 border rounded p-3">
             <h5>Question {qi + 1}</h5>
@@ -134,7 +143,7 @@ export default function QuizCreate() {
               />
             </div>
 
-            {/* Correct answer */}
+            {/* Correct Answer */}
             <div className="mb-2">
               <label className="form-label">Correct answer</label>
               <input
@@ -159,7 +168,6 @@ export default function QuizCreate() {
                     onChange={(e) => updateOption(qi, oi, e.target.value)}
                     required
                   />
-
                   {q.options.length > 2 && (
                     <button
                       type="button"
