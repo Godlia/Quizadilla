@@ -30,7 +30,7 @@ export default function QuizCardList({ quizzes, showOwnerActions = false, onDele
                 {showOwnerActions && (
                   <div className="d-flex gap-2">
                     <Link
-                      to={`/edit/${quiz.quizId}`}
+                      to={`/quiz/${quiz.quizId}/edit`}
                       className="btn btn-outline-secondary btn-sm"
                     >
                       Edit

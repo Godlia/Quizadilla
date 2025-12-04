@@ -1,29 +1,46 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { me, logout as logoutApi } from "../api/auth";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null); // optional: decode JWT later
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // runs on refresh
   useEffect(() => {
-    const saved = localStorage.getItem("jwt");
-    if (saved) setToken(saved);
+    async function loadUser() {
+      try {
+        const data = await me();
+        setUser({ email: data.email });
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadUser();
   }, []);
 
-  function login(jwt) {
-    localStorage.setItem("jwt", jwt);
-    setToken(jwt);
+  async function loginUser(email) {
+    setUser({ email });   // <---- THE FIX
   }
 
-  function logout() {
-    localStorage.removeItem("jwt");
-    setToken(null);
+  async function logout() {
+    await logoutApi();
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        loading,
+        loginUser,
+        logout
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

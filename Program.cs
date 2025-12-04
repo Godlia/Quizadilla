@@ -1,54 +1,95 @@
 using Microsoft.EntityFrameworkCore;
 using Quizadilla.Models;
+using Quizadilla.Areas.Identity.Data; // for QuizadillaUser
+using Quizadilla.Data;                // for AuthDbContext
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// -----------------------------
+// 1. MVC Controllers + Views
+// -----------------------------
 builder.Services.AddControllersWithViews();
+
+// -----------------------------
+// 2. Quiz database
+// -----------------------------
 builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("QuizDbContextConnection"))
 );
 
-builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+// -----------------------------
+// 3. Identity database for users
+// -----------------------------
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthDbContextConnection"))
+);
 
-//builder.Services.AddDefaultIdentity<QuizadillaUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
+// -----------------------------
+// 4. ASP.NET Identity
+// -----------------------------
+builder.Services.AddIdentity<QuizadillaUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders();
 
+// -----------------------------
+// 5. Cookie settings for React
+// -----------------------------
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = false;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+// -----------------------------
+// 6. CORS for React + cookies
+// -----------------------------
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins("http://localhost:5173")  // Vite
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();                   // IMPORTANT
     });
 });
 
+// -----------------------------
+// 7. Repos
+// -----------------------------
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+
 var app = builder.Build();
 
-// Apply migrations and seed sample data
-
+// -----------------------------
+// 8. Database migrations
+// -----------------------------
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
-    db.Database.Migrate();
+    var quizDb = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
+    quizDb.Database.Migrate();
 
-
-    // Only seed if no quizzes exist
-    if (!db.Quizzes.Any())
+    if (!quizDb.Quizzes.Any())
     {
-        var json = System.IO.File.ReadAllText("Data/TemplateData/seed.json");
+        var json = File.ReadAllText("Data/TemplateData/seed.json");
         var sampleQuizzes = System.Text.Json.JsonSerializer.Deserialize<List<Quiz>>(json);
         if (sampleQuizzes != null)
         {
-            db.Quizzes.AddRange(sampleQuizzes);
-            db.SaveChanges();
-            Console.WriteLine(" Sample quizzes added to the database.");
+            quizDb.Quizzes.AddRange(sampleQuizzes);
+            quizDb.SaveChanges();
         }
     }
 }
 
-
-// Configure the HTTP request pipeline
+// -----------------------------
+// 9. Pipeline
+// -----------------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -57,11 +98,17 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+// ORDER MATTERS!
 app.UseCors("AllowReact");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// -----------------------------
+// 10. Map routes n controllers
+// -----------------------------
 app.MapControllers();
 
 app.MapControllerRoute(
@@ -69,13 +116,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-app.MapControllerRoute(
-    name: "Quiz",
-    pattern: "{controller=Quiz}/{action=Index}/{id?}");
-
-//app.MapRazorPages();
-
-app.MapControllers();
-
 app.Run();
-

@@ -19,7 +19,9 @@ html {
   --text-color: black;   
   --btn-color: #ffcc66;
 }
-
+.custom-navbar-footer {
+  background-color: #ffcc66 !important; 
+}
 html {
   position: relative;
   min-height: 100%;
@@ -360,4 +362,10 @@ h1 {
 
 .footer.custom-navbar-footer {
   background-color: var(--navbar-color);
+}
+/* Force dropdown to open left of toggle */
+.show-left {
+  left: 0 !important;
+  right: auto !important;
+  transform: translateX(-100%) !important;
 }

@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [needle, setNeedle] = useState("");
 
   // ------- Search submit -------
@@ -15,33 +15,48 @@ export default function Navbar() {
   }
 
   // ------- Sidebar + dropdown behaviour -------
-  useEffect(() => {
-    const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menuToggle");
-    const closeSidebar = document.getElementById("closeSidebar");
-    const quizDropdownBtn = document.getElementById("quizDropdownBtn");
-    const quizSubmenu = document.getElementById("quizSubmenu");
+useEffect(() => {
+  const sidebar = document.getElementById("sidebar");
+  const menuToggle = document.getElementById("menuToggle");
+  const closeSidebar = document.getElementById("closeSidebar");
 
-    function toggleSidebar() {
-      sidebar.classList.toggle("active");
-    }
-    function close() {
-      sidebar.classList.remove("active");
-    }
-    function toggleQuiz() {
-      quizSubmenu.classList.toggle("d-none");
-    }
+  const quizDropdownBtn = document.getElementById("quizDropdownBtn");
+  const quizSubmenu = document.getElementById("quizSubmenu");
 
-    menuToggle?.addEventListener("click", toggleSidebar);
-    closeSidebar?.addEventListener("click", close);
-    quizDropdownBtn?.addEventListener("click", toggleQuiz);
+  const accountDropdownBtn = document.getElementById("accountDropdownBtn");
+  const accountSubmenu = document.getElementById("accountSubmenu");
 
-    return () => {
-      menuToggle?.removeEventListener("click", toggleSidebar);
-      closeSidebar?.removeEventListener("click", close);
-      quizDropdownBtn?.removeEventListener("click", toggleQuiz);
-    };
-  }, []);
+  function toggleSidebar() {
+    sidebar.classList.toggle("active");
+  }
+  
+  function close() {
+    sidebar.classList.remove("active");
+  }
+
+  function toggleQuiz() {
+    quizSubmenu.classList.toggle("d-none");
+  }
+
+  function toggleAccount() {
+    accountSubmenu.classList.toggle("d-none");
+  }
+
+  menuToggle?.addEventListener("click", toggleSidebar);
+  closeSidebar?.addEventListener("click", close);
+
+  quizDropdownBtn?.addEventListener("click", toggleQuiz);
+  accountDropdownBtn?.addEventListener("click", toggleAccount);
+
+  return () => {
+    menuToggle?.removeEventListener("click", toggleSidebar);
+    closeSidebar?.removeEventListener("click", close);
+
+    quizDropdownBtn?.removeEventListener("click", toggleQuiz);
+    accountDropdownBtn?.removeEventListener("click", toggleAccount);
+  };
+}, []);
+
 
   return (
     <header>
@@ -90,29 +105,32 @@ export default function Navbar() {
             </form>
 
             {/* Account */}
-            <div className="dropdown me-3">
+            <div className="dropdown">
               <button
                 className="text-dark fs-4 person-icon dropdown-toggle btn btn-link"
                 id="accountDropdown"
                 data-bs-toggle="dropdown"
-              >
+                >
                 <i className="bi bi-person" />
               </button>
 
-              <ul className="dropdown-menu">
-                {!isAuthenticated ? (
-                  <>
-                    <li><Link className="dropdown-item" to="/login">Login</Link></li>
-                    <li><Link className="dropdown-item" to="/register">Register</Link></li>
-                  </>
-                ) : (
-                  <>
-                    <li><Link className="dropdown-item" to="/account">My Account</Link></li>
-                    <li><button className="dropdown-item" onClick={logout}>Logout</button></li>
-                  </>
-                )}
-              </ul>
-            </div>
+            <ul className="dropdown-menu dropdown-menu-start show-left mt-2 custom-navbar-footer">
+              {!isAuthenticated ? (
+              <>
+                <li><Link className="dropdown-item" to="/login">Login</Link></li>
+                <li><Link className="dropdown-item" to="/register">Register</Link></li>
+              </>
+              ) : (
+              <>
+              <li className="dropdown-item disabled">Hello {user?.email}</li>
+              <li><Link className="dropdown-item" to="/account">Settings</Link></li>
+              <li><button className="dropdown-item" onClick={logout}>Logout</button></li>
+              </>
+              )}
+          </ul>
+      </div>
+
+
 
             {/* Hamburger */}
             <button id="menuToggle" className="navbar-toggler" type="button">
