@@ -31,7 +31,7 @@ export default function Home() {
       <div className="row align-items-start mt-4">
         {}
         <div className="col-lg-6 mb-3">
-          <h1 className="text-center text-lg-start">Welcome to Quizzadilla</h1>
+          <h1 className="text-center text-lg-start">Welcome to Quizadilla</h1>
           <p className="text-center text-lg-start text-index">
             Your home for quizzes
           </p>
