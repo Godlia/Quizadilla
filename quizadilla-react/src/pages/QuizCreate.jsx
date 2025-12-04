@@ -6,8 +6,10 @@ const THEMES = ["tomato", "guac", "cheese", "onion", "chicken", "salsa"];
 
 const emptyQuestion = () => ({
   questionText: "",
-  correctString: "",
-  options: [{ optionText: "" }, { optionText: "" }],
+  options: [
+    { optionText: "", isCorrect: false },
+    { optionText: "", isCorrect: false },
+  ],
 });
 
 export default function QuizCreate() {
@@ -17,7 +19,6 @@ export default function QuizCreate() {
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const navigate = useNavigate();
 
-  
   function updateQuestion(index, patch) {
     setQuestions((prev) => {
       const copy = [...prev];
@@ -30,13 +31,22 @@ export default function QuizCreate() {
     setQuestions((prev) => {
       const copy = [...prev];
       const opts = [...copy[qIndex].options];
-      opts[oIndex] = { optionText: value };
+      opts[oIndex] = { ...opts[oIndex], optionText: value };
       copy[qIndex].options = opts;
       return copy;
     });
   }
 
-  
+  function toggleOptionCorrect(qIndex, oIndex, checked) {
+    setQuestions((prev) => {
+      const copy = [...prev];
+      const opts = [...copy[qIndex].options];
+      opts[oIndex] = { ...opts[oIndex], isCorrect: !!checked };
+      copy[qIndex].options = opts;
+      return copy;
+    });
+  }
+
   function addQuestion() {
     setQuestions((prev) => [...prev, emptyQuestion()]);
   }
@@ -44,7 +54,7 @@ export default function QuizCreate() {
   function addOption(qIndex) {
     setQuestions((prev) => {
       const copy = [...prev];
-      copy[qIndex].options.push({ optionText: "" });
+      copy[qIndex].options.push({ optionText: "", isCorrect: false });
       return copy;
     });
   }
@@ -57,7 +67,6 @@ export default function QuizCreate() {
     });
   }
 
- 
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -67,8 +76,8 @@ export default function QuizCreate() {
       theme,
       questions: questions.map((q) => ({
         questionText: q.questionText,
-        correctString: q.correctString,
-        options: q.options.map((o) => ({ optionText: o.optionText })),
+        // send per-option isCorrect values (supports multiple correct answers)
+        options: q.options.map((o) => ({ optionText: o.optionText, isCorrect: !!o.isCorrect })),
       })),
     };
 
@@ -145,40 +154,38 @@ export default function QuizCreate() {
 
             {}
             <div className="mb-2">
-              <label className="form-label">Correct answer</label>
-              <input
-                className="form-control"
-                value={q.correctString}
-                onChange={(e) =>
-                  updateQuestion(qi, { correctString: e.target.value })
-                }
-                required
-              />
-            </div>
+              <label className="form-label">Options (check all correct answers)</label>
 
-            {}
-            <div className="mb-2">
-              <label className="form-label">Options</label>
-
-              {q.options.map((o, oi) => (
-                <div key={oi} className="input-group mb-1">
-                  <input
-                    className="form-control"
-                    value={o.optionText}
-                    onChange={(e) => updateOption(qi, oi, e.target.value)}
-                    required
-                  />
-                  {q.options.length > 2 && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger"
-                      onClick={() => removeOption(qi, oi)}
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              ))}
+              {q.options.map((o, oi) => {
+                const cbId = `q${qi}-opt${oi}`;
+                return (
+                  <div key={`${qi}-${oi}`} className="input-group mb-1 align-items-center">
+                    <input
+                      id={cbId}
+                      type="checkbox"
+                      className="form-check-input me-2"
+                      checked={!!o.isCorrect}
+                      onChange={(e) => toggleOptionCorrect(qi, oi, e.target.checked)}
+                      aria-label={`Mark option ${oi + 1} as correct`}
+                    />
+                    <input
+                      className="form-control"
+                      value={o.optionText}
+                      onChange={(e) => updateOption(qi, oi, e.target.value)}
+                      required
+                    />
+                    {q.options.length > 2 && (
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        onClick={() => removeOption(qi, oi)}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
 
               <button
                 type="button"

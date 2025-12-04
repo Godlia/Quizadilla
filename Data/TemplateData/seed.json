@@ -8,7 +8,7 @@
       {
         "Id": 1,
         "QuestionText": "What is the capital of Norway?",
-        "options": [
+        "Options": [
           {
             "OptionId": 1,
             "OptionText": "Oslo",
@@ -32,7 +32,7 @@
       {
         "Id": 2,
         "QuestionText": "What is the capital of Sweden?",
-        "options": [
+        "Options": [
           {
             "OptionId": 5,
             "OptionText": "Oslo"
@@ -55,7 +55,7 @@
       {
         "Id": 3,
         "QuestionText": "What is the capital of Denmark?",
-        "options": [
+        "Options": [
           {
             "OptionId": 9,
             "OptionText": "Oslo"
@@ -78,7 +78,7 @@
       {
         "Id": 4,
         "QuestionText": "What is the capital of Finland?",
-        "options": [
+        "Options": [
           {
             "OptionId": 13,
             "OptionText": "Oslo"
@@ -101,7 +101,7 @@
       {
         "Id": 5,
         "QuestionText": "What is the capital of Iceland?",
-        "options": [
+        "Options": [
           {
             "OptionId": 17,
             "OptionText": "Oslo"
@@ -133,7 +133,7 @@
       {
         "Id": 6,
         "QuestionText": "Who directed \u0027Inception\u0027?",
-        "options": [
+        "Options": [
           {
             "OptionId": 21,
             "OptionText": "Steven Spielberg"
@@ -156,7 +156,7 @@
       {
         "Id": 7,
         "QuestionText": "What was the first Star Wars movie to be released?",
-        "options": [
+        "Options": [
           {
             "OptionId": 25,
             "OptionText": "Star Wars: Episode IV - A New Hope",
@@ -179,7 +179,7 @@
       {
         "Id": 8,
         "QuestionText": "Who directed \u0027The Room\u0027?",
-        "options": [
+        "Options": [
           {
             "OptionId": 29,
             "OptionText": "Tim Burton"
@@ -202,7 +202,7 @@
       {
         "Id": 9,
         "QuestionText": "Who broke two toes whilst filming a scene for The Lord of the Rings: Two Towers?",
-        "options": [
+        "Options": [
           {
             "OptionId": 33,
             "OptionText": "Ian McKellen - Gandalf"
@@ -234,7 +234,7 @@
       {
         "Id": 10,
         "QuestionText": "What is the tallest mountain in the solar system?",
-        "options": [
+        "Options": [
           {
             "OptionId": 37,
             "OptionText": "Kilimanjaro"
@@ -257,7 +257,7 @@
       {
         "Id": 11,
         "QuestionText": "What is the biggest asteroid in the solar system?",
-        "options": [
+        "Options": [
           {
             "OptionId": 41,
             "OptionText": "Vesta"
@@ -280,7 +280,7 @@
       {
         "Id": 12,
         "QuestionText": "What man made object has traveled the farthest from earth?",
-        "options": [
+        "Options": [
           {
             "OptionId": 45,
             "OptionText": "Voyager 1",
@@ -303,7 +303,7 @@
       {
         "Id": 13,
         "QuestionText": "What is the biggest planet in the solar system?",
-        "options": [
+        "Options": [
           {
             "OptionId": 49,
             "OptionText": "Saturn"
@@ -335,7 +335,7 @@
       {
         "Id": 14,
         "QuestionText": "What planet is known as the Red Planet?",
-        "options": [
+        "Options": [
           {
             "OptionId": 53,
             "OptionText": "Venus"
@@ -358,7 +358,7 @@
       {
         "Id": 15,
         "QuestionText": "What is the chemical symbol for water?",
-        "options": [
+        "Options": [
           {
             "OptionId": 57,
             "OptionText": "CO2"
@@ -381,7 +381,7 @@
       {
         "Id": 16,
         "QuestionText": "What gas do plants absorb from the atmosphere?",
-        "options": [
+        "Options": [
           {
             "OptionId": 61,
             "OptionText": "Oxygen"
@@ -404,7 +404,7 @@
       {
         "Id": 17,
         "QuestionText": "What is the hardest natural substance on Earth?",
-        "options": [
+        "Options": [
           {
             "OptionId": 65,
             "OptionText": "Gold"

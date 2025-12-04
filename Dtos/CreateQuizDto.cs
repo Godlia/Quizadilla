@@ -14,7 +14,6 @@ namespace Quizadilla.Dtos
     public class CreateQuestionDto
     {
         public string QuestionText { get; set; } = "";
-        public string? CorrectString { get; set; }
 
         public List<CreateOptionDto> Options { get; set; } = new();
     }
@@ -22,5 +21,6 @@ namespace Quizadilla.Dtos
     public class CreateOptionDto
     {
         public string OptionText { get; set; } = "";
+        public bool IsCorrect { get; set; } = false;
     }
 }

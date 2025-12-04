@@ -22,7 +22,10 @@ export default function QuizEdit() {
         data.questions ||= [];
         data.questions.forEach((q) => {
           q.options ||= [];
-          q.correctString ||= "";
+          // ensure option has isCorrect boolean
+          q.options.forEach((o) => {
+            o.isCorrect = !!o.isCorrect;
+          });
         });
 
         setQuiz(data);
@@ -45,15 +48,19 @@ export default function QuizEdit() {
     setQuiz({ ...quiz, questions: copy });
   }
 
-  function updateCorrect(idx, value) {
-    const copy = [...quiz.questions];
-    copy[idx].correctString = value;
-    setQuiz({ ...quiz, questions: copy });
-  }
+  // removed correctString usage — correctness is now per-option (isCorrect)
 
   function updateOption(qi, oi, value) {
     const copy = [...quiz.questions];
     copy[qi].options[oi].optionText = value;
+    setQuiz({ ...quiz, questions: copy });
+  }
+
+  function toggleOptionCorrect(qi, oi, checked) {
+    const copy = [...quiz.questions];
+    const opts = [...copy[qi].options];
+    opts[oi] = { ...opts[oi], isCorrect: !!checked };
+    copy[qi].options = opts;
     setQuiz({ ...quiz, questions: copy });
   }
 
@@ -63,7 +70,15 @@ export default function QuizEdit() {
       ...quiz,
       questions: [
         ...quiz.questions,
-        { id: 0, questionText: "", correctString: "", options: [] },
+        {
+          id: 0,
+          questionText: "",
+          // start with two empty options
+          options: [
+            { optionId: 0, optionText: "", isCorrect: false },
+            { optionId: 0, optionText: "", isCorrect: false },
+          ],
+        },
       ],
     });
   }
@@ -76,7 +91,7 @@ export default function QuizEdit() {
 
   function addOption(qi) {
     const copy = [...quiz.questions];
-    copy[qi].options.push({ optionId: 0, optionText: "" });
+    copy[qi].options.push({ optionId: 0, optionText: "", isCorrect: false });
     setQuiz({ ...quiz, questions: copy });
   }
 
@@ -99,17 +114,18 @@ export default function QuizEdit() {
         questions: quiz.questions.map((q) => ({
           id: q.id || 0,
           questionText: q.questionText,
-          correctString: q.correctString || "",
+          // send per-option isCorrect values (supports multiple correct answers)
           options: q.options.map((o) => ({
             optionId: o.optionId || 0,
             optionText: o.optionText,
+            isCorrect: !!o.isCorrect,
           })),
         })),
       };
 
       await updateQuiz(id, payload);
 
-      alert("Quiz updated!");
+      //alert("Quiz updated!");
       navigate(`/quiz/${id}`);
     } catch (e) {
       console.error(e);
@@ -170,22 +186,25 @@ export default function QuizEdit() {
             onChange={(e) => updateQuestion(qi, e.target.value)}
           />
 
-          <label>Correct answer</label>
-          <input
-            className="form-control mb-2"
-            value={q.correctString}
-            onChange={(e) => updateCorrect(qi, e.target.value)}
-          />
+          {/* Removed single correctString input — correctness is per-option */}
 
-          <label>Options</label>
+          <label>Options (check all correct answers)</label>
           {q.options.map((o, oi) => (
-            <div key={oi} className="d-flex mb-2">
+            <div key={oi} className="d-flex mb-2 align-items-center">
+              <input
+                type="checkbox"
+                className="form-check-input me-2"
+                checked={!!o.isCorrect}
+                onChange={(e) => toggleOptionCorrect(qi, oi, e.target.checked)}
+                aria-label={`Mark option ${oi + 1} as correct`}
+              />
               <input
                 className="form-control me-2"
                 value={o.optionText}
                 onChange={(e) => updateOption(qi, oi, e.target.value)}
               />
               <button
+                type="button"
                 className="btn btn-danger"
                 onClick={() => removeOption(qi, oi)}
               >
@@ -195,6 +214,7 @@ export default function QuizEdit() {
           ))}
 
           <button
+            type="button"
             className="btn btn-sm btn-secondary"
             onClick={() => addOption(qi)}
           >
@@ -204,6 +224,7 @@ export default function QuizEdit() {
           <hr />
 
           <button
+            type="button"
             className="btn btn-sm btn-outline-danger"
             onClick={() => removeQuestion(qi)}
           >
@@ -212,7 +233,7 @@ export default function QuizEdit() {
         </div>
       ))}
 
-      <button className="btn btn-outline-primary mb-4" onClick={addQuestion}>
+      <button type="button" className="btn btn-outline-primary mb-4" onClick={addQuestion}>
         + Add Question
       </button>
 

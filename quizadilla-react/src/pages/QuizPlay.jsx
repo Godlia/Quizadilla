@@ -7,10 +7,11 @@ export default function QuizPlay() {
 
   const [quiz, setQuiz] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({}); 
+  // answers: map questionId -> array of selected optionIds
+  const [answers, setAnswers] = useState({});
   const [finished, setFinished] = useState(false);
   const [score, setScore] = useState(0);
-  const [results, setResults] = useState([]); 
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
     fetchQuiz(id)
@@ -24,16 +25,22 @@ export default function QuizPlay() {
   const currentQuestion = questions[currentIndex];
   if (!currentQuestion) return <p>No questions in this quiz.</p>;
 
- 
   function getQuestionId(q) {
     return q.id ?? q.questionId ?? q.Id;
   }
 
-  function chooseAnswer(questionId, optionText) {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: optionText,
-    }));
+  // toggle selection for a question's option (supports multiple correct answers)
+  function toggleAnswer(questionId, optionId) {
+    setAnswers((prev) => {
+      const prevArr = Array.isArray(prev[questionId]) ? [...prev[questionId]] : [];
+      const exists = prevArr.indexOf(optionId);
+      if (exists === -1) prevArr.push(optionId);
+      else prevArr.splice(exists, 1);
+      return {
+        ...prev,
+        [questionId]: prevArr,
+      };
+    });
   }
 
   function next() {
@@ -48,21 +55,37 @@ export default function QuizPlay() {
     }
   }
 
+  function arraysEqualAsSets(a = [], b = []) {
+    if (a.length !== b.length) return false;
+    const sa = new Set(a);
+    return b.every((x) => sa.has(x));
+  }
+
   function finish() {
     let s = 0;
     const detailed = questions.map((q) => {
       const qid = getQuestionId(q);
-      const userAnswer = answers[qid] ?? null;
-      const correctAnswer = q.correctString ?? "";
-      const isCorrect = userAnswer != null && userAnswer === correctAnswer;
+      const userSelected = answers[qid] ?? [];
+      // normalize option ids (they may be numbers or strings)
+      const selectedIds = userSelected.map((x) => String(x));
+
+      const opts = q.options || [];
+      const correctOpts = opts.filter((o, idx) => o.isCorrect).map((o, idx) => String(o.optionId ?? idx));
+      const isCorrect = arraysEqualAsSets(selectedIds, correctOpts);
 
       if (isCorrect) s++;
+
+      const userAnswerText = opts
+        .filter((o, idx) => selectedIds.includes(String(o.optionId ?? idx)))
+        .map((o) => o.optionText);
+
+      const correctAnswerText = opts.filter((o, idx) => correctOpts.includes(String(o.optionId ?? idx))).map((o) => o.optionText);
 
       return {
         id: qid,
         questionText: q.questionText,
-        userAnswer,
-        correctAnswer,
+        userAnswer: userAnswerText,
+        correctAnswer: correctAnswerText,
         isCorrect,
       };
     });
@@ -108,11 +131,11 @@ export default function QuizPlay() {
 
               <div className="mb-1">
                 <strong>Your answer:</strong>{" "}
-                {r.userAnswer ?? <em>No answer selected</em>}
+                {r.userAnswer && r.userAnswer.length ? r.userAnswer.join(", ") : <em>No answer selected</em>}
               </div>
               {!r.isCorrect && (
                 <div className="mb-1">
-                  <strong>Correct answer:</strong> {r.correctAnswer || "—"}
+                  <strong>Correct answer:</strong> {r.correctAnswer.length ? r.correctAnswer.join(", ") : "—"}
                 </div>
               )}
             </div>
@@ -157,20 +180,21 @@ export default function QuizPlay() {
           <p className="mt-3">{currentQuestion.questionText}</p>
 
           {options.map((o, index) => {
-            const oid = `q${qid}-o${o.optionId ?? index}`;
-            const checked = answers[qid] === o.optionText;
+            const optId = o.optionId ?? index;
+            const inputId = `q${qid}-o${optId}`;
+            const checked = Array.isArray(answers[qid]) && answers[qid].includes(optId);
 
             return (
-              <div className="form-check" key={oid}>
+              <div className="form-check" key={inputId}>
                 <input
                   className="form-check-input"
-                  type="radio"
+                  type="checkbox"
                   name={`q-${qid}`}
-                  id={oid}
+                  id={inputId}
                   checked={checked}
-                  onChange={() => chooseAnswer(qid, o.optionText)}
+                  onChange={() => toggleAnswer(qid, optId)}
                 />
-                <label className="form-check-label" htmlFor={oid}>
+                <label className="form-check-label" htmlFor={inputId}>
                   {o.optionText}
                 </label>
               </div>

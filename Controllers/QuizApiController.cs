@@ -44,10 +44,10 @@ public class QuizApiController : ControllerBase
             Questions = dto.Questions.Select(q => new Question
             {
                 QuestionText = q.QuestionText,
-                correctString = q.CorrectString ?? "",
-                options = q.Options.Select(o => new Option
+                Options = q.Options.Select(o => new Option
                 {
-                    OptionText = o.OptionText
+                    OptionText = o.OptionText,
+                    IsCorrect = o.IsCorrect
                 }).ToList()
             }).ToList()
         };
@@ -143,15 +143,14 @@ public class QuizApiController : ControllerBase
                 if (qEntity == null)
                     return BadRequest($"Question with ID {qDto.Id} not found.");
 
-                _db.Entry(qEntity).Collection(q => q.options).Load();
+                _db.Entry(qEntity).Collection(q => q.Options).Load();
             }
 
             qEntity.QuestionText = qDto.QuestionText;
-            qEntity.correctString = qDto.CorrectString ?? "";
 
             
-            var existingOptions = qEntity.options.ToList();
-            qEntity.options.Clear();
+            var existingOptions = qEntity.Options.ToList();
+            qEntity.Options.Clear();
 
             foreach (var oDto in qDto.Options)
             {
@@ -169,7 +168,8 @@ public class QuizApiController : ControllerBase
                 }
 
                 oEntity.OptionText = oDto.OptionText;
-                qEntity.options.Add(oEntity);
+                oEntity.IsCorrect = oDto.IsCorrect;
+                qEntity.Options.Add(oEntity);
             }
 
             quiz.Questions.Add(qEntity);

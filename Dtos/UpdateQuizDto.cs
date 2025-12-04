@@ -23,8 +23,6 @@ namespace Quizadilla.Dtos
 
         public string QuestionText { get; set; } = "";
 
-       
-        public string? CorrectString { get; set; }
 
        
         public List<UpdateOptionDto> Options { get; set; } = new();
@@ -36,5 +34,6 @@ namespace Quizadilla.Dtos
         public int OptionId { get; set; }
 
         public string OptionText { get; set; } = "";
+        public bool IsCorrect { get; set; } = false;
     }
 }
