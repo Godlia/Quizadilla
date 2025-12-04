@@ -26,35 +26,39 @@ public class QuizApiController : ControllerBase
     // -----------------------------
     // CREATE QUIZ
     // -----------------------------
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
+   [HttpPost]
+[Authorize]
+public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null)
+        return Unauthorized();
+
+    if (string.IsNullOrWhiteSpace(dto.Title))
+        return BadRequest("Quiz title is required");
+
+    var quiz = new Quiz
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-            return Unauthorized();
-
-        var quiz = new Quiz
+        Title = dto.Title,
+        Description = dto.Description ?? "",
+        UserID = user.Id,
+        Questions = dto.Questions.Select(q => new Question
         {
-            Title = dto.Title,
-            Description = dto.Description ?? "",
-            UserID = user.Id,
-            Questions = dto.Questions.Select(q => new Question
+            QuestionText = q.QuestionText,
+            correctString = q.CorrectString ?? "",
+            options = q.Options.Select(o => new Option
             {
-                QuestionText = q.QuestionText,
-                correctString = q.CorrectString ?? "",
-                options = q.Options.Select(o => new Option
-                {
-                    OptionText = o.OptionText
-                }).ToList()
+                OptionText = o.OptionText
             }).ToList()
-        };
+        }).ToList()
+    };
 
-        _repo.AddQuiz(quiz);
-        _repo.Save();
+    _repo.AddQuiz(quiz);
+    _repo.Save();
 
-        return Ok(quiz);
-    }
+    return Ok(quiz);
+}
+
 
     // -----------------------------
     // GET ALL
@@ -213,4 +217,24 @@ public async Task<IActionResult> UpdateQuiz(int id, [FromBody] UpdateQuizDto dto
 
     return Ok(quiz);
     }
+    [HttpDelete("{id}")]
+[Authorize]
+public async Task<IActionResult> DeleteQuiz(int id)
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null)
+        return Unauthorized();
+
+    var quiz = _repo.GetQuizForEdit(id);
+    if (quiz == null)
+        return NotFound("Quiz not found");
+
+    if (quiz.UserID != user.Id)
+        return Forbid(); // ikke eier
+
+    _repo.DeleteQuiz(id);
+    _repo.Save();
+
+    return Ok(new { message = "Quiz deleted" });
+}
 }

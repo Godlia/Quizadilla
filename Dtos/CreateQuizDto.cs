@@ -13,10 +13,10 @@ namespace Quizadilla.Dtos
     {
         public string QuestionText { get; set; } = "";
         public string? CorrectString { get; set; }
-        public List<OptionDto> Options { get; set; } = new();
+        public List<CreateOptionDto> Options { get; set; } = new();
     }
 
-    public class OptionDto
+    public class CreateOptionDto
     {
         public string OptionText { get; set; } = "";
     }

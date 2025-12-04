@@ -189,7 +189,7 @@ useEffect(() => {
               </>
             ) : (
               <>
-                <Link className="sidebar-item d-block" to="/account">My Account</Link>
+                <Link className="sidebar-item d-block" to="/account">My Account/Settings</Link>
                 <button className="sidebar-item btn btn-link d-block text-start" onClick={logout}>Logout</button>
               </>
             )}

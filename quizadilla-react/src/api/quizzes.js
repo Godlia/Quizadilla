@@ -72,8 +72,14 @@ export async function createQuiz(dto) {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dto)
+    body: JSON.stringify(dto),
   });
-  if (!res.ok) throw new Error("Failed to create quiz");
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("CREATE QUIZ ERROR:", text);
+    throw new Error("Failed to create quiz");
+  }
+
   return await res.json();
 }
