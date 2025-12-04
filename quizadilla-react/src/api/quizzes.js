@@ -11,10 +11,19 @@ export async function fetchDiscover() {
 
 // SEARCH quizzes
 export async function searchQuizzes(needle) {
-  const res = await fetch(`${API}/search?needle=${encodeURIComponent(needle)}`, {
-    credentials: "include"
-  });
-  if (!res.ok) throw new Error("Failed to search quizzes");
+  const res = await fetch(
+    `${API}/search?needle=${encodeURIComponent(needle)}`,
+    {
+      credentials: "include",
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("SEARCH ERROR:", text);
+    throw new Error("Failed to search quizzes");
+  }
+
   return await res.json();
 }
 

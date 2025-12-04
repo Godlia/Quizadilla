@@ -11,20 +11,21 @@ export default function QuizEdit() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // LOAD QUIZ
+  // LOAD EXISTING QUIZ
   useEffect(() => {
     async function load() {
       try {
         const data = await fetchQuiz(id);
 
-        // Ensure arrays
+        // Ensure structure
         data.questions = data.questions || [];
         data.questions.forEach(q => {
           q.options = q.options || [];
+          q.correctString = q.correctString || "";
         });
 
         setQuiz(data);
-      } catch (err) {
+      } catch (e) {
         setError("Failed to load quiz");
       }
       setLoading(false);
@@ -32,9 +33,7 @@ export default function QuizEdit() {
     load();
   }, [id]);
 
-  // ----------------------------
   // UPDATE FIELDS
-  // ----------------------------
   function updateTitle(t) {
     setQuiz({ ...quiz, title: t });
   }
@@ -44,51 +43,61 @@ export default function QuizEdit() {
   }
 
   function updateQuestion(idx, t) {
-    const q = [...quiz.questions];
-    q[idx].questionText = t;
-    setQuiz({ ...quiz, questions: q });
+    const updated = [...quiz.questions];
+    updated[idx].questionText = t;
+    setQuiz({ ...quiz, questions: updated });
+  }
+
+  function updateCorrect(idx, t) {
+    const updated = [...quiz.questions];
+    updated[idx].correctString = t;
+    setQuiz({ ...quiz, questions: updated });
   }
 
   function updateOption(qi, oi, t) {
-    const q = [...quiz.questions];
-    q[qi].options[oi].optionText = t;
-    setQuiz({ ...quiz, questions: q });
+    const updated = [...quiz.questions];
+    updated[qi].options[oi].optionText = t;
+    setQuiz({ ...quiz, questions: updated });
   }
 
-  // ----------------------------
   // ADD / REMOVE
-  // ----------------------------
   function addQuestion() {
     setQuiz({
       ...quiz,
       questions: [
         ...quiz.questions,
-        { id: 0, questionText: "", correctString: "", options: [] }
+        {
+          id: 0,
+          questionText: "",
+          correctString: "",
+          options: []
+        }
       ]
     });
   }
 
   function removeQuestion(idx) {
-    const q = [...quiz.questions];
-    q.splice(idx, 1);
-    setQuiz({ ...quiz, questions: q });
+    const updated = [...quiz.questions];
+    updated.splice(idx, 1);
+    setQuiz({ ...quiz, questions: updated });
   }
 
   function addOption(qi) {
-    const q = [...quiz.questions];
-    q[qi].options.push({ optionId: 0, optionText: "" });
-    setQuiz({ ...quiz, questions: q });
+    const updated = [...quiz.questions];
+    updated[qi].options.push({
+      optionId: 0,
+      optionText: ""
+    });
+    setQuiz({ ...quiz, questions: updated });
   }
 
   function removeOption(qi, oi) {
-    const q = [...quiz.questions];
-    q[qi].options.splice(oi, 1);
-    setQuiz({ ...quiz, questions: q });
+    const updated = [...quiz.questions];
+    updated[qi].options.splice(oi, 1);
+    setQuiz({ ...quiz, questions: updated });
   }
 
-  // ----------------------------
   // SAVE
-  // ----------------------------
   async function save() {
     setSaving(true);
     setError("");
@@ -112,8 +121,8 @@ export default function QuizEdit() {
 
       alert("Quiz updated!");
       navigate(`/quiz/${id}`);
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
       setError("Failed to save quiz");
     }
 
@@ -150,12 +159,18 @@ export default function QuizEdit() {
 
       {quiz.questions.map((q, qi) => (
         <div key={qi} className="border rounded p-3 my-3">
-
           <label>Question {qi + 1}</label>
           <input
             className="form-control mb-2"
             value={q.questionText}
             onChange={(e) => updateQuestion(qi, e.target.value)}
+          />
+
+          <label>Correct answer (optional)</label>
+          <input
+            className="form-control mb-2"
+            value={q.correctString}
+            onChange={(e) => updateCorrect(qi, e.target.value)}
           />
 
           <label>Options</label>
@@ -176,7 +191,10 @@ export default function QuizEdit() {
 
           <hr />
 
-          <button className="btn btn-sm btn-outline-danger" onClick={() => removeQuestion(qi)}>
+          <button
+            className="btn btn-sm btn-outline-danger"
+            onClick={() => removeQuestion(qi)}
+          >
             Remove Question
           </button>
         </div>
@@ -186,11 +204,7 @@ export default function QuizEdit() {
         + Add Question
       </button>
 
-      <button
-        className="btn btn-success btn-lg"
-        disabled={saving}
-        onClick={save}
-      >
+      <button className="btn btn-success btn-lg" disabled={saving} onClick={save}>
         {saving ? "Saving…" : "Save Quiz"}
       </button>
     </div>
