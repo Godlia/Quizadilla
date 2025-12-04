@@ -56,8 +56,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var quizDb = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
-    //quizDb.Database.Migrate();
+    var authDb = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     
+    // Apply migrations for both databases
+    quizDb.Database.Migrate();
+    authDb.Database.Migrate();
 
     if (!quizDb.Quizzes.Any())
     {

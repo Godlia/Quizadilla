@@ -1,6 +1,6 @@
 # Quizadilla
 
-## Use "dotnet run" in project root, then open terminal in ./quizadilla-react and type "npm run dev". The application should now run on http://localhost:5173/
+## Use "dotnet run" in project root, then open terminal in ./quizadilla-react and type "npm install" and then "npm run dev". The application should now run on http://localhost:5173/
 
 ## Dotnet version : 8.0.121
 
