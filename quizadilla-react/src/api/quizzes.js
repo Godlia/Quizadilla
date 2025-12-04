@@ -1,75 +1,85 @@
-const API_BASE = "http://localhost:5135/api/quiz"; // JUSTER port hvis din backend bruker en annen port
+const API = "http://localhost:5135/api/quiz";
 
-async function handle(res) {
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
-  }
-  return res.json();
-}
-
+// GET all quizzes (discover page)
 export async function fetchDiscover() {
-  const res = await fetch(`${API_BASE}`);
-  return handle(res);
-}
-
-export async function fetchMyQuizzes() {
-  const res = await fetch(`${API_BASE}/my`, {
-    credentials: "include",
+  const res = await fetch(API, {
+    credentials: "include"
   });
-  return handle(res);
+  if (!res.ok) throw new Error("Failed to load quizzes");
+  return await res.json();
 }
 
-export async function fetchQuiz(id) {
-  const res = await fetch(`${API_BASE}/${id}`);
-  return handle(res);
-}
-
+// SEARCH quizzes
 export async function searchQuizzes(needle) {
   const res = await fetch(
-    `${API_BASE}/search?needle=${encodeURIComponent(needle)}`
+    `${API}/search?needle=${encodeURIComponent(needle)}`,
+    {
+      credentials: "include",
+    }
   );
-  return handle(res);
-}
-
-export async function createQuiz(quiz) {
-  const res = await fetch(API_BASE, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(quiz),
-    credentials: "include",
-  });
 
   if (!res.ok) {
     const text = await res.text();
-    console.error("Create quiz failed:", res.status, text);
-    throw new Error(text || `Create failed (${res.status})`);
+    console.error("SEARCH ERROR:", text);
+    throw new Error("Failed to search quizzes");
   }
 
-  return res.json();
+  return await res.json();
 }
 
-
-export async function updateQuiz(id, quiz) {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(quiz),
-    credentials: "include",
+// GET single quiz
+export async function fetchQuiz(id) {
+  const res = await fetch(`${API}/${id}`, {
+    credentials: "include"
   });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
-  }
+  if (!res.ok) throw new Error("Failed to load quiz");
+  return await res.json();
 }
 
+// GET my quizzes
+export async function fetchMyQuizzes() {
+  const res = await fetch(`${API}/my`, {
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Failed to load quizzes");
+  return await res.json();
+}
+
+// DELETE quiz
 export async function deleteQuiz(id) {
-  const res = await fetch(`${API_BASE}/${id}`, {
+  const res = await fetch(`${API}/${id}`, {
     method: "DELETE",
     credentials: "include",
   });
+  if (!res.ok) throw new Error("Failed to delete");
+}
+
+// UPDATE quiz
+export async function updateQuiz(id, quiz) {
+  const res = await fetch(`${API}/${id}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(quiz)
+  });
+  if (!res.ok) throw new Error("Failed to update quiz");
+  return await res.json();
+}
+
+// CREATE quiz
+export async function createQuiz(dto) {
+  const res = await fetch(API, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dto),
+  });
+
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || res.statusText);
+    console.error("CREATE QUIZ ERROR:", text);
+    throw new Error("Failed to create quiz");
   }
+
+  return await res.json();
 }

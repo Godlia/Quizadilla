@@ -7,6 +7,14 @@
 <h2 class="mb-4">Quiz Search</h2>
 
 
+@if (!Model.Any())
+{
+    <div class="alert alert-warning mt-3">
+        No results for your provided search.
+    </div>
+}
+else
+{
 <div class="ingredient-scroller">
     @foreach (var quiz in Model)
     {
@@ -34,3 +42,4 @@
         </div>
     }
 </div>
+}

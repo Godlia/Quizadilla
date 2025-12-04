@@ -19,29 +19,29 @@ namespace QuizadillaTests
             return new QuizDbContext(options);
         }
 
-        // CREATE
+
+    // CREATE        
         [Fact]
-        public void AddQuiz_ShouldAddQuizToDatabase()
+        public void AddQuiz_AddQuizWithQuestionsAndOptionsPrettyPlease()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
             var quiz = new Quiz
             {
                 Title = "Test Quiz",
-                Description = "This works 100%",
-                UserID = "createQuizTeeest",
+                Description = "Very nice quiz just as nice as this test",
+                UserID = "Sabrina-Carpenter",
                 Questions = new List<Question>
                 {
                     new Question
                     {
-                        QuestionText = "What is oppsite of wrong?",
+                        QuestionText = "Q1",
                         correctString = "Correct",
                         options = new List<Option>
                         {
-                            new Option { OptionText = "Wrong" },
-                            new Option { OptionText = "Also wrong" },
-                            new Option { OptionText = "Correct" }
+                            new Option { OptionText = "A" },
+                            new Option { OptionText = "B" }
                         }
                     }
                 }
@@ -50,47 +50,56 @@ namespace QuizadillaTests
             repo.AddQuiz(quiz);
             repo.Save();
 
-            Assert.Single(db.Quizzes);
-            Assert.Single(db.Quizzes.First().Questions);
+            var stored = db.Quizzes
+                .Include(q => q.Questions)
+                .ThenInclude(q => q.options)
+                .Single();
+
+            Assert.Equal("Test Quiz", stored.Title);
+            Assert.Single(stored.Questions);
+            Assert.Equal(2, stored.Questions.First().options.Count);
         }
 
-        // CREATE with null questions
+        // Negative null questions
         [Fact]
-        public void AddQuiz_ShouldAllowNullQuestions()
+        public void AddQuiz_AllowNullQuestionsPwease()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
             var quiz = new Quiz
             {
-                Title = "Empty quiz just like my soul",
-                Description = "No questions asked no anwsers provided",
-                UserID = "feeling-funny-today",
+                Title = "Empty quiz",
+                Description = "No questions asked",
+                UserID = "Kendrinck-Lamar",
                 Questions = null
             };
 
             repo.AddQuiz(quiz);
             repo.Save();
 
-            Assert.Single(db.Quizzes);
+            var stored = db.Quizzes.Single();
+            Assert.Equal("Empty quiz", stored.Title);
+            Assert.Null(stored.Questions);
         }
 
-        // READ
+    
+    // READ
         [Fact]
-        public void GetQuizForEdit_ShouldReturnQuiz_WhenExists()
+        public void GetQuizForEdit_ReturnQuizWithBothQuestionsAndOptions_WhenExists()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
 
             var quiz = new Quiz
             {
-                Title = "Quizhehesiu",
-                UserID = "Akinfenwa",
+                Title = "Quiz",
+                UserID = "Vince-Masuka",
                 Questions = new List<Question>
                 {
                     new Question
                     {
-                        QuestionText = "babag-ala-fortnajt",
-                        options = new List<Option> { new Option { OptionText = "babag" } }
+                        QuestionText = "Q1",
+                        options = new List<Option> { new Option { OptionText = "A" } }
                     }
                 }
             };
@@ -107,30 +116,50 @@ namespace QuizadillaTests
             Assert.Single(loaded.Questions.First().options);
         }
 
-        // READ negative
         [Fact]
-        public void GetQuizForEdit_PlsReturnNull_WhenNotExist()
+        public void GetQuizForEdit_PlsReturnNull_WhenQuizDoesntExist()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
-            var result = repo.GetQuizForEdit(6767);
+            var result = repo.GetQuizForEdit(999);
 
             Assert.Null(result);
         }
 
-        // UPDATE
+    // UPDATE
         [Fact]
-        public void UpdateQuiz_PleaseUpdateTitlePlusDescription()
+        public void UpdateQuiz_UpdateTitleDescriptionAndQuestionsAndOptions()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
 
             var original = new Quiz
             {
-                Title = "Please work?",
-                Description = "I hope this works",
-                UserID = "67",
-                Questions = new List<Question>()
+                Title = "Original",
+                Description = "Orig desc",
+                UserID = "Barack Obama",
+                Questions = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "Q1",
+                        correctString = "A",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "A" }, 
+                            new Option { OptionText = "B" } 
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "Q2",
+                        correctString = "X",
+                        options = new List<Option>
+                        {
+                            new Option { OptionText = "X" }
+                        }
+                    }
+                }
             };
 
             db.Quizzes.Add(original);
@@ -138,36 +167,79 @@ namespace QuizadillaTests
 
             var repo = new QuizRepository(db);
 
+            // Get w/ keys from db
+            var stored = repo.GetQuizForEdit(original.QuizId)!;
+            var q1 = stored.Questions.First();
+            var q2 = stored.Questions.Skip(1).First();
+            var q1OptA = q1.options.First();
+            var q1OptB = q1.options.Skip(1).First();
+
+            // Build "updated" object as API (best api itw) does
             var updated = new Quiz
             {
-                QuizId = original.QuizId,
-                Title = "Did it work?",
-                Description = "Please?",
-                UserID = "67",
-                Questions = new List<Question>()
+                QuizId = stored.QuizId,
+                Title = "Updated",
+                Description = "Updated desc",
+                UserID = stored.UserID,
+                Questions = new List<Question>
+                {
+                    // Q1 kept, n updated
+                    new Question
+                    {
+                        Id = q1.Id,
+                        QuestionText = "Q1 updated",
+                        correctString = "NEW",
+                        options = new List<Option>
+                        {
+                            new Option
+                            {
+                                OptionId = q1OptA.OptionId,
+                                OptionText = "A updated"
+                            },
+                            
+                            new Option
+                            {
+                                OptionId = 0,              
+                                OptionText = "C new"
+                            }
+                        }
+                    }
+                }
             };
 
             repo.UpdateQuiz(updated);
             repo.Save();
 
-            var loaded = db.Quizzes.First();
+            var reloaded = repo.GetQuizForEdit(original.QuizId)!;
 
-            Assert.Equal("Did it work?", loaded.Title);
-            Assert.Equal("Please?", loaded.Description);
+            Assert.Equal("Updated", reloaded.Title);
+            Assert.Equal("Updated desc", reloaded.Description);
+
+            // Q2 removed
+            Assert.Single(reloaded.Questions);
+            var updatedQ1 = reloaded.Questions.First();
+            Assert.Equal("Q1 updated", updatedQ1.QuestionText);
+            Assert.Equal("NEW", updatedQ1.correctString);
+
+            // B rem, A upd, C new
+            Assert.Equal(2, updatedQ1.options.Count);
+            Assert.Contains(updatedQ1.options, o => o.OptionText == "A updated");
+            Assert.Contains(updatedQ1.options, o => o.OptionText == "C new");
+            Assert.DoesNotContain(updatedQ1.options, o => o.OptionText == "B");
         }
 
-        // UPDATE negative
         [Fact]
-        public void UpdateQuiz_SupposedToDoNothing_WhenQuizNotExisting()
+        public void UpdateQuiz_DoNothingBeLazy_WhenQuizDoesntExist()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
             var updated = new Quiz
             {
-                QuizId = 123,
-                Title = "Should be non-existent like my social life",
-                UserID = "Six-Seven up zero sugar",
+                QuizId = 12345,
+                Title = "Non-existing",
+                Description = "Should not be saved",
+                UserID = "Ye-Kanye-West",
                 Questions = new List<Question>()
             };
 
@@ -177,16 +249,16 @@ namespace QuizadillaTests
             Assert.Empty(db.Quizzes);
         }
 
-        // DELETE
+    // DELETE
         [Fact]
-        public void DeleteQuiz_ShouldRemoveQuiz()
+        public void DeleteQuiz_RemoveQuizQuestionsAndOptions()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
 
             var quiz = new Quiz
             {
                 Title = "To delete",
-                UserID = "test-user",
+                UserID = "Justin-Bieber",
                 Questions = new List<Question>
                 {
                     new Question
@@ -210,19 +282,23 @@ namespace QuizadillaTests
             repo.Save();
 
             Assert.Empty(db.Quizzes);
+            Assert.Empty(db.Questions);
+            Assert.Empty(db.Options);
         }
 
-        // DELETE negative
         [Fact]
-        public void DeleteQuiz_ShouldNotThrow_WhenQuizDoesNotExist()
+        public void DeleteQuiz_ShouldNotThrow_WhenQuizDoesntExist()
         {
-            var db = GetInMemoryDbContext();
+            using var db = GetInMemoryDbContext();
             var repo = new QuizRepository(db);
 
-            repo.DeleteQuiz(6767);
+            repo.DeleteQuiz(999);
             repo.Save();
 
+            // No exception, db still empty
             Assert.Empty(db.Quizzes);
+            Assert.Empty(db.Questions);
+            Assert.Empty(db.Options);
         }
     }
 }

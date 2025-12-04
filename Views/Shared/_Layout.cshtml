@@ -33,9 +33,9 @@
                 </ul>
             </div>
 
-            <!-- RIGHT NAVBAR - SEARCH, ACC, CHEESEBURGER -->
-                <div class="right-content d-flex align-items-center">
-            <!-- Searchbar -->
+          <!-- RIGHT NAVBAR - SEARCH, ACC, CHEESEBURGER -->
+          <div class="right-content d-flex align-items-center">
+                <!-- Searchbar -->
                 <form class="d-flex search-form me-2" asp-controller="Quiz" asp-action="Search" method="get">
                   <div class="input-group">
                   <input type="search" class="form-control" placeholder="Search" id="searchInput" name="needle">
@@ -45,7 +45,7 @@
                   </div>
                 </form>
 
-            <!-- Auth -->
+                <!-- Auth -->
                 <div class="dropdown me-3">
                         <a href="#" class="text-dark fs-4 person-icon dropdown-toggle" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person"></i>
@@ -69,38 +69,65 @@
       <button class="btn-close" id="closeSidebar"></button>
     </div>
     <div class="sidebar-user d-none">
-      <form class="d-flex mb-3">
-        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-      </form>
-      <a href="#" class="text-dark fs-4 mb-3 d-block">
-        <i class="bi bi-person me-2"></i> My Account
-      </a>
       <hr>
-  </div>
-    <!-- ONLY=SMALL SCREENS -->
+    </div>
+    
+    <!-- SIDEBAR SEARCH -->
+    <form class="d-flex search-form2 me-2" asp-controller="Quiz" asp-action="Search" method="get">
+      <div class="input-group">
+        <input type="search" class="form-control" placeholder="Search" id="searchInput" name="needle">
+          <button class="btn btn-outline-secondary clear-btn" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+      </div>
+    </form>
+    <hr class="search-form2">
+    <!-- SIDEBAR LINKS -->
     <a class="small-only" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-    <a class="small-only" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    <a class="small-only" asp-area="" asp-controller="Home" asp-action="Test">Test</a>
-    <a class="small-only" asp-area="" asp-controller="Home" asp-action="MyAccount">My account</a>
+    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <a asp-area="" asp-controller="Home" asp-action="Support">Support</a>
+    
+    
+    <!-- ACCOUNT SIDEBAR DROPDOWN -->
+    <div class="sidebar-dropdown sidebar-acc">
+      <button class="sidebar-link d-flex w-100 align-items-center justify-content-between"
+            data-bs-toggle="collapse"
+            data-bs-target="#accountSubmenu"
+            aria-expanded="false"
+            aria-controls="accountSubmenu">
+        <span>
+            @(User.Identity?.IsAuthenticated == true ? "My Account" : "Login/Register")
+        </span>
+        <i class="bi bi-chevron-down ms-2"></i>
+      </button>
+
+      <div id="accountSubmenu" class="collapse">
+        <ul class="list-unstyled ps-3 my-2">
+            <partial name="_LoginPartialSidebar" />
+        </ul>
+      </div>
+    </div>
     <hr>
+
     <!-- QUIZZES DROPDOWN BAR -->
     <div class="sidebar-dropdown">
-        <button class="sidebar-link d-flex w-100 align-items-center justify-content-between"
-        data-bs-toggle="collapse" data-bs-target="#quizSubmenu" aria-expanded="false" aria-controls="quizSubmenu">
+        <button class="sidebar-link d-flex w-100 align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#quizSubmenu" aria-expanded="false" aria-controls="quizSubmenu">
           <span>Quizzes</span>
           <i class="bi bi-chevron-down ms-2"></i>
         </button>
 
       <div id="quizSubmenu" class="collapse">
         <ul class="list-unstyled ps-3 my-2">
-          <li><a class="d-block" asp-controller="Home" asp-action="Quiz1">• Categories</a></li>
-          <li><a class="d-block" asp-controller="Home" asp-action="Quiz2">• Most popular</a></li>
+          <li><a class="sidebar-item d-block" asp-controller="Quiz" asp-action="Discover">Discover Quizzes</a></li>
+          <li><a class="sidebar-item d-block" asp-controller="Quiz" asp-action="Create">Create Quiz</a></li>
+          <li><a class="sidebar-item d-block" asp-controller="Quiz" asp-action="Categories">Categories</a></li>
+          <li><a class="sidebar-item d-block" asp-controller="Quiz" asp-action="MostPopular">Most popular</a></li>
         </ul>
       </div>
     </div>
-    
-    <a asp-area="" asp-controller="Home" asp-action="Settings">Settings</a>
-    <a asp-area="" asp-controller="Home" asp-action="Support">Support</a>
+      @if (User.Identity?.IsAuthenticated == true){
+        <a asp-area="" asp-controller="Quiz" asp-action="MyQuizzes">My quizzes</a>
+      }        
   </div>
 
   <div class="container custom-background-color">

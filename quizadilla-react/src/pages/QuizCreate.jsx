@@ -11,10 +11,12 @@ const emptyQuestion = () => ({
 export default function QuizCreate() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [theme, setTheme] = useState("tomato");
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const navigate = useNavigate();
 
+  // -------------------------
+  // UPDATE QUESTIONS
+  // -------------------------
   function updateQuestion(index, patch) {
     setQuestions((prev) => {
       const copy = [...prev];
@@ -33,6 +35,9 @@ export default function QuizCreate() {
     });
   }
 
+  // -------------------------
+  // ADD / REMOVE QUESTIONS
+  // -------------------------
   function addQuestion() {
     setQuestions((prev) => [...prev, emptyQuestion()]);
   }
@@ -53,31 +58,42 @@ export default function QuizCreate() {
     });
   }
 
+  // -------------------------
+  // SUBMIT
+  // -------------------------
   async function handleSubmit(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const quiz = {
-    title,
-    description,
-    theme,
-    questions,
-  };
+    const payload = {
+      title,
+      description,
+      questions: questions.map((q) => ({
+        questionText: q.questionText,
+        correctString: q.correctString,
+        options: q.options.map((o) => ({
+          optionText: o.optionText,
+        })),
+      })),
+    };
 
-  try {
-    await createQuiz(quiz);
-    navigate("/my");
-  } catch (err) {
-    console.error(err);
-    alert("Saving quiz failed:\n" + err.message);
+    try {
+      await createQuiz(payload);
+      navigate("/my");
+    } catch (err) {
+      console.error("CREATE QUIZ ERROR:", err);
+      alert("Saving quiz failed:\n" + err.message);
+    }
   }
-}
 
-
+  // -------------------------
+  // UI
+  // -------------------------
   return (
     <div>
       <h2>Create a New Quiz</h2>
 
       <form onSubmit={handleSubmit}>
+        {/* Title */}
         <div className="mb-3">
           <label className="form-label">Title</label>
           <input
@@ -88,6 +104,7 @@ export default function QuizCreate() {
           />
         </div>
 
+        {/* Description */}
         <div className="mb-3">
           <label className="form-label">Description</label>
           <textarea
@@ -97,28 +114,14 @@ export default function QuizCreate() {
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Theme</label>
-          <select
-            className="form-select"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-          >
-            <option value="tomato">Tomato</option>
-            <option value="guac">Guac</option>
-            <option value="cheese">Cheese</option>
-            <option value="onion">Onion</option>
-            <option value="chicken">Chicken</option>
-            <option value="salsa">Salsa</option>
-          </select>
-        </div>
-
         <hr />
 
+        {/* Questions */}
         {questions.map((q, qi) => (
           <div key={qi} className="mb-4 border rounded p-3">
             <h5>Question {qi + 1}</h5>
 
+            {/* Question text */}
             <div className="mb-2">
               <label className="form-label">Question text</label>
               <input
@@ -131,6 +134,7 @@ export default function QuizCreate() {
               />
             </div>
 
+            {/* Correct answer */}
             <div className="mb-2">
               <label className="form-label">Correct answer</label>
               <input
@@ -143,8 +147,10 @@ export default function QuizCreate() {
               />
             </div>
 
+            {/* Options */}
             <div className="mb-2">
               <label className="form-label">Options</label>
+
               {q.options.map((o, oi) => (
                 <div key={oi} className="input-group mb-1">
                   <input
@@ -153,6 +159,7 @@ export default function QuizCreate() {
                     onChange={(e) => updateOption(qi, oi, e.target.value)}
                     required
                   />
+
                   {q.options.length > 2 && (
                     <button
                       type="button"
@@ -164,6 +171,7 @@ export default function QuizCreate() {
                   )}
                 </div>
               ))}
+
               <button
                 type="button"
                 className="btn btn-outline-secondary btn-sm mt-1"
@@ -175,6 +183,7 @@ export default function QuizCreate() {
           </div>
         ))}
 
+        {/* Add question */}
         <button
           type="button"
           className="btn btn-outline-primary mb-3"
@@ -183,6 +192,7 @@ export default function QuizCreate() {
           + Add question
         </button>
 
+        {/* Save */}
         <div>
           <button type="submit" className="btn btn-primary">
             Save quiz

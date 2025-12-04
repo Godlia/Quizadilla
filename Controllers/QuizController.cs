@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace Quizadilla.Controllers;
 
+[Route("mvc/[controller]/[action]")]
 public class QuizController : Controller
 {
     private readonly IQuizRepository _repo;
@@ -65,6 +66,14 @@ public class QuizController : Controller
     {
         return View();
     }
+    public IActionResult Categories()
+    {
+        return View();
+    }
+    public IActionResult MostPopular()
+    {
+        return View();
+    }
 
     [Authorize]
     public IActionResult Create()
@@ -94,10 +103,12 @@ public class QuizController : Controller
         if (string.IsNullOrWhiteSpace(quiz.Theme))
             quiz.Theme = Themes[Rng.Next(Themes.Length)];
 
+        
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        quiz.UserID = userId;
         if (userId == null) return BadRequest();
 
-        quiz.UserID = userId;
+        
 
         _repo.AddQuiz(quiz);
         _repo.Save();
@@ -131,7 +142,8 @@ public class QuizController : Controller
         var result = new List<Quiz>();
         foreach (Quiz quiz in quizzes)
         {
-            if (quiz.Title.Contains(needle))
+            if (quiz.Title.Contains(needle, StringComparison.OrdinalIgnoreCase) ||
+                (quiz.Description != null && quiz.Description.Contains(needle, StringComparison.OrdinalIgnoreCase)))
             {
                 result.Add(quiz);
             }
