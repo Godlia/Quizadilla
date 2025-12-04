@@ -14,8 +14,20 @@ namespace Quizadilla.Models
         [Required]
         public string QuestionText { get; set; } = string.Empty;
 
-        public ICollection<Option> options { get; set; } = new List<Option>();
+        public ICollection<Option> Options { get; set; } = new List<Option>();
 
-        public string correctString { get; set; } = string.Empty;
+
+        public string toString()
+        {
+            string returnString = string.Empty;
+            returnString += "Question ID: " + Id + "\n";
+            returnString += "Question Text: " + QuestionText + "\n";
+            returnString += "Options: \n";
+            foreach (var option in Options)
+            {
+                returnString += "\t" + option.toString() + "\n";
+            }
+            return returnString;
+        }
     }
 }

@@ -4,6 +4,7 @@ using Quizadilla.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Quizadilla.Controllers;
 
@@ -39,15 +40,41 @@ public class QuizController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Quiz updatedQuiz)
+    public IActionResult EditQuiz(Quiz updatedQuiz)
     {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var oldQuiz = _repo.GetQuizWithDetails(updatedQuiz.QuizId);
+        if (userId == null) return Unauthorized();
+        if (oldQuiz == null || oldQuiz.UserID != userId) return Unauthorized();
+
+
         if (!ModelState.IsValid)
-            return View(updatedQuiz);
+        {
+            Console.WriteLine("ModelState is invalid");
+            // Ensure collections the view iterates aren't null to avoid rendering errors
+            updatedQuiz.Questions ??= new List<Question>();
+            foreach (var q in updatedQuiz.Questions)
+                q.Options ??= new List<Option>();
+            try
+            {
+                _repo.UpdateQuiz(updatedQuiz);
+                _repo.Save();
+                return RedirectToAction("MyQuizzes");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception during quiz update: " + ex.Message);
+                // Return the same Edit view so validation messages and the user's input are shown
+                return View("Edit", updatedQuiz);
+            }
+
+
+        }
 
         _repo.UpdateQuiz(updatedQuiz);
         _repo.Save();
+        return RedirectToAction("MyQuizzes");
 
-        return RedirectToAction("Discover");
     }
 
     public IActionResult Quiz(int id = 0)
@@ -57,7 +84,7 @@ public class QuizController : Controller
 
         var rng = new Random();
         foreach (var question in quiz.Questions)
-            question.options = question.options.OrderBy(o => rng.Next()).ToList();
+            question.Options = question.Options.OrderBy(o => rng.Next()).ToList();
 
         return View(quiz);
     }
@@ -85,19 +112,35 @@ public class QuizController : Controller
     [HttpPost]
     public IActionResult CreateQuiz(Quiz quiz)
     {
-        foreach (var q in quiz.Questions ?? new List<Question>())
+        // Ensure questions/options exist and that at least one Option per question is marked correct.
+        // Allow multiple options to be marked IsCorrect (do not force a single correct option).
+        /*foreach (var q in quiz.Questions ??= new List<Question>())
         {
             q.options ??= new List<Option>();
 
-            var correct = (q.correctString ?? "").Trim();
-            if (!string.IsNullOrWhiteSpace(correct))
+            // Preserve any IsCorrect flags the UI posted. If none are set, pick the first so data stays consistent.
+            if (!q.options.Any(o => o.IsCorrect))
             {
-                var hasCorrect = q.options.Any(o =>
-                    string.Equals((o.OptionText ?? "").Trim(), correct, StringComparison.OrdinalIgnoreCase));
-
-                if (!hasCorrect)
-                    q.options.Add(new Option { OptionText = q.correctString ?? "" });
+                if (q.options.Any())
+                {
+                    q.options.First().IsCorrect = true;
+                }
             }
+        }*/
+
+        foreach(var question in quiz.Questions)
+        {
+            if(question.Options.Count < 2) { 
+                ModelState.AddModelError("", "Each question must have at least two options.");
+                return RedirectToAction("Create");
+            }
+            if(question.Options.All(o => !o.IsCorrect))
+            {
+                ModelState.AddModelError("", "Each question must have at least one correct option.");
+                return RedirectToAction("Create");
+            }
+
+
         }
 
         if (string.IsNullOrWhiteSpace(quiz.Theme))
@@ -149,8 +192,6 @@ public class QuizController : Controller
             }
         }
         return View(result);
-
-
     }
 }
 

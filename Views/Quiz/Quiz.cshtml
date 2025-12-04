@@ -19,8 +19,10 @@
     @for (var i = 0; i < questions.Count; i++)
     {
         var q = questions[i];
-        var opts = q.options?.ToList() ?? new List<Quizadilla.Models.Option>();
-        <div class="q-step card mb-3" style="display:@(i == 0 ? "block" : "none")" data-correct="@q.correctString">
+        var opts = q.Options?.ToList() ?? new List<Quizadilla.Models.Option>();
+        var correctList = opts.Where(o => o.IsCorrect).Select(o => o.OptionText ?? string.Empty).ToList();
+        var encodedCorrectJson = System.Text.Json.JsonSerializer.Serialize(correctList);
+        <div class="q-step card mb-3" style="@(i == 0 ? "display:block;" : "display:none;")" data-correct='@Html.Raw(encodedCorrectJson)'>
             <div class="card-body">
                 <h5 class="card-title">Question @(i + 1): @q.QuestionText</h5>
 
@@ -74,11 +76,12 @@
         document.querySelectorAll(`input[name="answers[${stepIndex}]"]`).forEach(el => el.disabled = disabled);
     }
 
-    function showFeedback(stepEl, ok, correctText){
+    function showFeedback(stepEl, ok, correctTexts){
         const box = stepEl.querySelector('.feedback');
         box.classList.remove('text-danger','text-success');
         box.classList.add(ok ? 'text-success' : 'text-danger');
-        box.textContent = ok ? 'Correct!' : `Incorrect. Correct answer: ${correctText}`;
+        const correctDisplay = correctTexts.length ? correctTexts.join(', ') : '(no correct answer)';
+        box.textContent = ok ? 'Correct!' : `Incorrect. Correct answer(s): ${correctDisplay}`;
     }
 
     function revealControls(stepEl, isLast){
@@ -108,10 +111,17 @@
             const chosen = getSelectedValue(i);
             if (!chosen) { alert('Please select an answer.'); return; }
 
-            const correct = (step.dataset.correct || '').trim();
-            const ok = chosen.toLowerCase() === correct.toLowerCase();
+            // parse correct answers array from data attribute
+            let correctArr = [];
+            try {
+                correctArr = JSON.parse(step.dataset.correct || '[]').map(s => (s || '').toString().trim());
+            } catch (err) {
+                correctArr = [];
+            }
+
+            const ok = correctArr.some(c => c.toLowerCase() === chosen.toLowerCase());
             if (ok) score++;
-            showFeedback(step, ok, correct);
+            showFeedback(step, ok, correctArr);
             setInputsDisabled(i, true);
             revealControls(step, isLast);
         }

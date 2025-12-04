@@ -3,7 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizadilla", "Quizadilla.csproj", "{167854E8-7229-C63A-099E-C75E793CAF57}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests/Tests.csproj", "{167854E8-7229-C63A-099E-C75E793CAF57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B4C3AD3B-8065-4678-ABB5-7FDD2A4F926A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +16,10 @@ Global
 		{167854E8-7229-C63A-099E-C75E793CAF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{167854E8-7229-C63A-099E-C75E793CAF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{167854E8-7229-C63A-099E-C75E793CAF57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4C3AD3B-8065-4678-ABB5-7FDD2A4F926A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C3AD3B-8065-4678-ABB5-7FDD2A4F926A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C3AD3B-8065-4678-ABB5-7FDD2A4F926A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C3AD3B-8065-4678-ABB5-7FDD2A4F926A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
