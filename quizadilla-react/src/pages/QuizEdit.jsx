@@ -13,7 +13,7 @@ export default function QuizEdit() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // LOAD
+
   useEffect(() => {
     async function load() {
       try {
@@ -34,7 +34,7 @@ export default function QuizEdit() {
     load();
   }, [id]);
 
-  // UPDATE FIELDS
+ 
   function updateField(name, value) {
     setQuiz({ ...quiz, [name]: value });
   }
@@ -57,7 +57,7 @@ export default function QuizEdit() {
     setQuiz({ ...quiz, questions: copy });
   }
 
-  // ADD / REMOVE
+  
   function addQuestion() {
     setQuiz({
       ...quiz,
@@ -86,7 +86,7 @@ export default function QuizEdit() {
     setQuiz({ ...quiz, questions: copy });
   }
 
-  // SAVE
+  
   async function save() {
     setSaving(true);
     setError("");
@@ -95,7 +95,7 @@ export default function QuizEdit() {
       const payload = {
         title: quiz.title,
         description: quiz.description,
-        theme: quiz.theme, // <---- ADDED
+        theme: quiz.theme, 
         questions: quiz.questions.map((q) => ({
           id: q.id || 0,
           questionText: q.questionText,
@@ -143,7 +143,7 @@ export default function QuizEdit() {
         onChange={(e) => updateField("description", e.target.value)}
       />
 
-      {/* THEME SELECT */}
+      {}
       <label className="form-label mt-3">Theme</label>
       <select
         className="form-select"

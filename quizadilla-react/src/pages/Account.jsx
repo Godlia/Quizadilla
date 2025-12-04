@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 export default function Account() {
   const { user, loginUser } = useAuth();
 
-  // STATES
+  
   const [newEmail, setNewEmail] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -14,16 +14,13 @@ export default function Account() {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
-  // ----------------------------------------
-  // VALIDATION HELPERS
-  // ----------------------------------------
+ 
 
   function isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
   }
 
   function isValidPassword(password) {
-    // Minst 8 tegn, stor bokstav, tall og spesialtegn
     return /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
   }
 
@@ -37,9 +34,7 @@ export default function Account() {
     setErr("");
   }
 
-  // ----------------------------------------
-  // EMAIL UPDATE
-  // ----------------------------------------
+
   async function handleEmail() {
     setMsg(""); setErr("");
 
@@ -55,9 +50,7 @@ export default function Account() {
     }
   }
 
-  // ----------------------------------------
-  // USERNAME UPDATE
-  // ----------------------------------------
+ 
   async function handleUsername() {
     setMsg(""); setErr("");
 
@@ -73,9 +66,7 @@ export default function Account() {
     }
   }
 
-  // ----------------------------------------
-  // PASSWORD UPDATE
-  // ----------------------------------------
+ 
   async function handlePassword() {
     setMsg(""); setErr("");
 
@@ -98,9 +89,7 @@ export default function Account() {
     }
   }
 
-  // ----------------------------------------
-  // DELETE ACCOUNT
-  // ----------------------------------------
+ 
   async function handleDelete() {
     setMsg(""); setErr("");
 
@@ -114,9 +103,7 @@ export default function Account() {
     }
   }
 
-  // ----------------------------------------
-  // UI
-  // ----------------------------------------
+
   return (
     <div className="container mt-5" style={{ maxWidth: 600 }}>
       <h2>My Account</h2>
@@ -127,7 +114,7 @@ export default function Account() {
 
       <hr />
 
-      {/* Change Email */}
+      {}
       <h4>Change Email</h4>
       <input
         className="form-control mb-2"
@@ -142,7 +129,7 @@ export default function Account() {
 
       <hr />
 
-      {/* Change Password */}
+      {}
       <h4>Change Password</h4>
       <input
         className="form-control mb-2"
@@ -164,7 +151,7 @@ export default function Account() {
 
       <hr />
 
-      {/* Delete Account */}
+      {}
       <h4 className="text-danger">Danger Zone</h4>
       <p>This will permanently delete your account and all associated data.</p>
 

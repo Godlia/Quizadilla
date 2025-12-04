@@ -18,7 +18,7 @@ import { useAuth } from "./context/AuthContext";
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
 
-  // Prevent UI from flashing before auth loads
+  
   if (loading) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
@@ -30,13 +30,13 @@ export default function App() {
   return (
     <Layout>
       <Routes>
-        {/* PUBLIC ROUTES */}
+        {}
         <Route path="/" element={<Home />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/quiz/:id" element={<QuizPlay />} />
 
-        {/* PROTECTED ROUTES */}
+        {}
         <Route
           path="/my"
           element={
@@ -56,7 +56,7 @@ export default function App() {
           }
         />
 
-        {/* AUTH ROUTES */}
+        {}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<Account />} />

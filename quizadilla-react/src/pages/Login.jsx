@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { loginUser } = useAuth();    // <----- THIS WAS MISSING
+  const { loginUser } = useAuth();    
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,9 +16,9 @@ export default function Login() {
     setError("");
 
     try {
-      await login(email, password);  // backend sets cookie
-      loginUser(email);              // update React state
-      navigate("/");                 // redirect
+      await login(email, password);  
+      loginUser(email);              
+      navigate("/");                 
     } catch {
       setError("Invalid email or password");
     }

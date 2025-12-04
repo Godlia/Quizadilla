@@ -7,14 +7,13 @@ export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [needle, setNeedle] = useState("");
 
-  // ------- Search submit -------
+ 
   function onSearchSubmit(e) {
     e.preventDefault();
     if (needle.trim() === "") return;
     navigate(`/search?needle=${encodeURIComponent(needle)}`);
   }
 
-  // ------- Sidebar + dropdown behaviour -------
 useEffect(() => {
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menuToggle");
@@ -60,35 +59,35 @@ useEffect(() => {
 
   return (
     <header>
-      {/* TOP NAVBAR */}
+      {}
       <nav className="navbar navbar-light custom-navbar-footer border-bottom box-shadow mb-3">
         <div className="container-fluid d-flex align-items-center justify-content-between">
 
-          {/* LEFT LOGO */}
+          {}
           <Link className="navbar-brand d-flex align-items-center" to="/">
             <img src="/img/ChatGPT-Logo.svg" alt="logo" width="35" className="me-2" />
             <span className="fw-bold">Quizadilla</span>
           </Link>
 
-          {/* MID LINKS */}
+          {}
           <div className="flex-grow-1 d-flex justify-content-center">
             <ul className="navbar-nav flex-row nav-mid" style={{ fontSize: "1.2rem", fontWeight: 400 }}>
               <li className="nav-item mx-2">
                 <Link className="nav-link text-dark" to="/">Home</Link>
               </li>
               <li className="nav-item mx-2">
-                <Link className="nav-link text-dark" to="/discover">Discover Quizzes</Link>
+                <Link className="nav-link text-dark" to="/discover">Discover</Link>
               </li>
               <li className="nav-item mx-2">
-                <Link className="nav-link text-dark" to="/create">Create Quiz</Link>
+                <Link className="nav-link text-dark" to="/create">Create</Link>
               </li>
             </ul>
           </div>
 
-          {/* RIGHT ITEMS */}
+          {}
           <div className="right-content d-flex align-items-center">
             
-            {/* Search */}
+            {}
             <form className="d-flex search-form me-2" onSubmit={onSearchSubmit}>
               <div className="input-group">
                 <input
@@ -104,7 +103,7 @@ useEffect(() => {
               </div>
             </form>
 
-            {/* Account */}
+            {} 
             <div className="dropdown">
               <button
                 className="text-dark fs-4 person-icon dropdown-toggle btn btn-link"
@@ -132,7 +131,7 @@ useEffect(() => {
 
 
 
-            {/* Hamburger */}
+            {} 
             <button id="menuToggle" className="navbar-toggler" type="button">
               <span className="navbar-toggler-icon"></span>
             </button>
@@ -141,7 +140,7 @@ useEffect(() => {
         </div>
       </nav>
 
-      {/* SIDEBAR */}
+      {}
       <div id="sidebar" className="sidebar custom-navbar-footer">
 
         <div className="sidebar-header">
@@ -151,7 +150,7 @@ useEffect(() => {
           <button className="btn-close" id="closeSidebar"></button>
         </div>
 
-        {/* SIDEBAR SEARCH */}
+        {}
         <form className="d-flex search-form2 me-2" onSubmit={onSearchSubmit}>
           <div className="input-group">
             <input
@@ -169,12 +168,12 @@ useEffect(() => {
 
         <hr className="search-form2" />
 
-        {/* SIDEBAR LINKS */}
+        {} 
         <Link to="/">Home</Link>
         <Link to="/privacy">Privacy</Link>
         <Link to="/support">Support</Link>
 
-        {/* ACCOUNT DROPDOWN */}
+        {}
         <div className="sidebar-dropdown sidebar-acc">
           <button id="accountDropdownBtn" className="sidebar-link d-flex w-100 align-items-center justify-content-between">
             <span>{isAuthenticated ? "My Account" : "Login/Register"}</span>
@@ -198,7 +197,7 @@ useEffect(() => {
 
         <hr />
 
-        {/* QUIZZES DROPDOWN */}
+        {}
         <div className="sidebar-dropdown">
           <button id="quizDropdownBtn" className="sidebar-link d-flex w-100 align-items-center justify-content-between">
             <span>Quizzes</span>

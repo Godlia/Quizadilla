@@ -1,4 +1,4 @@
-// src/api/auth.js
+
 
 const BASE = "http://localhost:5135/api/auth";
 
@@ -11,7 +11,6 @@ async function api(path, method = "GET", body) {
   });
 
   if (!res.ok) {
-    // Send error object with .response so register.jsx can read it
     const error = new Error("Request failed");
     error.response = res;
     throw error;
@@ -20,9 +19,7 @@ async function api(path, method = "GET", body) {
   return res.json();
 }
 
-// ---------------------------
-// AUTH FUNCTIONS
-// ---------------------------
+
 
 export function register(email, password) {
   return api("/register", "POST", { email, password });

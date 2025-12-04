@@ -17,7 +17,7 @@ export default function QuizCreate() {
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const navigate = useNavigate();
 
-  // UPDATE QUESTION TEXT / CORRECT / OPTIONS
+  
   function updateQuestion(index, patch) {
     setQuestions((prev) => {
       const copy = [...prev];
@@ -36,7 +36,7 @@ export default function QuizCreate() {
     });
   }
 
-  // ADD & REMOVE
+  
   function addQuestion() {
     setQuestions((prev) => [...prev, emptyQuestion()]);
   }
@@ -57,14 +57,14 @@ export default function QuizCreate() {
     });
   }
 
-  // SUBMIT
+ 
   async function handleSubmit(e) {
     e.preventDefault();
 
     const payload = {
       title,
       description,
-      theme, // <---- ADDED
+      theme,
       questions: questions.map((q) => ({
         questionText: q.questionText,
         correctString: q.correctString,
@@ -86,7 +86,7 @@ export default function QuizCreate() {
       <h2>Create a New Quiz</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* Title */}
+        {}
         <div className="mb-3">
           <label className="form-label">Title</label>
           <input
@@ -97,7 +97,7 @@ export default function QuizCreate() {
           />
         </div>
 
-        {/* Description */}
+        {}
         <div className="mb-3">
           <label className="form-label">Description</label>
           <textarea
@@ -107,7 +107,7 @@ export default function QuizCreate() {
           />
         </div>
 
-        {/* THEME SELECT */}
+        {}
         <div className="mb-3">
           <label className="form-label">Theme</label>
           <select
@@ -125,12 +125,12 @@ export default function QuizCreate() {
 
         <hr />
 
-        {/* QUESTIONS */}
+        {}
         {questions.map((q, qi) => (
           <div key={qi} className="mb-4 border rounded p-3">
             <h5>Question {qi + 1}</h5>
 
-            {/* Question text */}
+            {}
             <div className="mb-2">
               <label className="form-label">Question text</label>
               <input
@@ -143,7 +143,7 @@ export default function QuizCreate() {
               />
             </div>
 
-            {/* Correct Answer */}
+            {}
             <div className="mb-2">
               <label className="form-label">Correct answer</label>
               <input
@@ -156,7 +156,7 @@ export default function QuizCreate() {
               />
             </div>
 
-            {/* Options */}
+            {}
             <div className="mb-2">
               <label className="form-label">Options</label>
 
@@ -191,7 +191,7 @@ export default function QuizCreate() {
           </div>
         ))}
 
-        {/* Add question */}
+        {}
         <button
           type="button"
           className="btn btn-outline-primary mb-3"
@@ -200,7 +200,7 @@ export default function QuizCreate() {
           + Add question
         </button>
 
-        {/* Save */}
+        {}
         <div>
           <button type="submit" className="btn btn-primary">
             Save quiz

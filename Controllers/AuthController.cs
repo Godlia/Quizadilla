@@ -20,9 +20,6 @@ namespace Quizadilla.Controllers
             _signInManager = signInManager;
         }
 
-        // -------------------------
-        // POST: /api/auth/login
-        // -------------------------
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
@@ -43,9 +40,7 @@ namespace Quizadilla.Controllers
             return Ok(new { message = "Logged in" });
         }
 
-        // -------------------------
-        // POST: /api/auth/register
-        // -------------------------
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto){
         if (!ModelState.IsValid)
@@ -74,9 +69,7 @@ namespace Quizadilla.Controllers
         return Ok(new { message = "Registration successful" });
     }
 
-        // -------------------------
-        // POST: /api/auth/logout
-        // -------------------------
+       
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -84,9 +77,7 @@ namespace Quizadilla.Controllers
             return Ok(new { message = "Logged out" });
         }
 
-        // -------------------------
-        // GET: /api/auth/me
-        // -------------------------
+      
         [HttpGet("me")]
         public IActionResult Me()
         {
@@ -127,7 +118,7 @@ namespace Quizadilla.Controllers
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
-        // Identity setter normalt også UserName = email, men ikke alltid
+       
         user.UserName = dto.NewEmail;
         await _userManager.UpdateAsync(user);
 

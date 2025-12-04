@@ -15,7 +15,7 @@ menuToggle?.addEventListener("click", () => {
 closeSidebar?.addEventListener("click", () => {
   sidebar.classList.remove("active");
   body.classList.remove("sidebar-open");
-  menuToggle.style.visibility = "visible"; // vis igjen
+  menuToggle.style.visibility = "visible"; 
 });
 // DROPDOWN SUBMENU FOR QUIZZES SIDEBAR
 const quizDropdownBtn = document.getElementById("quizDropdownBtn");

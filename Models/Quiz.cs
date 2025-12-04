@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;   // ← VIKTIG
+using System.ComponentModel.DataAnnotations;  
 using Quizadilla.Models;
 
 namespace Quizadilla.Models

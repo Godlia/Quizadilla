@@ -23,9 +23,7 @@ public class QuizApiController : ControllerBase
         _db = db;
     }
 
-    // -----------------------------
-    // CREATE QUIZ
-    // -----------------------------
+    
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
@@ -60,18 +58,14 @@ public class QuizApiController : ControllerBase
         return Ok(quiz);
     }
 
-    // -----------------------------
-    // GET ALL
-    // -----------------------------
+    
     [HttpGet]
     public IActionResult GetAll()
     {
         return Ok(_repo.GetQuizzes());
     }
 
-    // -----------------------------
-    // GET MY QUIZZES
-    // -----------------------------
+  
     [HttpGet("my")]
     [Authorize]
     public async Task<IActionResult> My()
@@ -83,9 +77,7 @@ public class QuizApiController : ControllerBase
         return Ok(_repo.GetUserQuizzes(user.Id));
     }
 
-    // -----------------------------
-    // GET ONE QUIZ
-    // -----------------------------
+   
     [HttpGet("{id}")]
     public IActionResult GetQuiz(int id)
     {
@@ -95,9 +87,7 @@ public class QuizApiController : ControllerBase
         return Ok(quiz);
     }
 
-    // -----------------------------
-    // SEARCH
-    // -----------------------------
+  
     [HttpGet("search")]
     public IActionResult Search([FromQuery] string needle)
     {
@@ -115,9 +105,6 @@ public class QuizApiController : ControllerBase
         return Ok(result);
     }
 
-    // -----------------------------
-    // UPDATE QUIZ
-    // -----------------------------
     [HttpPut("{id}")]
     [Authorize]
     public async Task<IActionResult> UpdateQuiz(int id, [FromBody] UpdateQuizDto dto)
@@ -133,14 +120,12 @@ public class QuizApiController : ControllerBase
         if (quiz.UserID != user.Id)
             return Forbid();
 
-        // Update base fields
+       
         quiz.Title = dto.Title;
         quiz.Description = dto.Description ?? "";
-        quiz.Theme = dto.Theme ?? quiz.Theme;      // <<--- added
+        quiz.Theme = dto.Theme ?? quiz.Theme;      
 
-        // -------------------------
-        // Handle Questions
-        // -------------------------
+       
         var existingQuestions = quiz.Questions.ToList();
         quiz.Questions.Clear();
 
@@ -164,7 +149,7 @@ public class QuizApiController : ControllerBase
             qEntity.QuestionText = qDto.QuestionText;
             qEntity.correctString = qDto.CorrectString ?? "";
 
-            // Handle options
+            
             var existingOptions = qEntity.options.ToList();
             qEntity.options.Clear();
 
@@ -194,9 +179,6 @@ public class QuizApiController : ControllerBase
         return Ok(quiz);
     }
 
-    // -----------------------------
-    // DELETE
-    // -----------------------------
     [HttpDelete("{id}")]
     [Authorize]
     public async Task<IActionResult> DeleteQuiz(int id)
