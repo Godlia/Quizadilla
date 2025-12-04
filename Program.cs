@@ -58,9 +58,9 @@ using (var scope = app.Services.CreateScope())
     var quizDb = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
     var authDb = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     
-    // Apply migrations for both databases
-    quizDb.Database.Migrate();
-    authDb.Database.Migrate();
+    // Ensure databases are created with all required tables
+    authDb.Database.EnsureCreated();
+    quizDb.Database.EnsureCreated();
 
     if (!quizDb.Quizzes.Any())
     {
